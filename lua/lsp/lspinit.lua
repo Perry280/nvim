@@ -1,7 +1,9 @@
 vim.diagnostic.config({
-    virtual_text = { current_line = true },
     float = true,
+    virtual_lines = { current_line = true },
+    virtual_text = false, -- { current_line = true },
     update_in_insert = true,
+    severity_sort = true,
 })
 
 -- local function keymaps(opts)
@@ -27,8 +29,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 vim.lsp.enable({
-    "lua_ls",
-    -- "clangd",
-    -- "pyright",
+    -- "basedpyright",
     -- "bashls",
+    -- "clangd",
+    "lua_ls",
+    -- "pyright",
 })

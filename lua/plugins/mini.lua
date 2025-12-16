@@ -1,6 +1,6 @@
 return {
     {
-        "echasnovski/mini.pairs",
+        "nvim-mini/mini.pairs",
         version = false,
         config = function()
             require("mini.pairs").setup({
@@ -22,21 +22,21 @@ return {
         end
     },
     {
-        "echasnovski/mini.surround",
+        "nvim-mini/mini.surround",
         version = false,
         config = function()
             require("mini.surround").setup()
         end
     },
     {
-        "echasnovski/mini.comment",
+        "nvim-mini/mini.comment",
         version = false,
         config = function()
             require("mini.comment").setup()
         end
     },
     {
-        "echasnovski/mini.cursorword",
+        "nvim-mini/mini.cursorword",
         version = false,
         config = function()
             require("mini.cursorword").setup()

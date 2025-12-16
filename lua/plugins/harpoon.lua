@@ -1,7 +1,10 @@
 return {
     "ThePrimeagen/harpoon",
     branch = "harpoon2",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = {
+        "nvim-lua/plenary.nvim",
+        "nvim-telescope/telescope.nvim",
+    },
     config = function()
         local harpoon = require("harpoon")
         harpoon.setup({
@@ -31,7 +34,6 @@ return {
             }
         })
 
-        -- basic telescope configuration
         -- local conf = require("telescope.config").values
         -- local function toggle_telescope(harpoon_files)
         --     local file_paths = {}
@@ -55,6 +57,7 @@ return {
         vim.keymap.set("n", "<leader>a", function() harpoon_list:add() end)
 
         -- Toggle Harpoon menu
+        -- vim.keymap.set("n", "<leader>o", function() toggle_telescope(harpoon_list) end)
         vim.keymap.set("n", "<leader>o", function() harpoon.ui:toggle_quick_menu(harpoon_list) end)
 
         -- Navigate between files with Ctrl-h/j/k/l
