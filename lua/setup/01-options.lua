@@ -26,5 +26,10 @@ vim.opt.scrolloff = 20
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 
+vim.cmd("let g:loaded_node_provider = 0")
+vim.cmd("let g:loaded_perl_provider = 0")
+vim.cmd("let g:loaded_python3_provider = 0")
+vim.cmd("let g:loaded_ruby_provider = 0")
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
