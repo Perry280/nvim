@@ -27,11 +27,3 @@ vim.api.nvim_create_autocmd("LspAttach", {
         -- keymaps(opts)
     end,
 })
-
-vim.lsp.enable({
-    -- "basedpyright",
-    -- "bashls",
-    -- "clangd",
-    "lua_ls",
-    -- "pyright",
-})

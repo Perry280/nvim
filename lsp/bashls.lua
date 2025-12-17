@@ -24,7 +24,7 @@ return {
             globPattern = vim.env.GLOB_PATTERN or "*@(.sh|.inc|.bash|.command)",
         },
     },
-    capabilities = require("cmp_nvim_lsp").default_capabilities(),
+    capabilities = require("lsp.completion_plugin_aux").set_capabilities(),
     filetypes = { "bash", "sh" },
     root_markers = { ".git" },
 }

@@ -5,7 +5,7 @@ vim.g.have_nerd_font = true
 
 vim.opt.clipboard = "unnamedplus"
 vim.opt.swapfile = false
-vim.opt.winborder = "rounded"
+vim.opt.winborder = "none"
 
 vim.opt.expandtab = true
 vim.opt.tabstop = 4
@@ -26,10 +26,10 @@ vim.opt.scrolloff = 20
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 
-vim.cmd("let g:loaded_node_provider = 0")
-vim.cmd("let g:loaded_perl_provider = 0")
-vim.cmd("let g:loaded_python3_provider = 0")
-vim.cmd("let g:loaded_ruby_provider = 0")
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"

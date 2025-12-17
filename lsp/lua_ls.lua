@@ -13,7 +13,7 @@ return {
         "selene.yml",
         ".git"
     },
-    capabilities = require("cmp_nvim_lsp").default_capabilities(),
+    capabilities = require("lsp.completion_plugin_aux").set_capabilities(),
     settings = {
         Lua = {
             -- codeLens = { enable = true },
@@ -42,7 +42,7 @@ return {
                 library = {
                     vim.env.VIMRUNTIME,
                     -- vim.fn.stdpath("config"),
-                    "${3rd}/luv/library",
+                    -- "${3rd}/luv/library",
                     -- "${3rd}/busted/library",
                 }
                 -- library = vim.tbl_extend(

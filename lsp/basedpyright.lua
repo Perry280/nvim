@@ -29,7 +29,7 @@ return {
         "Pipfile",
         ".git",
     },
-    capabilities = require("cmp_nvim_lsp").default_capabilities(),
+    capabilities = require("lsp.completion_plugin_aux").set_capabilities(),
     settings = {
         basedpyright = {
             analysis = {

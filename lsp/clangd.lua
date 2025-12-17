@@ -55,9 +55,7 @@ local function symbol_info(bufnr, client)
             end
             local container = string.format("container: %s", res[1].containerName) ---@type string
             local name = string.format("name: %s", res[1].name) ---@type string
-            vim.lsp.util.open_floating_preview(
-                { name, container },
-                "",
+            vim.lsp.util.open_floating_preview({ name, container }, "",
                 {
                     height = 2,
                     width = math.max(string.len(name), string.len(container)),
@@ -71,18 +69,14 @@ local function symbol_info(bufnr, client)
     )
 end
 
-local capabilities = vim.tbl_deep_extend(
-    "force",
-    require("cmp_nvim_lsp").default_capabilities(),
-    {
-        textDocument = {
-            completion = {
-                editsNearCursor = true,
-            },
+local capabilities = {
+    textDocument = {
+        completion = {
+            editsNearCursor = true,
         },
-        -- offsetEncoding = { "utf-8", "utf-16" },
-    }
-)
+    },
+    -- offsetEncoding = { "utf-8", "utf-16" },
+}
 
 ---@class ClangdInitializeResult: lsp.InitializeResult
 ---@field offsetEncoding? string
@@ -101,7 +95,7 @@ return {
         "configure.ac",
         ".git",
     },
-    capabilities = capabilities,
+    capabilities = require("lsp.completion_plugin_aux").set_capabilities(capabilities),
     ---@param init_result ClangdInitializeResult
     on_init = function(client, init_result)
         if init_result.offsetEncoding then
@@ -109,18 +103,14 @@ return {
         end
     end,
     on_attach = function(client, bufnr)
-        vim.api.nvim_buf_create_user_command(
-            bufnr,
-            "LspClangdSwitchSourceHeader",
+        vim.api.nvim_buf_create_user_command(bufnr, "LspClangdSwitchSourceHeader",
             function()
                 switch_source_header(bufnr, client)
             end,
             { desc = "Switch between source/header" }
         )
 
-        vim.api.nvim_buf_create_user_command(
-            bufnr,
-            "LspClangdShowSymbolInfo",
+        vim.api.nvim_buf_create_user_command(bufnr, "LspClangdShowSymbolInfo",
             function()
                 symbol_info(bufnr, client)
             end,
