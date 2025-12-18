@@ -1,7 +1,7 @@
-require("setup.01-options")
-require("setup.02-keymaps")
-require("setup.03-terminal")
+require("setup.options")
+require("setup.keymaps")
+require("setup.terminal")
 
 if vim.loop.os_uname().sysname == "Windows_NT" then
-    require("setup.04-windows")
+    require("setup.windows")
 end

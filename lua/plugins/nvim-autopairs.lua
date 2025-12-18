@@ -1,12 +1,9 @@
 return {
     "windwp/nvim-autopairs",
     event = "InsertEnter",
-    config = function()
-        require("nvim-autopairs").setup({
-            enable_check_bracket_line = true,
-            ignored_next_char = "[%w%.]",
-            check_ts = true,
-            ts_config = { "string" }
-        })
-    end,
+    opts = {
+        -- ignored_next_char = "[%w%.]",
+        check_ts = true,
+        ts_config = { "string" }
+    },
 }

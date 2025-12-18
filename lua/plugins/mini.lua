@@ -9,11 +9,11 @@ return {
     --                 [')'] = { action = 'close', pair = '()', neigh_pattern = '[^\\].' },
     --                 [']'] = { action = 'close', pair = '[]', neigh_pattern = '[^\\].' },
     --                 ['}'] = { action = 'close', pair = '{}', neigh_pattern = '[^\\].' },
-    --
+
     --                 ["("] = { action = "open", pair = "()", neigh_pattern = ".[%s%z%)]", register = { cr = false }, },
     --                 ["["] = { action = "open", pair = "[]", neigh_pattern = ".[%s%z%)}%]]", register = { cr = false }, },
     --                 ["{"] = { action = "open", pair = "{}", neigh_pattern = ".[%s%z%)}%]]", register = { cr = false }, },
-    --
+
     --                 -- Single quote: Prevent pairing if either side is a letter
     --                 ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^%w\\][^%w]", register = { cr = false }, },
     --                 -- Single quote: Prevent pairing if either side is a letter
@@ -27,22 +27,22 @@ return {
     {
         "nvim-mini/mini.surround",
         version = false,
-        config = function()
-            require("mini.surround").setup()
-        end
+        opts = {
+            respect_selection_type = true,
+        },
     },
     {
         "nvim-mini/mini.comment",
         version = false,
-        config = function()
-            require("mini.comment").setup()
-        end
+        opts = {
+            options = {
+                ignore_blank_line = true,
+            },
+        },
     },
     {
         "nvim-mini/mini.cursorword",
         version = false,
-        config = function()
-            require("mini.cursorword").setup()
-        end
+        config = true,
     },
 }

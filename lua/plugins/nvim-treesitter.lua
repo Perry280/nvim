@@ -35,8 +35,6 @@ return {
         init = function()
             vim.g.no_plugin_maps = true
         end,
-        config = function()
-            require("nvim-treesitter-textobjects").setup()
-        end,
+        config = true,
     }
 }
