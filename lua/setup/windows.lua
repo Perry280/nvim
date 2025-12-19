@@ -1,7 +1,7 @@
 vim.opt.shell = "pwsh.exe"
 vim.opt.shellcmdflag =
-"-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;$PSStyle.Formatting.Error = '';$PSStyle.Formatting.ErrorAccent = '';$PSStyle.Formatting.Warning = '';$PSStyle.OutputRendering = 'PlainText';"
-vim.opt.shellredir = "2>&1 | Out-File -Encoding utf8 %s; exit $LastExitCode"
-vim.opt.shellpipe = "2>&1 | Out-File -Encoding utf8 %s; exit $LastExitCode"
+'-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new(); $PSDefaultParameterValues[\\"Out-File:Encoding\\"]=\\"utf8\\"; $PSStyle.OutputRendering = \\"PlainText\\";'
+vim.cmd("let $__SuppressAnsiEscapeSequences = 1")
+vim.opt.shellpipe = '> %s 2>&1'
 vim.opt.shellquote = ""
 vim.opt.shellxquote = ""
