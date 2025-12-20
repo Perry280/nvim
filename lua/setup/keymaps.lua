@@ -16,7 +16,22 @@ vim.keymap.set("n", "<C-D>", "<C-D>zz")
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
-vim.keymap.set("n", "<C-Up>",    ":resize +2<CR>")
-vim.keymap.set("n", "<C-Down>",  ":resize -2<CR>")
+vim.keymap.set("n", "<C-Up>", ":resize +2<CR>")
+vim.keymap.set("n", "<C-Down>", ":resize -2<CR>")
 vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>")
-vim.keymap.set("n", "<C-Left>",  ":vertical resize -2<CR>")
+vim.keymap.set("n", "<C-Left>", ":vertical resize -2<CR>")
+
+vim.api.nvim_create_autocmd("filetype", {
+    pattern = "netrw",
+    callback = function()
+        local bind = function(lhs, rhs)
+            vim.keymap.set("n", lhs, rhs, { remap = true, buffer = true })
+        end
+
+        -- edit new file
+        bind("n", "%")
+
+        bind("h", "-")
+        bind("l", "<CR>")
+    end
+})

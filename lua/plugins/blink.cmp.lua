@@ -7,8 +7,8 @@ return {
     opts = {
         keymap = {
             preset = "default",
-            ['<C-u>'] = { 'scroll_signature_up', 'fallback' },
-            ['<C-d>'] = { 'scroll_signature_down', 'fallback' },
+            -- ['<C-u>'] = { 'scroll_signature_up', 'fallback' },
+            -- ['<C-d>'] = { 'scroll_signature_down', 'fallback' },
         },
 
         appearance = { nerd_font_variant = "mono" },
