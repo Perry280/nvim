@@ -3,7 +3,7 @@ require("setup.setup")
 require("config.lazy")
 vim.cmd.colorscheme("rose-pine-main")
 
-require("lsp.lspinit")
+require("lsp.lsp_init").setup()
 
 vim.lsp.enable({
     -- "basedpyright",

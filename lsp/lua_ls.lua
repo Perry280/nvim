@@ -13,7 +13,7 @@ return {
         "selene.yml",
         ".git"
     },
-    capabilities = require("lsp.completion_plugin_aux").set_capabilities(),
+    capabilities = require("lsp.lsp_init").set_lsp_capabilities(),
     settings = {
         Lua = {
             -- codeLens = { enable = true },
