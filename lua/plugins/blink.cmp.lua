@@ -38,11 +38,13 @@ return {
                 },
             },
             documentation = { auto_show = true },
-            ghost_text = { enabled = true },
+            ghost_text = { enabled = false },
         },
         cmdline = {
             keymap = {
                 ['<Tab>'] = { 'show', 'accept' },
+                ["<Left>"] = false,
+                ["<Right>"] = false,
             },
             completion = {
                 menu = { auto_show = true },

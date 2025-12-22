@@ -5,7 +5,7 @@ local lsp_features = {}
 function lsp_features.autocompletion(args, client)
     if client ~= nil and args ~= nil and client:supports_method("textDocument/completion") then
         vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
-        vim.cmd("set completeopt+=noselect")
+        vim.cmd("set completeopt+=menuone,noselect") -- fuzzy
     end
 end
 
@@ -58,7 +58,6 @@ function lsp_features.highlight_words(args, client)
 end
 
 function lsp_features.tab_completion()
-    vim.opt.completeopt = { "menu", "menuone", "noselect", "noinsert" }
     vim.opt.shortmess:append("c")
 
     local function tab_complete()
