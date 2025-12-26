@@ -1,17 +1,3 @@
----@brief
----
---- https://clangd.llvm.org/installation.html
----
---- - **NOTE:** Clang >= 11 is recommended! See [#23](https://github.com/neovim/nvim-lspconfig/issues/23).
---- - If `compile_commands.json` lives in a build directory, you should
----   symlink it to the root of your source tree.
----   ```
----   ln -s /path/to/myproject/build/compile_commands.json /path/to/myproject/
----   ```
---- - clangd relies on a [JSON compilation database](https://clang.llvm.org/docs/JSONCompilationDatabase.html)
----   specified as compile_commands.json, see https://clangd.llvm.org/installation#compile_commandsjson
-
--- https://clangd.llvm.org/extensions.html#switch-between-sourceheader
 local function switch_source_header(bufnr, client)
     local method_name = "textDocument/switchSourceHeader"
     ---@diagnostic disable-next-line:param-type-mismatch
@@ -19,9 +5,7 @@ local function switch_source_header(bufnr, client)
         return vim.notify(("method %s is not supported by any servers active on the current buffer"):format(method_name))
     end
     local params = vim.lsp.util.make_text_document_params(bufnr)
-    client.request(
-        method_name,
-        params,
+    client.request(method_name, params,
         function(err, result)
             if err then
                 error(tostring(err))
@@ -45,9 +29,7 @@ local function symbol_info(bufnr, client)
     local win = vim.api.nvim_get_current_win()
     local params = vim.lsp.util.make_position_params(win, client.offset_encoding)
     ---@diagnostic disable-next-line:param-type-mismatch
-    client:request(
-        method_name,
-        params,
+    client:request(method_name, params,
         function(err, res)
             if err or #res == 0 then
                 -- Clangd always returns an error, there is not reason to parse it
@@ -85,7 +67,7 @@ local capabilities = {
 
 return {
     cmd = { "clangd" },
-    filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
+    filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
     root_markers = {
         ".clangd",
         ".clang-tidy",
@@ -95,7 +77,7 @@ return {
         "configure.ac",
         ".git",
     },
-    capabilities = require("lsp.completion_plugin_aux").set_capabilities(capabilities),
+    capabilities = require("lsp.lsp_init").set_lsp_capabilities(capabilities),
     ---@param init_result ClangdInitializeResult
     on_init = function(client, init_result)
         if init_result.offsetEncoding then

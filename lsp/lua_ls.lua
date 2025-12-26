@@ -16,8 +16,8 @@ return {
     capabilities = require("lsp.lsp_init").set_lsp_capabilities(),
     settings = {
         Lua = {
-            -- codeLens = { enable = true },
-            -- hint = { enable = true, semicolon = "Disable" },
+            codeLens = { enable = true },
+            hint = { enable = true, semicolon = "Disable" },
         },
     },
     on_init = function(client)
@@ -45,11 +45,6 @@ return {
                     -- "${3rd}/luv/library",
                     -- "${3rd}/busted/library",
                 }
-                -- library = vim.tbl_extend(
-                --     "force",
-                --     vim.api.nvim_get_runtime_file("", true),
-                --     { "${3rd}/luv/library" }
-                -- ),
                 -- library = vim.api.nvim_get_runtime_file("", true),
             },
         })

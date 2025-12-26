@@ -22,6 +22,6 @@ vim.api.nvim_create_autocmd("WinEnter", {
 
 vim.api.nvim_create_autocmd("TermOpen", {
     callback = function()
-        vim.cmd.resize(15)
+        -- vim.cmd.resize(15)
     end
 })

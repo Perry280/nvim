@@ -36,36 +36,30 @@ return {
                 autoSearchPaths = true,
                 useLibraryCodeForTypes = true,
                 diagnosticMode = "openFilesOnly",
+                -- typeCheckingMode = "standard",
+                diagnosticSeverityOverrides = {
+                    reportAny = false,
+                }
             },
         },
     },
     on_attach = function(client, bufnr)
-        vim.api.nvim_buf_create_user_command(
-            bufnr,
-            "LspPyrightOrganizeImports",
+        vim.api.nvim_buf_create_user_command(bufnr, "LspPyrightOrganizeImports",
             function()
                 local params = {
                     command = "basedpyright.organizeimports",
                     arguments = { vim.uri_from_bufnr(bufnr) },
                 }
-
                 ---@diagnostic disable-next-line: param-type-mismatch
                 client.request("workspace/executeCommand", params, nil, bufnr)
             end,
-            {
-                desc = "Organize Imports",
-            }
+            { desc = "Organize Imports", }
         )
 
-        vim.api.nvim_buf_create_user_command(
-            bufnr,
-            "LspPyrightSetPythonPath",
-            set_python_path,
-            {
-                desc = "Reconfigure basedpyright with the provided python path",
-                nargs = 1,
-                complete = "file",
-            }
-        )
+        vim.api.nvim_buf_create_user_command(bufnr, "LspPyrightSetPythonPath", set_python_path, {
+            desc = "Reconfigure basedpyright with the provided python path",
+            nargs = 1,
+            complete = "file",
+        })
     end,
 }
