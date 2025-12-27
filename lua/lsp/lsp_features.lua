@@ -3,7 +3,7 @@ local NAME = "lsp_features"
 local lsp_features = {}
 
 function lsp_features.autocompletion(args, client)
-    if client ~= nil and args ~= nil and client:supports_method("textDocument/completion") then
+    if args ~= nil and client ~= nil and client:supports_method("textDocument/completion") then
         vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
         vim.cmd("set completeopt+=menuone,noselect") -- fuzzy
     end
@@ -31,13 +31,13 @@ function lsp_features.format_on_save(args, client)
 end
 
 function lsp_features.inlay_hints(args, client)
-    if client ~= nil and args ~= nil and client:supports_method("textDocument/inlayHint") then
+    if args ~= nil and client ~= nil and client:supports_method("textDocument/inlayHint") then
         vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
     end
 end
 
 function lsp_features.highlight_words(args, client)
-    if client ~= nil and args ~= nil and client:supports_method("textDocument/documentHighlight") then
+    if args ~= nil and client ~= nil and client:supports_method("textDocument/documentHighlight") then
         local autocmd = vim.api.nvim_create_autocmd
         local augroup = vim.api.nvim_create_augroup("lsp_highlight", { clear = false })
 

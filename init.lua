@@ -6,7 +6,7 @@ vim.cmd.colorscheme("rose-pine-main")
 require("lsp.lsp_init").setup()
 
 vim.lsp.enable({
-    -- "basedpyright",
+    "basedpyright",
     -- "bashls",
     -- "clangd",
     "lua_ls",
