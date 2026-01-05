@@ -39,6 +39,8 @@ return {
                 -- typeCheckingMode = "standard",
                 diagnosticSeverityOverrides = {
                     reportAny = false,
+                    reportPrivateUsage = false,
+                    reportUnusedCallResult = false,
                 }
             },
         },

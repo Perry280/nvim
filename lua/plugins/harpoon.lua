@@ -18,9 +18,7 @@ return {
 
         --     require("telescope.pickers").new({}, {
         --         prompt_title = "Harpoon",
-        --         finder = require("telescope.finders").new_table({
-        --             results = file_paths,
-        --         }),
+        --         finder = require("telescope.finders").new_table({ results = file_paths, }),
         --         previewer = conf.file_previewer({}),
         --         sorter = conf.generic_sorter({}),
         --     }):find()
@@ -33,7 +31,7 @@ return {
 
         -- Toggle Harpoon menu
         -- vim.keymap.set("n", "<leader>o", function() toggle_telescope(harpoon_list) end)
-        vim.keymap.set("n", "<leader>o", function() harpoon.ui:toggle_quick_menu(harpoon_list) end)
+        vim.keymap.set("n", "<leader>e", function() harpoon.ui:toggle_quick_menu(harpoon_list) end)
 
         -- Navigate between files with Ctrl-h/j/k/l
         vim.keymap.set("n", "<C-h>", function() harpoon_list:select(1) end)
@@ -41,8 +39,8 @@ return {
         vim.keymap.set("n", "<C-k>", function() harpoon_list:select(3) end)
         vim.keymap.set("n", "<C-l>", function() harpoon_list:select(4) end)
 
-        vim.keymap.set("n", "<A-n>", function() harpoon_list:next() end)
-        vim.keymap.set("n", "<A-p>", function() harpoon_list:prev() end)
+        vim.keymap.set("n", "<C-S-n>", function() harpoon_list:next() end)
+        vim.keymap.set("n", "<C-S-p>", function() harpoon_list:prev() end)
 
         require("telescope").load_extension("harpoon")
     end,
