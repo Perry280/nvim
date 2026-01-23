@@ -38,9 +38,16 @@ return {
                 diagnosticMode = "openFilesOnly",
                 -- typeCheckingMode = "standard",
                 diagnosticSeverityOverrides = {
+                    -- deprecateTypingAliases = true,
                     reportAny = false,
+                    reportExplicitAny = false,
                     reportPrivateUsage = false,
+                    -- reportPropertyTypeMismatch = "warning",
                     reportUnusedCallResult = false,
+                    -- strinctListInference = true,
+                    -- strinctDictionaryInference = true,
+                    -- strinctSetInference = true,
+                    -- strictGenericNarrowing = true,
                 }
             },
         },

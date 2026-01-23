@@ -3,7 +3,7 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
 vim.keymap.set("n", "<C-s>", ":wa<CR>")
 vim.keymap.set("n", "<C-q>", ":xa<CR>")
-vim.keymap.set("n", "<C-n>", ":Ex<CR>")
+vim.keymap.set("n", "<C-n>", ":Ex<CR>2j")
 vim.keymap.set("n", "<leader>N", ":e .<CR>")
 vim.keymap.set("n", "<leader>bd", ":bd!<CR>")
 
