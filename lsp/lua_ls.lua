@@ -23,6 +23,12 @@ return {
         Lua = {
             codeLens = { enable = true },
             hint = { enable = true, semicolon = "Disable" },
+            format = {
+                enable = true,
+                defaultConfig = {
+                    max_line_length = "unset",
+                }
+            }
         },
     },
     on_init = function(client)

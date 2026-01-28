@@ -32,14 +32,14 @@ vim.keymap.set({ "i", "c", "t" }, "<C-S-h>", "<Del>", opts)
 vim.keymap.set("n", "ì", ":noh<CR>", opts)
 
 if vim.g.loaded_netrw ~= 1 then
-    vim.keymap.set("n", "<C-n>", ":Ex<CR>2j")
-    vim.keymap.set("n", "<leader>N", ":e .<CR>")
+    vim.keymap.set("n", "<C-n>", ":Ex<CR>2j", opts)
+    vim.keymap.set("n", "<leader>N", ":e .<CR>", opts)
 
     vim.api.nvim_create_autocmd("filetype", {
         pattern = "netrw",
         callback = function()
             local bind = function(lhs, rhs)
-                vim.keymap.set("n", lhs, rhs, { remap = true, buffer = true })
+                vim.keymap.set("n", lhs, rhs, { remap = true, buffer = true, silent = true, })
             end
 
             -- edit new file

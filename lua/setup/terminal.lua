@@ -63,23 +63,28 @@ function _T.toggle_term()
 
 end
 
-vim.keymap.set("t", "<ESC>", "<C-\\><C-N>")
-if vim.uv.os_uname().sysname == "Windows_NT" then
-    vim.keymap.set("t", "<ESC><ESC>", "<C-\\><C-N>:bd!<CR>")
+local function opts(desc)
+    return {
+        desc = desc,
+        noremap = true,
+        silent = true,
+    }
 end
 
-vim.keymap.set("n", "<leader>tt", ":tabnew<CR>:terminal<CR>i", { desc = "Open terminal in a new tab" })
-vim.keymap.set("n", "<leader>th", function() _T.open_term("horizontal") end,
-    { desc = "Open terminal in a new horizontal buffer" })
-vim.keymap.set("n", "<leader>tv", function() _T.open_term("vertical") end,
-    { desc = "Open terminal in a new vertical buffer" })
-vim.keymap.set("n", "<leader>tf", function() _T.open_term("float") end,
-    { desc = "Open terminal in a new floating window" })
+vim.keymap.set("t", "<ESC>", "<C-\\><C-N>", opts(""))
+if vim.uv.os_uname().sysname == "Windows_NT" then
+    vim.keymap.set("t", "<ESC><ESC>", "<C-\\><C-N>:bd!<CR>", opts(""))
+end
 
-vim.keymap.set("t", "<A-h>", "<C-\\><C-N><C-W>h")
-vim.keymap.set("t", "<A-j>", "<C-\\><C-N><C-W>j")
-vim.keymap.set("t", "<A-k>", "<C-\\><C-N><C-W>k")
-vim.keymap.set("t", "<A-l>", "<C-\\><C-N><C-W>l")
+vim.keymap.set("n", "<leader>tt", ":tabnew<CR>:terminal<CR>i", opts("Open terminal in a new tab"))
+vim.keymap.set("n", "<leader>th", function() _T.open_term("horizontal") end, opts("Open terminal in a new horizontal buffer"))
+vim.keymap.set("n", "<leader>tv", function() _T.open_term("vertical") end, opts("Open terminal in a new vertical buffer"))
+vim.keymap.set("n", "<leader>tf", function() _T.open_term("float") end, opts("Open terminal in a new floating window"))
+
+vim.keymap.set("t", "<A-h>", "<C-\\><C-N><C-W>h", opts(""))
+vim.keymap.set("t", "<A-j>", "<C-\\><C-N><C-W>j", opts(""))
+vim.keymap.set("t", "<A-k>", "<C-\\><C-N><C-W>k", opts(""))
+vim.keymap.set("t", "<A-l>", "<C-\\><C-N><C-W>l", opts(""))
 
 -- vim.api.nvim_create_autocmd("WinEnter", {
 --     pattern = "term://*",
