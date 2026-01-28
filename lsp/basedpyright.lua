@@ -34,7 +34,6 @@ return {
         basedpyright = {
             analysis = {
                 autoSearchPaths = true,
-                useLibraryCodeForTypes = true,
                 diagnosticMode = "openFilesOnly",
                 -- typeCheckingMode = "standard",
                 diagnosticSeverityOverrides = {
