@@ -16,9 +16,7 @@ return {
             end
 
             api.config.mappings.default_on_attach(bufnr)
-            -- Make nvim-tree open even when "nvim file.ext"
-            vim.keymap.set("n", "<C-n>", api.tree.toggle, opts("Toggle"))
-            vim.keymap.set("n", "<C-n>", api.tree.toggle, { noremap = true, silent = true, nowait = true, })
+            -- vim.keymap.set("n", "<C-n>", api.tree.toggle, opts("Toggle"))
         end,
         disable_netrw = true,
         select_prompts = true,
@@ -46,4 +44,11 @@ return {
         },
         modified = { enable = true, },
     },
+    config = function(_, opts)
+        require("nvim-tree").setup(opts)
+
+        local api = require("nvim-tree.api")
+        vim.keymap.set("n", "<C-n>", api.tree.toggle, { desc = "nvim-tree: Toggle", noremap = true, silent = true, nowait = true, })
+        -- vim.keymap.set("n", "<C-p>", api.tree.open, { desc = "nvim-tree: Open / Focus", noremap = true, silent = true, nowait = true, })
+    end,
 }

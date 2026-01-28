@@ -39,7 +39,7 @@ end
 function lsp_features.highlight_words(args, client)
     if args ~= nil and client ~= nil and client:supports_method("textDocument/documentHighlight") then
         local autocmd = vim.api.nvim_create_autocmd
-        local augroup = vim.api.nvim_create_augroup("lsp_highlight", { clear = false })
+        local augroup = autocmd("lsp_highlight", { clear = false })
 
         vim.api.nvim_clear_autocmds({ buffer = args.buf, group = augroup })
 
@@ -62,7 +62,6 @@ function lsp_features.tab_completion()
 
     local function tab_complete()
         if vim.fn.pumvisible() == 1 then
-            -- navigate to next item in completion menu
             return "<Down>"
         end
 
@@ -87,11 +86,9 @@ function lsp_features.tab_completion()
 
     local function tab_prev()
         if vim.fn.pumvisible() == 1 then
-            -- navigate to previous item in completion menu
             return "<Up>"
         end
 
-        -- insert tab
         return "<Tab>"
     end
 

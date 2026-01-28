@@ -12,12 +12,15 @@ local root_markers2 = {
     'selene.yml',
 }
 
+local function root_markers(rm1, rm2)
+    return vim.fn.has('nvim-0.11.3') == 1 and { rm1, rm2, { '.git' } } or vim.list_extend(vim.list_extend(rm1, rm2), { '.git' })
+end
+
 ---@type vim.lsp.Config
 return {
     cmd = { "lua-language-server" },
     filetypes = { "lua", },
-    root_markers = vim.fn.has('nvim-0.11.3') == 1 and { root_markers1, root_markers2, { '.git' } }
-        or vim.list_extend(vim.list_extend(root_markers1, root_markers2), { '.git' }),
+    root_markers = root_markers(root_markers1, root_markers2),
     capabilities = require("lsp.lsp_init").set_lsp_capabilities(),
     settings = {
         Lua = {

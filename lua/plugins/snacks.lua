@@ -11,6 +11,5 @@ return {
         },
         scope = { treesitter = { blocks = { enabled = true, }, }, },
         quickfile = { exclude = {}, },
-        -- terminal = { enabled = true, }
     },
 }

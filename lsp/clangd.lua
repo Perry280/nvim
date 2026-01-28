@@ -32,20 +32,17 @@ local function symbol_info(bufnr, client)
     client:request(method_name, params,
         function(err, res)
             if err or #res == 0 then
-                -- Clangd always returns an error, there is not reason to parse it
                 return
             end
             local container = string.format("container: %s", res[1].containerName) ---@type string
             local name = string.format("name: %s", res[1].name) ---@type string
-            vim.lsp.util.open_floating_preview({ name, container }, "",
-                {
-                    height = 2,
-                    width = math.max(string.len(name), string.len(container)),
-                    focusable = false,
-                    focus = false,
-                    title = "Symbol Info",
-                }
-            )
+            vim.lsp.util.open_floating_preview({ name, container }, "", {
+                height = 2,
+                width = math.max(string.len(name), string.len(container)),
+                focusable = false,
+                focus = false,
+                title = "Symbol Info",
+            })
         end,
         bufnr
     )

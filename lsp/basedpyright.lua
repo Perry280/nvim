@@ -9,8 +9,7 @@ local function set_python_path(command)
             ---@diagnostic disable-next-line: param-type-mismatch
             client.settings.python = vim.tbl_deep_extend("force", client.settings.python or {}, { pythonPath = path })
         else
-            client.config.settings = vim.tbl_deep_extend("force", client.config.settings,
-                { python = { pythonPath = path } })
+            client.config.settings = vim.tbl_deep_extend("force", client.config.settings, { python = { pythonPath = path } })
         end
         client:notify("workspace/didChangeConfiguration", { settings = nil })
     end

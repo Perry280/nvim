@@ -1,10 +1,12 @@
 return {
     {
         "nvim-telescope/telescope.nvim",
-        tag = "v0.2.0",
+        tag = "v0.2.1",
         dependencies = {
             "nvim-lua/plenary.nvim",
             "nvim-tree/nvim-web-devicons",
+            "nvim-telescope/telescope-ui-select.nvim",
+            { "nvim-telescope/telescope-fzf-native.nvim", build = "make", },
         },
         opts = {
             extensions = {
@@ -23,11 +25,4 @@ return {
             telescope.load_extension("ui-select")
         end
     },
-    {
-        "nvim-telescope/telescope-fzf-native.nvim",
-        build = "make",
-    },
-    {
-        "nvim-telescope/telescope-ui-select.nvim",
-    }
 }
