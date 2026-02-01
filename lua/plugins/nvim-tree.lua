@@ -3,6 +3,7 @@ return {
     version = "*",
     lazy = false,
     dependencies = { "nvim-tree/nvim-web-devicons", },
+    enabled = false,
     init = function()
         vim.g.loaded_netrw = 1
         vim.g.loaded_netrwPlugin = 1
@@ -16,7 +17,15 @@ return {
             end
 
             api.config.mappings.default_on_attach(bufnr)
-            -- vim.keymap.set("n", "<C-n>", api.tree.toggle, opts("Toggle"))
+            vim.keymap.set("n", "<C-n>", api.tree.toggle, opts("Toggle"))
+            -- vim.keymap.set("n", "<C-p>", api.tree.open, opts("Open / Focus"))
+
+            vim.keymap.set("n", "<C-h>", api.node.navigate.parent_close, opts("Close Directory"))
+            vim.keymap.set("n", "<C-l>", api.tree.change_root_to_node, opts("CD"))
+            vim.keymap.set("n", "h", api.node.navigate.parent, opts("Parent Directory"))
+            vim.keymap.set("n", "l", api.node.open.edit, opts("Open"))
+            vim.keymap.set("n", "<C-j>", api.node.navigate.sibling.next, opts("Next Sibling"))
+            vim.keymap.set("n", "<C-k>", api.node.navigate.sibling.prev, opts("Previous Sibling"))
         end,
         disable_netrw = true,
         select_prompts = true,
@@ -44,11 +53,8 @@ return {
         },
         modified = { enable = true, },
     },
-    config = function(_, opts)
-        require("nvim-tree").setup(opts)
-
-        local api = require("nvim-tree.api")
-        vim.keymap.set("n", "<C-n>", api.tree.toggle, { desc = "nvim-tree: Toggle", noremap = true, silent = true, nowait = true, })
-        -- vim.keymap.set("n", "<C-p>", api.tree.open, { desc = "nvim-tree: Open / Focus", noremap = true, silent = true, nowait = true, })
-    end,
+    keys = {
+        { "<C-n>", ":NvimTreeToggle", mode = "n", desc = "nvim-tree: Toggle",       noremap = true, silent = true, nowait = true, },
+        { "<C-p>", ":NvimTreeOpen",   mode = "n", desc = "nvim-tree: Open / Focus", noremap = true, silent = true, nowait = true, },
+    },
 }

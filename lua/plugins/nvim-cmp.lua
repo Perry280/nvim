@@ -8,18 +8,10 @@ return {
         "folke/lazydev.nvim",
     },
     enabled = false,
-    opts = function(_, opts)
-        opts.sources = opts.sources or {}
-        table.insert(opts.sources, {
-            name = "lazydev",
-            group_index = 0,
-        })
-    end,
     config = function()
         local cmp = require("cmp")
         cmp.setup({
             snippet = {
-                -- REQUIRED - you must specify a snippet engine
                 expand = function(args)
                     -- vim.fn["vsnip#anonymous"](args.body)
                     -- require("luasnip").lsp_expand(args.body)
@@ -35,8 +27,8 @@ return {
                 end,
             },
             window = {
-                completion = cmp.config.window.bordered(),
-                documentation = cmp.config.window.bordered(),
+                completion = { border = "bordered" },
+                documentation = { border = "bordered" },
             },
             mapping = cmp.mapping.preset.insert({
                 ["<C-b>"] = cmp.mapping.scroll_docs(-4),
@@ -45,18 +37,16 @@ return {
                 ["<C-e>"] = cmp.mapping.abort(),
                 ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
             }),
-            sources = cmp.config.sources(
-                {
-                    { name = "nvim_lsp" },
-                    -- { name = "vsnip" },
-                    -- { name = "luasnip" },
-                    -- { name = "ultisnips" },
-                    -- { name = "snippy" },
-                },
-                { { name = "buffer" }, }
-            )
+            sources = {
+                { name = "lazydev", group_index = 0, },
+                { name = "nvim_lsp" },
+                -- { name = "vsnip" },
+                -- { name = "luasnip" },
+                -- { name = "ultisnips" },
+                -- { name = "snippy" },
+                { name = "buffer" },
+            }
         })
-
         -- To use git you need to install the plugin petertriho/cmp-git and uncomment lines below
         -- Set configuration for specific filetype.
         -- cmp.setup.filetype("gitcommit", {

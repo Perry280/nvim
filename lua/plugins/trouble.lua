@@ -1,8 +1,12 @@
 return {
     "folke/trouble.nvim",
     enabled = false,
-    opts = {},
     cmd = "Trouble",
+    opts = {
+        win = {
+            type = "split",
+        }
+    },
     keys = {
         {
             "<leader>xx",

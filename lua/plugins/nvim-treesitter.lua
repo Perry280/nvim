@@ -24,7 +24,7 @@ return {
                     vim.treesitter.start()
                     -- vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
                     -- vim.wo[0][0].foldmethod = 'expr'
-                    -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                    vim.bo.indentexpr = "v:lua.require('nvim-treesitter').indentexpr()"
                 end,
             })
         end
@@ -35,6 +35,14 @@ return {
         init = function()
             vim.g.no_plugin_maps = true
         end,
-        config = true,
-    }
+        config = function()
+            local select_to = require("nvim-treesitter-textobjects.select").select_textobject
+            local kopts = { noremap = true, silent = true, }
+            vim.keymap.set({ "x", "o" }, "am", function() select_to("@function.outer", "textobjects") end, kopts)
+            vim.keymap.set({ "x", "o" }, "im", function() select_to("@function.inner", "textobjects") end, kopts)
+            vim.keymap.set({ "x", "o" }, "ac", function() select_to("@class.outer", "textobjects") end, kopts)
+            vim.keymap.set({ "x", "o" }, "ic", function() select_to("@class.inner", "textobjects") end, kopts)
+            vim.keymap.set({ "x", "o" }, "as", function() select_to("@local.scope", "locals") end, kopts)
+        end,
+    },
 }

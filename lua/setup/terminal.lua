@@ -85,16 +85,3 @@ vim.keymap.set("t", "<A-h>", "<C-\\><C-N><C-W>h", opts(""))
 vim.keymap.set("t", "<A-j>", "<C-\\><C-N><C-W>j", opts(""))
 vim.keymap.set("t", "<A-k>", "<C-\\><C-N><C-W>k", opts(""))
 vim.keymap.set("t", "<A-l>", "<C-\\><C-N><C-W>l", opts(""))
-
--- vim.api.nvim_create_autocmd("WinEnter", {
---     pattern = "term://*",
---     callback = function()
---         vim.cmd.startinsert()
---     end,
--- })
-
--- vim.api.nvim_create_autocmd("TermOpen", {
---     callback = function()
---         vim.cmd.scrolloff = 10
---     end
--- })

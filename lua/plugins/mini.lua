@@ -12,6 +12,6 @@ return {
     {
         "nvim-mini/mini.cursorword",
         version = false,
-        config = true,
+        opts = { delay = 100, }
     },
 }

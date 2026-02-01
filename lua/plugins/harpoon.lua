@@ -1,47 +1,31 @@
 return {
     "ThePrimeagen/harpoon",
     branch = "harpoon2",
-    dependencies = {
-        "nvim-lua/plenary.nvim",
-        "nvim-telescope/telescope.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", },
+    lazy = true,
+    opts = {
+        settings = {
+            key = vim.uv.cwd,
+        },
+        default = {
+            get_root_dir = vim.uv.cwd,
+        }
     },
     config = function()
-        local harpoon = require("harpoon")
-        harpoon:setup()
+        local harpoon_ui = require("harpoon.ui")
+        local harpoon_list = require("harpoon"):list()
+        local kopts = {
+            silent = true,
+            noremap = true,
+        }
 
-        -- local conf = require("telescope.config").values
-        -- local function toggle_telescope(harpoon_files)
-        --     local file_paths = {}
-        --     for _, item in ipairs(harpoon_files.items) do
-        --         table.insert(file_paths, item.value)
-        --     end
-
-        --     require("telescope.pickers").new({}, {
-        --         prompt_title = "Harpoon",
-        --         finder = require("telescope.finders").new_table({ results = file_paths, }),
-        --         previewer = conf.file_previewer({}),
-        --         sorter = conf.generic_sorter({}),
-        --     }):find()
-        -- end
-
-        local harpoon_list = harpoon:list()
-
-        -- Add files to Harpoon
-        vim.keymap.set("n", "<leader>a", function() harpoon_list:add() end)
-
-        -- Toggle Harpoon menu
-        -- vim.keymap.set("n", "<leader>o", function() toggle_telescope(harpoon_list) end)
-        vim.keymap.set("n", "<leader>e", function() harpoon.ui:toggle_quick_menu(harpoon_list) end)
-
-        -- Navigate between files with Ctrl-h/j/k/l
-        vim.keymap.set("n", "<C-h>", function() harpoon_list:select(1) end)
-        vim.keymap.set("n", "<C-j>", function() harpoon_list:select(2) end)
-        vim.keymap.set("n", "<C-k>", function() harpoon_list:select(3) end)
-        vim.keymap.set("n", "<C-l>", function() harpoon_list:select(4) end)
-
-        vim.keymap.set("n", "<C-S-n>", function() harpoon_list:next() end)
-        vim.keymap.set("n", "<C-S-p>", function() harpoon_list:prev() end)
-
-        require("telescope").load_extension("harpoon")
+        vim.keymap.set("n", "<leader>a", harpoon_list.add, kopts)
+        vim.keymap.set("n", "<leader>e", function() harpoon_ui:toggle_quick_menu(harpoon_list) end)
+        vim.keymap.set("n", "<C-h>", function() harpoon_list:select(1) end, kopts)
+        vim.keymap.set("n", "<C-j>", function() harpoon_list:select(2) end, kopts)
+        vim.keymap.set("n", "<C-k>", function() harpoon_list:select(3) end, kopts)
+        vim.keymap.set("n", "<C-l>", function() harpoon_list:select(4) end, kopts)
+        vim.keymap.set("n", "<C-S-n>", harpoon_list.next, kopts)
+        vim.keymap.set("n", "<C-S-p>", harpoon_list.prev, kopts)
     end,
 }

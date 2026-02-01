@@ -24,16 +24,6 @@ return {
                 TelescopePromptBorder = { fg = "surface", bg = "surface" },
             },
         },
-        -- config = function()
-        --     vim.opt.laststatus = 3
-        --     vim.opt.statusline = " %f %m %= %l:%c ♥ "
-        --     require("rose-pine").setup({
-        --         highlight_groups = {
-        --             StatusLine = { fg = "love", bg = "love", blend = 10 },
-        --             StatusLineNC = { fg = "subtle", bg = "surface" },
-        --         },
-        --     })
-        -- end
     },
     -- {
     --     "catppuccin/nvim",
