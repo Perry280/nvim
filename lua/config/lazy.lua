@@ -21,4 +21,4 @@ require("lazy").setup({
     checker = { enabled = true },
 })
 
-vim.keymap.set("n", "<leader>L", ":Lazy", { desc = "Open lazy home", noremap = true, silent = true })
+require("...utils.utils").map("n", "<leader>L", ":Lazy<CR>", { desc = "Open lazy home", })

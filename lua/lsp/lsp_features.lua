@@ -92,8 +92,9 @@ function lsp_features.tab_completion()
         return "<Tab>"
     end
 
-    vim.keymap.set("i", "<Tab>", tab_complete, { expr = true, noremap = true, silent = true, })
-    vim.keymap.set("i", "<S-Tab>", tab_prev, { expr = true, noremap = true, silent = true, })
+    local map = require("utils.utils").map
+    map("i", "<Tab>", tab_complete, { expr = true, })
+    map("i", "<S-Tab>", tab_prev, { expr = true, })
 end
 
 return lsp_features

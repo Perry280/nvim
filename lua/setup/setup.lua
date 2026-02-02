@@ -5,4 +5,4 @@ if vim.uv.os_uname().sysname == "Windows_NT" then
     require("setup.windows")
 end
 
-require("setup.terminal")
+require("setup.terminal.term_keymaps")

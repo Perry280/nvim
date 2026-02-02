@@ -1,8 +1,18 @@
-local _T = {}
+local T = {}
 
-_T.active_terminals = {}
+T._terminals = {
+    active_terminals = {
+        list = {},
+        size = 0,
+    },
+    current_terminal = {},
+}
 
-function _T.open_term(direction)
+function T._insert_term(bid, wid)
+
+end
+
+function T.open_term(direction)
     local size = 1 / 3
     local padding = (1 - size) / 2
 
@@ -59,29 +69,8 @@ function _T.open_term(direction)
     -- end
 end
 
-function _T.toggle_term()
+function T.toggle_term()
 
 end
 
-local function opts(desc)
-    return {
-        desc = desc,
-        noremap = true,
-        silent = true,
-    }
-end
-
-vim.keymap.set("t", "<ESC>", "<C-\\><C-N>", opts(""))
-if vim.uv.os_uname().sysname == "Windows_NT" then
-    vim.keymap.set("t", "<ESC><ESC>", "<C-\\><C-N>:bd!<CR>", opts(""))
-end
-
-vim.keymap.set("n", "<leader>tt", ":tabnew<CR>:terminal<CR>i", opts("Open terminal in a new tab"))
-vim.keymap.set("n", "<leader>th", function() _T.open_term("horizontal") end, opts("Open terminal in a new horizontal buffer"))
-vim.keymap.set("n", "<leader>tv", function() _T.open_term("vertical") end, opts("Open terminal in a new vertical buffer"))
-vim.keymap.set("n", "<leader>tf", function() _T.open_term("float") end, opts("Open terminal in a new floating window"))
-
-vim.keymap.set("t", "<A-h>", "<C-\\><C-N><C-W>h", opts(""))
-vim.keymap.set("t", "<A-j>", "<C-\\><C-N><C-W>j", opts(""))
-vim.keymap.set("t", "<A-k>", "<C-\\><C-N><C-W>k", opts(""))
-vim.keymap.set("t", "<A-l>", "<C-\\><C-N><C-W>l", opts(""))
+return T

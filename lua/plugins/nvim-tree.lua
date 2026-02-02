@@ -11,31 +11,28 @@ return {
     opts = {
         on_attach = function(bufnr)
             local api = require("nvim-tree.api")
-
-            local function opts(desc)
-                return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+            local map = require(".utils.utils").map
+            local function nvimtree_map(mode, lhs, rhs, desc)
+                map(mode, lhs, rhs, { desc = "nvim-tree: " .. desc, buffer = bufnr, nowait = true })
             end
 
             api.config.mappings.default_on_attach(bufnr)
-            vim.keymap.set("n", "<C-n>", api.tree.toggle, opts("Toggle"))
-            -- vim.keymap.set("n", "<C-p>", api.tree.open, opts("Open / Focus"))
+            nvimtree_map("n", "<C-n>", api.tree.toggle, "Toggle")
+            -- nvimtree_map("n", "<C-p>", api.tree.open, "Open / Focus")
 
-            vim.keymap.set("n", "<C-h>", api.node.navigate.parent_close, opts("Close Directory"))
-            vim.keymap.set("n", "<C-l>", api.tree.change_root_to_node, opts("CD"))
-            vim.keymap.set("n", "h", api.node.navigate.parent, opts("Parent Directory"))
-            vim.keymap.set("n", "l", api.node.open.edit, opts("Open"))
-            vim.keymap.set("n", "<C-j>", api.node.navigate.sibling.next, opts("Next Sibling"))
-            vim.keymap.set("n", "<C-k>", api.node.navigate.sibling.prev, opts("Previous Sibling"))
+            nvimtree_map("n", "<C-h>", api.node.navigate.parent_close, "Close Directory")
+            nvimtree_map("n", "<C-l>", api.tree.change_root_to_node, "CD")
+            nvimtree_map("n", "h", api.node.navigate.parent, "Parent Directory")
+            nvimtree_map("n", "l", api.node.open.edit, "Open")
+            nvimtree_map("n", "<C-j>", api.node.navigate.sibling.next, "Next Sibling")
+            nvimtree_map("n", "<C-k>", api.node.navigate.sibling.prev, "Previous Sibling")
         end,
         disable_netrw = true,
         select_prompts = true,
         sort = { sorter = "case_sensitive", },
         view = {
             width = {
-                max = function()
-                    local max_size = 1 / 4
-                    return math.floor(vim.o.columns * max_size)
-                end,
+                max = math.floor(vim.o.columns / 4),
             },
         },
         renderer = {
