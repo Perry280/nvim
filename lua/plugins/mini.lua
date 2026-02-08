@@ -19,12 +19,12 @@ return {
                 "completion",
                 -- "cursorword",
                 "deps",
-                -- "diff",
+                "diff",
                 "doc",
                 "extra",
                 "files",
                 "fuzzy",
-                -- "git",
+                "git",
                 "hipatterns",
                 "hues",
                 "icons",
@@ -60,22 +60,4 @@ return {
             require("mini.surround").setup({ respect_selection_type = true, })
         end,
     },
-    -- {
-    --     "nvim-mini/mini.surround",
-    --     event = "VeryLazy",
-    --     version = false,
-    --     opts = { respect_selection_type = true, },
-    -- },
-    -- {
-    --     "nvim-mini/mini.comment",
-    --     event = "VeryLazy",
-    --     version = false,
-    --     opts = { options = { ignore_blank_line = true, }, },
-    -- },
-    -- {
-    --     "nvim-mini/mini.cursorword",
-    --     event = "VeryLazy",
-    --     version = false,
-    --     opts = { delay = 100, }
-    -- },
 }

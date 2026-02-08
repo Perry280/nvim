@@ -1,16 +1,13 @@
-local NAME = "lsp_init"
-
 local lsp_init = {}
 
 function lsp_init.setup()
-    -- local diag = {
-    --     float = true,
-    --     virtual_lines = { current_line = true },
-    --     virtual_text = false, -- { current_line = true, },
-    --     update_in_insert = false,
-    --     severity_sort = true,
-    -- }
-    vim.diagnostic.config({ severity_sort = true, })
+    local diag = {
+        float = true,
+        virtual_lines = { current_line = true },
+        virtual_text = false, -- { current_line = true, },
+        severity_sort = true,
+    }
+    vim.diagnostic.config(diag)
 
     vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)

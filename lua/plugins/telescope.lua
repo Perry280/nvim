@@ -5,22 +5,28 @@ return {
     dependencies = {
         "nvim-lua/plenary.nvim",
         "nvim-tree/nvim-web-devicons",
-        "nvim-telescope/telescope-ui-select.nvim",
+        -- "nvim-telescope/telescope-ui-select.nvim",
         { "nvim-telescope/telescope-fzf-native.nvim", build = "make", },
     },
-    config = function()
-        require("telescope").setup({
-            extensions = {
-                ["ui-select"] = { require("telescope.themes").get_dropdown({}) }
-            }
-        })
+    -- config = function()
+    --     require("telescope").setup({
+    --         extensions = {
+    --             ["ui-select"] = { require("telescope.themes").get_dropdown({}) }
+    --         }
+    --     })
 
-        local builtin = require("telescope.builtin")
-        local set = require("utils.keymap").set
+    --     local builtin = require("telescope.builtin")
+    --     local set = require("utils.keymap").set
 
-        set("n", "<leader>ff", builtin.find_files, { desc = "Telescope find files", })
-        set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live grep", })
-        set("n", "<leader>fb", builtin.buffers, { desc = "Telescope buffers", })
-        set("n", "<leader>fh", builtin.help_tags, { desc = "Telescope help tags", })
-    end,
+    --     set("n", "<leader>ff", builtin.find_files, { desc = "Telescope find files", })
+    --     set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live grep", })
+    --     set("n", "<leader>fb", builtin.buffers, { desc = "Telescope buffers", })
+    --     set("n", "<leader>fh", builtin.help_tags, { desc = "Telescope help tags", })
+    -- end,
+    keys = {
+        { "<leader>ff", ":Telescope find_files<CR>", mode = "n", desc = "Telescope find files", noremap = true, silent = true, },
+        { "<leader>fg", ":Telescope live_grep<CR>",  mode = "n", desc = "Telescope live grep",  noremap = true, silent = true, },
+        { "<leader>fb", ":Telescope buffers<CR>",    mode = "n", desc = "Telescope buffers",    noremap = true, silent = true, },
+        { "<leader>fh", ":Telescope help_tags<CR>",  mode = "n", desc = "Telescope help tags",  noremap = true, silent = true, },
+    },
 }
