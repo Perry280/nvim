@@ -5,7 +5,7 @@ local kopts = {
     silent = true,
 }
 
-function M.map(mode, lhs, rhs, opts)
+function M.set(mode, lhs, rhs, opts)
     if opts == nil then
         opts = kopts
     else

@@ -1,3 +1,4 @@
+require("setup.builtin")
 require("setup.options")
 require("setup.keymaps")
 

@@ -15,10 +15,11 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+    -- defaults = { lazy = true, },
     spec = { { import = "plugins" } },
     rocks = { enabled = false, },
     install = { colorscheme = { "habamax" } },
     checker = { enabled = true },
 })
 
-require("...utils.utils").map("n", "<leader>L", ":Lazy<CR>", { desc = "Open lazy home", })
+require("utils.keymap").set("n", "<leader>L", ":Lazy<CR>", { desc = "Open lazy home", })

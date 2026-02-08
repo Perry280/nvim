@@ -5,7 +5,10 @@ return {
         lazy = false,
         priority = 1000,
         opts = {
+            -- dim_inactive_windows = true,
+            extend_background_behind_borders = true,
             enable = { legacy_highlights = false, },
+            styles = { transparency = false, },
             highlight_groups = {
                 CurSearch = { fg = "base", bg = "leaf", inherit = false },
                 Search = { fg = "text", bg = "leaf", blend = 20, inherit = false },
@@ -46,12 +49,17 @@ return {
     --     opts = {
     --         bold_keywords = true,
     --         bright_border = true,
+    --         reduced_blue = true,
     --         swap_backgrounds = false,
     --         cursorline = {
-    --             theme = "light",
-    --             blend = 0.3,
-    --         }
-    --     }
+    --             theme = "dark",
+    --             -- blend = 0.3,
+    --         },
+    --         leap = {
+    --             -- Dims the backdrop when using leap.
+    --             dim_backdrop = false,
+    --         },
+    --     },
     -- },
     -- {
     --     "folke/tokyonight.nvim",
@@ -87,23 +95,6 @@ return {
     --                 }
     --             }
     --         },
-    --         overrides = function(colors)
-    --             local theme = colors.theme
-    --             return {
-    --                 Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 }, -- add `blend = vim.o.pumblend` to enable transparency
-    --                 PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
-    --                 PmenuSbar = { bg = theme.ui.bg_m1 },
-    --                 PmenuThumb = { bg = theme.ui.bg_p2 },
-
-    --                 TelescopeTitle = { fg = theme.ui.special, bold = true },
-    --                 TelescopePromptNormal = { bg = theme.ui.bg_p1 },
-    --                 TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
-    --                 TelescopeResultsNormal = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },
-    --                 TelescopeResultsBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
-    --                 TelescopePreviewNormal = { bg = theme.ui.bg_dim },
-    --                 TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
-    --             }
-    --         end,
     --     },
     -- },
     -- {
@@ -113,12 +104,6 @@ return {
     -- },
     -- {
     --     "olivercederborg/poimandres.nvim",
-    --     lazy = false,
-    --     priority = 1000,
-    -- },
-    -- {
-    --     "rockerBOO/boo-colorscheme-nvim",
-    --     name = "boo",
     --     lazy = false,
     --     priority = 1000,
     -- },

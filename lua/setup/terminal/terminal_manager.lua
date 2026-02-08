@@ -1,21 +1,11 @@
-local Terminal = {}
-Terminal.__index = Terminal
+local T = {}
 
-function Terminal:new(bufnr, winnr)
-    assert(bufnr ~= nil, "Necessary argument missing: bufnr")
-    assert(winnr ~= nil, "Necessary argument missing: winnr")
-    local term = { bufnr = bufnr, winnr = winnr }
-    return setmetatable(term, self)
-end
+local terminals = {
+    active_terminals = {},
+    current_terminal = nil,
+}
 
-Terminal.__eq = function(a, b)
-    if Terminal ~= getmetatable(a) or Terminal ~= getmetatable(b) then
-        return false
-    end
-    return a.bufnr == b.bufnr and a.winnr == b.winnr
-end
-
-function Terminal.open_term(direction)
+function T.open_term(direction)
     local size = 1 / 3
     local padding = (1 - size) / 2
 
@@ -72,4 +62,8 @@ function Terminal.open_term(direction)
     vim.cmd.startinsert()
 end
 
-return Terminal
+function T.toggle_term()
+
+end
+
+return T

@@ -37,13 +37,13 @@ return {
         end,
         config = function()
             local select_to = require("nvim-treesitter-textobjects.select").select_textobject
-            local map = require("utils.utils").map
+            local set = require("utils.keymap").set
 
-            map({ "x", "o" }, "am", function() select_to("@function.outer", "textobjects") end)
-            map({ "x", "o" }, "im", function() select_to("@function.inner", "textobjects") end)
-            map({ "x", "o" }, "ac", function() select_to("@class.outer", "textobjects") end)
-            map({ "x", "o" }, "ic", function() select_to("@class.inner", "textobjects") end)
-            map({ "x", "o" }, "as", function() select_to("@local.scope", "locals") end)
+            set({ "x", "o" }, "am", function() select_to("@function.outer", "textobjects") end)
+            set({ "x", "o" }, "im", function() select_to("@function.inner", "textobjects") end)
+            set({ "x", "o" }, "ac", function() select_to("@class.outer", "textobjects") end)
+            set({ "x", "o" }, "ic", function() select_to("@class.inner", "textobjects") end)
+            set({ "x", "o" }, "as", function() select_to("@local.scope", "locals") end)
         end,
     },
 }

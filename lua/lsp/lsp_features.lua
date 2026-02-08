@@ -92,9 +92,9 @@ function lsp_features.tab_completion()
         return "<Tab>"
     end
 
-    local map = require("utils.utils").map
-    map("i", "<Tab>", tab_complete, { expr = true, })
-    map("i", "<S-Tab>", tab_prev, { expr = true, })
+    local set = require("utils.keymap").set
+    set("i", "<Tab>", tab_complete, { desc = "Autocomplete with next suggestion", expr = true, })
+    set("i", "<S-Tab>", tab_prev, { desc = "Autocomplete with previous suggestion", expr = true, })
 end
 
 return lsp_features

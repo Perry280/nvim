@@ -1,13 +1,13 @@
-local map = require("utils.utils").map
+local set = require("utils.keymap").set
 
-map("t", "<ESC>", "<C-\\><C-N>")
+set("t", "<ESC>", "<C-\\><C-N>", { desc = "Switch to normal mode" })
 if vim.uv.os_uname().sysname == "Windows_NT" then
-    map("t", "<ESC><ESC>", "<C-\\><C-N>:bd!<CR>")
+    set("t", "<ESC><ESC>", "<C-\\><C-N>:bd!<CR>", { desc = "Close terminal buffer" })
 end
 
-local term = require("setup.terminal.terminal")
+local term = require("setup.terminal.terminal_manager")
 
-map("n", "<leader>tt", ":tabnew<CR>:terminal<CR>i", { desc = "Open terminal in a new tab", })
-map("n", "<leader>th", function() term.open_term("horizontal") end, { desc = "Open terminal in a new horizontal buffer", })
-map("n", "<leader>tv", function() term.open_term("vertical") end, { desc = "Open terminal in a new vertical buffer", })
-map("n", "<leader>tf", function() term.open_term("float") end, { desc = "Open terminal in a new floating window", })
+set("n", "<leader>tt", ":tabnew<CR>:terminal<CR>i", { desc = "Open terminal in a new tab", })
+set("n", "<leader>th", function() term.open_term("horizontal") end, { desc = "Open terminal in a new horizontal buffer", })
+set("n", "<leader>tv", function() term.open_term("vertical") end, { desc = "Open terminal in a new vertical buffer", })
+set("n", "<leader>tf", function() term.open_term("float") end, { desc = "Open terminal in a new floating window", })
