@@ -55,5 +55,9 @@ return {
         signature = { enabled = true },
     },
     opts_extend = { "sources.default" },
-    keys = { ":", "/", "?", }
+    keys = {
+        { ":", mode = "n", },
+        { "/", mode = "n", },
+        { "?", mode = "n", },
+    }
 }

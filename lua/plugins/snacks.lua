@@ -12,6 +12,7 @@ return {
         scope = { treesitter = { blocks = { enabled = true, }, }, },
         quickfile = { exclude = {}, },
         words = { enabled = false, },
-        rename = { enabled = true, }
+        rename = { enabled = true, },
+        statuscolumn = { enabled = true },
     },
 }
