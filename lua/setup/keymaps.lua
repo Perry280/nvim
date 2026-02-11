@@ -1,30 +1,29 @@
 local set = require("utils.keymap").set
 
-set("n", "<C-s>", ":wa<CR>", { desc = "Save" })
-set("n", "<C-q>", ":xa<CR>", { desc = "Save and quit" })
-set("n", "ì", ":noh<CR>", { desc = "Turn off highlight" })
+set("n", "<leader>s", ":wa<CR>", { desc = "Save" })
+set("n", "<leader>q", ":xa<CR>", { desc = "Save and quit" })
 set("n", "<leader>bd", ":bd!<CR>", { desc = "Force close buffer" })
+set("n", "ì", ":noh<CR>", { desc = "Turn off highlight" })
 
 set("n", "n", "nzzzv", { desc = "Next pattern searched and center" })
 set("n", "N", "Nzzzv", { desc = "Previous pattern searched and center" })
 set("n", "<C-u>", "<C-u>zz", { desc = "Page up and center" })
 set("n", "<C-d>", "<C-d>zz", { desc = "Page down and center" })
 
-set("n", "<M-h>", "<C-W>h", { desc = "Jump to buffer to the left of the current one" })
-set("n", "<M-j>", "<C-W>j", { desc = "Jump to buffer below the current one" })
-set("n", "<M-k>", "<C-W>k", { desc = "Jump to buffer above the current one" })
-set("n", "<M-l>", "<C-W>l", { desc = "Jump to buffer to the right of the current one" })
-
 set("v", "<", "<gv", { desc = "Add a level of indentation to selected lines" })
 set("v", ">", ">gv", { desc = "Remove a level of indentation from selected lines" })
-
 set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selected lines up" })
 set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selected lines down" })
 
-set("t", "<M-h>", "<C-\\><C-N><C-W>h", { desc = "Jump to buffer to the left of the current one" })
-set("t", "<M-j>", "<C-\\><C-N><C-W>j", { desc = "Jump to buffer below the current one" })
-set("t", "<M-k>", "<C-\\><C-N><C-W>k", { desc = "Jump to buffer above the current one" })
-set("t", "<M-l>", "<C-\\><C-N><C-W>l", { desc = "Jump to buffer to the right of the current one" })
+set("n", "<C-h>", "<C-W>h", { desc = "Jump to buffer to the left" })
+set("n", "<C-j>", "<C-W>j", { desc = "Jump to buffer below" })
+set("n", "<C-k>", "<C-W>k", { desc = "Jump to buffer above" })
+set("n", "<C-l>", "<C-W>l", { desc = "Jump to buffer to the" })
+
+set("t", "<C-h>", "<C-\\><C-N><C-W>h", { desc = "Jump to buffer to the left" })
+set("t", "<C-j>", "<C-\\><C-N><C-W>j", { desc = "Jump to buffer below" })
+set("t", "<C-k>", "<C-\\><C-N><C-W>k", { desc = "Jump to buffer above" })
+set("t", "<C-l>", "<C-\\><C-N><C-W>l", { desc = "Jump to buffer to the" })
 
 set({ "n", "t" }, "<C-Up>", ":resize +2<CR>", { desc = "Increase height of the current window" })
 set({ "n", "t" }, "<C-Down>", ":resize -2<CR>", { desc = "Decrease height of the current window" })

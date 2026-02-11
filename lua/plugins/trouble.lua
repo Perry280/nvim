@@ -1,10 +1,16 @@
 return {
     "folke/trouble.nvim",
-    enabled = false,
+    dependencies = {
+        "nvim-tree/nvim-web-devicons",
+    },
+    -- enabled = false,
+    cmd = "Trouble",
     opts = {
+        focus = true,
         win = {
             type = "split",
-        }
+            size = 1 / 4,
+        },
     },
     keys = {
         { "<leader>xx", ":Trouble diagnostics toggle<CR>",                        desc = "Diagnostics (Trouble)",                        noremap = true, silent = true, },

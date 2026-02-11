@@ -1,47 +1,48 @@
 return {
-    {
-        "rose-pine/neovim",
-        name = "rose-pine",
-        lazy = false,
-        priority = 1000,
-        opts = {
-            -- dim_inactive_windows = true,
-            extend_background_behind_borders = true,
-            enable = { legacy_highlights = false, },
-            styles = { transparency = false, },
-            highlight_groups = {
-                CurSearch = { fg = "base", bg = "leaf", inherit = false },
-                Search = { fg = "text", bg = "leaf", blend = 20, inherit = false },
-
-                TelescopeBorder = { fg = "overlay", bg = "overlay" },
-                TelescopeNormal = { fg = "subtle", bg = "overlay" },
-                TelescopeSelection = { fg = "text", bg = "highlight_med" },
-                TelescopeSelectionCaret = { fg = "love", bg = "highlight_med" },
-                TelescopeMultiSelection = { fg = "text", bg = "highlight_high" },
-
-                TelescopeTitle = { fg = "base", bg = "love" },
-                TelescopePromptTitle = { fg = "base", bg = "pine" },
-                TelescopePreviewTitle = { fg = "base", bg = "iris" },
-
-                TelescopePromptNormal = { fg = "text", bg = "surface" },
-                TelescopePromptBorder = { fg = "surface", bg = "surface" },
-            },
-        },
-    },
     -- {
-    --     "catppuccin/nvim",
-    --     name = "catppuccin",
+    --     "rose-pine/neovim",
+    --     name = "rose-pine",
     --     lazy = false,
     --     priority = 1000,
     --     opts = {
-    --         term_colors = true,
-    --         auto_integrations = true,
-    --         highlight = {
-    --             enable = true,
-    --             additional_vim_regex_highlighting = false
+    --         -- dim_inactive_windows = true,
+    --         extend_background_behind_borders = true,
+    --         enable = { legacy_highlights = false, },
+    --         styles = { transparency = false, },
+    --         highlight_groups = {
+    --             CurSearch = { fg = "base", bg = "leaf", inherit = false },
+    --             Search = { fg = "text", bg = "leaf", blend = 20, inherit = false },
+
+    --             TelescopeBorder = { fg = "overlay", bg = "overlay" },
+    --             TelescopeNormal = { fg = "subtle", bg = "overlay" },
+    --             TelescopeSelection = { fg = "text", bg = "highlight_med" },
+    --             TelescopeSelectionCaret = { fg = "love", bg = "highlight_med" },
+    --             TelescopeMultiSelection = { fg = "text", bg = "highlight_high" },
+
+    --             TelescopeTitle = { fg = "base", bg = "love" },
+    --             TelescopePromptTitle = { fg = "base", bg = "pine" },
+    --             TelescopePreviewTitle = { fg = "base", bg = "iris" },
+
+    --             TelescopePromptNormal = { fg = "text", bg = "surface" },
+    --             TelescopePromptBorder = { fg = "surface", bg = "surface" },
     --         },
-    --     }
+    --     },
     -- },
+    {
+        "catppuccin/nvim",
+        name = "catppuccin",
+        lazy = false,
+        priority = 1000,
+        opts = {
+            term_colors = true,
+            default_integrations = false,
+            auto_integrations = true,
+            highlight = {
+                enable = true,
+                additional_vim_regex_highlighting = false
+            },
+        }
+    },
     -- {
     --     "alexvzyl/nordic.nvim",
     --     lazy = false,

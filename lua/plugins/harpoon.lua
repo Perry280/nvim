@@ -10,28 +10,36 @@ return {
             get_root_dir = vim.uv.cwd,
         }
     },
-    -- config = function()
-    --     local harpoon_ui = require("harpoon.ui")
-    --     local harpoon_list = require("harpoon"):list()
-    --     local set = require("utils.keymap").set
+    config = function(_, opts)
+        local harpoon = require("harpoon")
+        harpoon:setup(opts)
+        local set = require("utils.keymap").set
 
-    --     set("n", "<leader>a", function() harpoon_list:add() end)
-    --     set("n", "<leader>e", function() harpoon_ui:toggle_quick_menu(harpoon_list) end)
-    --     set("n", "<C-h>", function() harpoon_list:select(1) end)
-    --     set("n", "<C-j>", function() harpoon_list:select(2) end)
-    --     set("n", "<C-k>", function() harpoon_list:select(3) end)
-    --     set("n", "<C-l>", function() harpoon_list:select(4) end)
-    --     set("n", "<M-n>", function() harpoon_list:next() end)
-    --     set("n", "<M-p>", function() harpoon_list:prev() end)
-    -- end,
+        set("n", "<leader>a", function() harpoon:list():add() end)
+        set("n", "<leader>e", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+        set("n", "<M-h>", function() harpoon:list():select(1) end)
+        set("n", "<M-j>", function() harpoon:list():select(2) end)
+        set("n", "<M-k>", function() harpoon:list():select(3) end)
+        set("n", "<M-l>", function() harpoon:list():select(4) end)
+        set("n", "<M-n>", function() harpoon:list():prev() end)
+        set("n", "<M-p>", function() harpoon:list():next() end)
+    end,
     keys = {
-        { "<leader>a", [[:lua require("harpoon"):list():add()<CR>]],                                    mode = "n", noremap = true, silent = true, },
-        { "<leader>e", [[:lua require("harpoon.ui"):toggle_quick_menu(require("harpoon"):list())<CR>]], mode = "n", noremap = true, silent = true, },
-        { "<C-h>",     [[:lua require("harpoon"):list():select(1)<CR>]],                                mode = "n", noremap = true, silent = true, },
-        { "<C-j>",     [[:lua require("harpoon"):list():select(2)<CR>]],                                mode = "n", noremap = true, silent = true, },
-        { "<C-k>",     [[:lua require("harpoon"):list():select(3)<CR>]],                                mode = "n", noremap = true, silent = true, },
-        { "<C-l>",     [[:lua require("harpoon"):list():select(4)<CR>]],                                mode = "n", noremap = true, silent = true, },
-        { "<M-n>",     [[:lua require("harpoon"):list():next()<CR>]],                                   mode = "n", noremap = true, silent = true, },
-        { "<M-p>",     [[:lua require("harpoon"):list():prev()<CR>]],                                   mode = "n", noremap = true, silent = true, },
+        -- { "<leader>a", [[:lua require("harpoon"):list():add()<CR>]],                                    mode = "n", noremap = true, silent = true, },
+        -- { "<leader>e", [[:lua require("harpoon.ui"):toggle_quick_menu(require("harpoon"):list())<CR>]], mode = "n", noremap = true, silent = true, },
+        -- { "<M-h>",     [[:lua require("harpoon"):list():select(1)<CR>]],                                mode = "n", noremap = true, silent = true, },
+        -- { "<M-j>",     [[:lua require("harpoon"):list():select(2)<CR>]],                                mode = "n", noremap = true, silent = true, },
+        -- { "<M-k>",     [[:lua require("harpoon"):list():select(3)<CR>]],                                mode = "n", noremap = true, silent = true, },
+        -- { "<M-l>",     [[:lua require("harpoon"):list():select(4)<CR>]],                                mode = "n", noremap = true, silent = true, },
+        -- { "<M-n>",     [[:lua require("harpoon"):list():prev()<CR>]],                                   mode = "n", noremap = true, silent = true, },
+        -- { "<M-p>",     [[:lua require("harpoon"):list():next()<CR>]],                                   mode = "n", noremap = true, silent = true, },
+        { "<leader>a", mode = "n", },
+        { "<leader>e", mode = "n", },
+        { "<M-h>",     mode = "n", },
+        { "<M-j>",     mode = "n", },
+        { "<M-k>",     mode = "n", },
+        { "<M-l>",     mode = "n", },
+        { "<M-n>",     mode = "n", },
+        { "<M-p>",     mode = "n", },
     },
 }

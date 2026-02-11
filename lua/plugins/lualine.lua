@@ -5,7 +5,7 @@ return {
     opts = {
         options = {
             theme = "auto",
-            globalstatus = true,
+            -- globalstatus = true,
         },
         extensions = {
             -- "aerial",

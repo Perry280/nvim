@@ -2,6 +2,7 @@ return {
     "saghen/blink.cmp",
     dependencies = { "folke/lazydev.nvim", },
     version = "1.*",
+    -- tag = "v1.9.1",
     event = "LspAttach",
     ---@module "blink.cmp"
     ---@type blink.cmp.Config
@@ -55,9 +56,5 @@ return {
         signature = { enabled = true },
     },
     opts_extend = { "sources.default" },
-    keys = {
-        { ":", mode = "n", },
-        { "/", mode = "n", },
-        { "?", mode = "n", },
-    }
+    keys = { ":", "/", "?", }
 }
