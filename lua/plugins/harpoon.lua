@@ -15,7 +15,7 @@ return {
         harpoon:setup(opts)
         local set = require("utils.keymap").set
 
-        set("n", "<leader>a", function() harpoon:list():add() end)
+        set("n", "<leader>h", function() harpoon:list():add() end)
         set("n", "<leader>e", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
         set("n", "<M-h>", function() harpoon:list():select(1) end)
         set("n", "<M-j>", function() harpoon:list():select(2) end)
@@ -33,7 +33,7 @@ return {
         -- { "<M-l>",     [[:lua require("harpoon"):list():select(4)<CR>]],                                mode = "n", noremap = true, silent = true, },
         -- { "<M-n>",     [[:lua require("harpoon"):list():prev()<CR>]],                                   mode = "n", noremap = true, silent = true, },
         -- { "<M-p>",     [[:lua require("harpoon"):list():next()<CR>]],                                   mode = "n", noremap = true, silent = true, },
-        { "<leader>a", mode = "n", },
+        { "<leader>h", mode = "n", },
         { "<leader>e", mode = "n", },
         { "<M-h>",     mode = "n", },
         { "<M-j>",     mode = "n", },

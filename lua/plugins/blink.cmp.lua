@@ -1,11 +1,9 @@
 return {
     "saghen/blink.cmp",
-    dependencies = { "folke/lazydev.nvim", },
+    -- dependencies = { "folke/lazydev.nvim", },
     version = "1.*",
     -- tag = "v1.9.1",
     event = "LspAttach",
-    ---@module "blink.cmp"
-    ---@type blink.cmp.Config
     opts = {
         keymap = {
             preset = "default",
@@ -16,14 +14,14 @@ return {
         appearance = { nerd_font_variant = "mono" },
 
         sources = {
-            default = { "lazydev", "lsp", --[[ "path", --]] "snippets", "buffer", --[[ "omni", --]] --[[ "cmdline" --]] },
-            providers = {
-                lazydev = {
-                    name = "LazyDev",
-                    module = "lazydev.integrations.blink",
-                    score_offset = 100,
-                },
-            }
+            default = { --[["lazydev",]] "lsp", --[["path",]] "snippets", "buffer", --[["omni",]] --[["cmdline",]] },
+            -- providers = {
+            --     lazydev = {
+            --         name = "LazyDev",
+            --         module = "lazydev.integrations.blink",
+            --         score_offset = 100,
+            --     },
+            -- }
         },
 
         fuzzy = { implementation = "prefer_rust_with_warning" },
@@ -55,6 +53,6 @@ return {
         },
         signature = { enabled = true },
     },
-    opts_extend = { "sources.default" },
+    -- opts_extend = { "sources.default" },
     keys = { ":", "/", "?", }
 }

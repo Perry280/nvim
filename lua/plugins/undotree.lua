@@ -2,10 +2,7 @@ return {
     "mbbill/undotree",
     init = function()
         vim.g.undotree_WindowLayout = 3
-
-        local size = 1 / 4
-        vim.g.undotree_SplitWidth = math.floor(vim.o.columns * size)
-
+        vim.g.undotree_SplitWidth = require("utils.window").width(1 / 4)
         vim.g.undotree_SetFocusWhenToggle = 1
 
         if vim.uv.os_uname().sysname == "Windows_NT" then

@@ -15,19 +15,19 @@ return {
     opts = {
         sources = {
             "filesystem",
-            -- "buffers",
-            -- "git_status",
+            "buffers",
+            "git_status",
             -- "document_symbols",
         },
-        -- source_selector = {
-        --     winbar = true,
-        --     sources = {
-        --         { source = "filesystem" },
-        --         { source = "buffers" },
-        --         { source = "git_status" },
-        --         { source = "document_symbols" },
-        --     },
-        -- },
+        source_selector = {
+            winbar = true,
+            sources = {
+                { source = "filesystem" },
+                { source = "buffers" },
+                { source = "git_status" },
+                -- { source = "document_symbols" },
+            },
+        },
         window = {
             mappings = {
                 ["<space>"] = "none",
@@ -71,8 +71,8 @@ return {
         { "<leader>N",  ":Neotree toggle current reveal_force_cwd<CR>", mode = "n", noremap = true, silent = true, },
         { "<leader>nt", ":Neotree toggle<CR>",                          mode = "n", noremap = true, silent = true, },
         { "<C-n>",      ":Neotree reveal<CR>",                          mode = "n", noremap = true, silent = true, },
-        -- { "<leader>nb", ":Neotree focus buffers<CR>",                   mode = "n", noremap = true, silent = true, },
-        -- { "<leader>ng", ":Neotree focus git_status<CR>",                mode = "n", noremap = true, silent = true, },
+        { "<leader>nb", ":Neotree focus buffers<CR>",                   mode = "n", noremap = true, silent = true, },
+        { "<leader>ng", ":Neotree focus git_status<CR>",                mode = "n", noremap = true, silent = true, },
         -- { "<leader>ns", ":Neotree focus document_symbols<CR>",          mode = "n", noremap = true, silent = true, },
     }
 }

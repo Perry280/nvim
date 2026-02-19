@@ -1,60 +1,74 @@
-local NAME = "lsp_features"
+---@diagnostic disable-next-line: undefined-global
+if lsp_features then return end
 
 local lsp_features = {}
 
-function lsp_features.autocompletion(args, client)
-    if args ~= nil and client ~= nil and client:supports_method("textDocument/completion") then
-        vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
-        vim.cmd("set completeopt+=menuone,noselect") -- fuzzy
-    end
+---@param args vim.api.keyset.create_autocmd.callback_args
+---@param method string
+---@return vim.lsp.Client | nil
+local function supports_method(args, method)
+    if args == nil then return nil end
+
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client == nil then return nil end
+
+    return (client:supports_method(method) or nil) and client
 end
 
-function lsp_features.format_on_save(args, client)
-    if args ~= nil and client ~= nil and client:supports_method("textDocument/formatting") then
-        vim.api.nvim_create_autocmd("BufWritePre", {
-            buffer = args.buf,
-            callback = function()
-                vim.lsp.buf.format({
-                    -- formatting_options = {
-                    --     tabSize = 4,
-                    --     insertSpaces = true,
-                    --     trimTrailingWhitespace = true,
-                    --     insertFinalNewLine = true,
-                    --     trimFinalNewlines = true,
-                    -- },
-                    bufnr = args.buf,
-                    id = client.id,
-                })
-            end,
-        })
-    end
+---@param args vim.api.keyset.create_autocmd.callback_args
+function lsp_features.autocompletion(args)
+    local client = supports_method(args, "textDocument/completion")
+    if client == nil then return end
+
+    vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
+    vim.cmd("set completeopt+=menuone,noselect") -- fuzzy
 end
 
-function lsp_features.inlay_hints(args, client)
-    if args ~= nil and client ~= nil and client:supports_method("textDocument/inlayHint") then
-        vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
-    end
+---@param args vim.api.keyset.create_autocmd.callback_args
+function lsp_features.format_on_save(args)
+    local client = supports_method(args, "textDocument/formatting")
+    if client == nil then return end
+
+    vim.api.nvim_create_autocmd("BufWritePre", {
+        buffer = args.buf,
+        callback = function()
+            vim.lsp.buf.format({
+                bufnr = args.buf,
+                id = client.id,
+            })
+        end,
+    })
 end
 
-function lsp_features.highlight_words(args, client)
-    if args ~= nil and client ~= nil and client:supports_method("textDocument/documentHighlight") then
-        local autocmd = vim.api.nvim_create_autocmd
-        local augroup = autocmd("lsp_highlight", { clear = false })
+---@param args vim.api.keyset.create_autocmd.callback_args
+function lsp_features.inlay_hints(args)
+    local client = supports_method(args, "textDocument/inlayHint")
+    if client == nil then return end
 
-        vim.api.nvim_clear_autocmds({ buffer = args.buf, group = augroup })
+    vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
+end
 
-        autocmd({ "CursorHold" }, {
-            group = augroup,
-            buffer = args.buf,
-            callback = vim.lsp.buf.document_highlight,
-        })
+---@param args vim.api.keyset.create_autocmd.callback_args
+function lsp_features.highlight_words(args)
+    local client = supports_method(args, "textDocument/documentHighlight")
+    if client == nil then return end
 
-        autocmd({ "CursorMoved" }, {
-            group = augroup,
-            buffer = args.buf,
-            callback = vim.lsp.buf.clear_references,
-        })
-    end
+    local autocmd = vim.api.nvim_create_autocmd
+    local augroup = autocmd("lsp_highlight", { clear = false })
+
+    vim.api.nvim_clear_autocmds({ buffer = args.buf, group = augroup })
+
+    autocmd({ "CursorHold" }, {
+        group = augroup,
+        buffer = args.buf,
+        callback = vim.lsp.buf.document_highlight,
+    })
+
+    autocmd({ "CursorMoved" }, {
+        group = augroup,
+        buffer = args.buf,
+        callback = vim.lsp.buf.clear_references,
+    })
 end
 
 function lsp_features.tab_completion()

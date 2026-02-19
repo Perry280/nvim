@@ -12,6 +12,11 @@ return {
         on_attach = function(bufnr)
             local api = require("nvim-tree.api")
             local set = require("utils.keymap").set
+
+            ---@param mode string | string[]
+            ---@param lhs string
+            ---@param rhs string | function
+            ---@param desc string
             local function nvimtree_map(mode, lhs, rhs, desc)
                 set(mode, lhs, rhs, { desc = "nvim-tree: " .. desc, buffer = bufnr, nowait = true })
             end
@@ -32,10 +37,7 @@ return {
         sort = { sorter = "case_sensitive", },
         view = {
             width = {
-                max = function()
-                    local size = 1 / 4
-                    return math.floor(vim.o.columns * size)
-                end,
+                max = require("utils.window").width(1 / 4),
             },
         },
         renderer = {

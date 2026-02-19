@@ -44,8 +44,7 @@ return {
                     command = "pyright.organizeimports",
                     arguments = { vim.uri_from_bufnr(bufnr) },
                 }
-                ---@diagnostic disable-next-line: param-type-mismatch
-                client.request("workspace/executeCommand", params, nil, bufnr)
+                client:request("workspace/executeCommand", params, nil, bufnr)
             end,
             { desc = "Organize Imports", }
         )

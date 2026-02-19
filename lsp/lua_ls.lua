@@ -1,19 +1,24 @@
+---@type string[]
 local root_markers1 = {
-    '.emmyrc.json',
-    '.luarc.json',
-    '.luarc.jsonc',
+    ".emmyrc.json",
+    ".luarc.json",
+    ".luarc.jsonc",
 }
 
+---@type string[]
 local root_markers2 = {
-    '.luacheckrc',
-    '.stylua.toml',
-    'stylua.toml',
-    'selene.toml',
-    'selene.yml',
+    ".luacheckrc",
+    ".stylua.toml",
+    "stylua.toml",
+    "selene.toml",
+    "selene.yml",
 }
 
+---@param rm1 string[]
+---@param rm2 string[]
+---@return table
 local function root_markers(rm1, rm2)
-    return vim.fn.has('nvim-0.11.3') == 1 and { rm1, rm2, { '.git' } } or vim.list_extend(vim.list_extend(rm1, rm2), { '.git' })
+    return vim.fn.has("nvim-0.11.3") == 1 and { rm1, rm2, { ".git" } } or vim.list_extend(vim.list_extend(rm1, rm2), { ".git" })
 end
 
 ---@type vim.lsp.Config
@@ -42,7 +47,7 @@ return {
             end
         end
 
-        client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
+        client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua --[[@as table]], {
             runtime = {
                 version = "LuaJIT",
                 path = {
@@ -55,9 +60,9 @@ return {
                 checkThirdParty = false,
                 library = {
                     vim.env.VIMRUNTIME,
-                    -- vim.fn.stdpath("config"),
-                    -- "${3rd}/luv/library",
+                    "${3rd}/luv/library",
                     -- "${3rd}/busted/library",
+                    -- vim.fn.stdpath("config"),
                 }
                 -- library = vim.api.nvim_get_runtime_file("", true),
             },

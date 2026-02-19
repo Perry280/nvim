@@ -3,6 +3,9 @@ return {
         "nvim-treesitter/nvim-treesitter",
         lazy = false,
         build = ":TSUpdate",
+        init = function()
+            vim.opt.foldenable = false
+        end,
         config = function()
             local languages = {
                 "bash",
@@ -22,8 +25,8 @@ return {
                 pattern = languages,
                 callback = function()
                     vim.treesitter.start()
-                    -- vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
-                    -- vim.wo[0][0].foldmethod = "expr"
+                    vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+                    vim.wo[0][0].foldmethod = "expr"
                     vim.bo.indentexpr = "v:lua.require('nvim-treesitter').indentexpr()"
                 end,
             })
@@ -77,8 +80,8 @@ return {
 
             -- Go to either the start or the end, whichever is closer.
             -- Use if you want more granular movements
-            -- set({ "n", "x", "o" }, "]d", function() move.goto_next("@conditional.outer", "textobjects") end)
-            -- set({ "n", "x", "o" }, "[d", function() move.goto_previous("@conditional.outer", "textobjects") end)
+            set({ "n", "x", "o" }, "]f", function() move.goto_next("@conditional.outer", "textobjects") end)
+            set({ "n", "x", "o" }, "[f", function() move.goto_previous("@conditional.outer", "textobjects") end)
 
             -- Repeat movement with ; and ,
             -- ensure ; goes forward and , goes backward regardless of the last direction

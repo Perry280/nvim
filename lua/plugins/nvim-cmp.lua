@@ -5,7 +5,7 @@ return {
         "hrsh7th/cmp-buffer",
         "hrsh7th/cmp-path",
         "hrsh7th/cmp-cmdline",
-        "folke/lazydev.nvim",
+        -- "folke/lazydev.nvim",
     },
     enabled = false,
     config = function()
@@ -13,11 +13,7 @@ return {
         cmp.setup({
             snippet = {
                 expand = function(args)
-                    -- vim.fn["vsnip#anonymous"](args.body)
-                    -- require("luasnip").lsp_expand(args.body)
-                    -- require("snippy").expand_snippet(args.body)
-                    -- vim.fn["UltiSnips#Anon"](args.body)
-                    vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
+                    vim.snippet.expand(args.body)
 
                     -- For `mini.snippets` users:
                     -- local insert = MiniSnippets.config.expand.insert or MiniSnippets.default_insert
@@ -35,15 +31,11 @@ return {
                 ["<C-f>"] = cmp.mapping.scroll_docs(4),
                 ["<C-Space>"] = cmp.mapping.complete(),
                 ["<C-e>"] = cmp.mapping.abort(),
-                ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+                ["<CR>"] = cmp.mapping.confirm({ select = true }),
             }),
             sources = {
-                { name = "lazydev", group_index = 0, },
+                -- { name = "lazydev", group_index = 0, },
                 { name = "nvim_lsp" },
-                -- { name = "vsnip" },
-                -- { name = "luasnip" },
-                -- { name = "ultisnips" },
-                -- { name = "snippy" },
                 { name = "buffer" },
             }
         })

@@ -6,8 +6,7 @@ local function set_python_path(command)
     })
     for _, client in ipairs(clients) do
         if client.settings then
-            ---@diagnostic disable-next-line: param-type-mismatch
-            client.settings.python = vim.tbl_deep_extend("force", client.settings.python or {}, { pythonPath = path })
+            client.settings.python = vim.tbl_deep_extend("force", client.settings.python --[[@as table]] or {}, { pythonPath = path })
         else
             client.config.settings = vim.tbl_deep_extend("force", client.config.settings, { python = { pythonPath = path } })
         end
@@ -34,18 +33,17 @@ return {
             analysis = {
                 autoSearchPaths = true,
                 diagnosticMode = "openFilesOnly",
-                -- typeCheckingMode = "standard",
+                typeCheckingMode = "recommended",
                 diagnosticSeverityOverrides = {
-                    -- deprecateTypingAliases = true,
-                    reportAny = false,
-                    reportExplicitAny = false,
-                    reportPrivateUsage = false,
-                    -- reportPropertyTypeMismatch = "warning",
-                    reportUnusedCallResult = false,
-                    -- strinctListInference = true,
-                    -- strinctDictionaryInference = true,
-                    -- strinctSetInference = true,
-                    -- strictGenericNarrowing = true,
+                    deprecateTypingAliases = true,
+                    reportImportCycles = "warning",
+                    reportRedeclaration = "error",
+                    reportUnnecessaryCast = "hint",
+                    reportUnnecessaryComparison = "hint",
+                    reportUnnecessaryContains = "hint",
+                    reportUnnecessaryIsInstance = "hint",
+                    reportUnnecessaryTypeIgnoreComment = "hint",
+                    reportUnreachable = "hint",
                 }
             },
         },
@@ -57,8 +55,7 @@ return {
                     command = "basedpyright.organizeimports",
                     arguments = { vim.uri_from_bufnr(bufnr) },
                 }
-                ---@diagnostic disable-next-line: param-type-mismatch
-                client.request("workspace/executeCommand", params, nil, bufnr)
+                client:request("workspace/executeCommand", params, nil, bufnr)
             end,
             { desc = "Organize Imports", }
         )

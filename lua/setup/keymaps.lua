@@ -4,6 +4,7 @@ set("n", "<leader>s", ":wa<CR>", { desc = "Save" })
 set("n", "<leader>q", ":xa<CR>", { desc = "Save and quit" })
 set("n", "<leader>bd", ":bd!<CR>", { desc = "Force close buffer" })
 set("n", "ì", ":noh<CR>", { desc = "Turn off highlight" })
+set("n", "<leader>^", ":checkhealth<CR>", { desc = "Open checkhealth" })
 
 set("n", "n", "nzzzv", { desc = "Next pattern searched and center" })
 set("n", "N", "Nzzzv", { desc = "Previous pattern searched and center" })
