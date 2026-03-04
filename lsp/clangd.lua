@@ -76,7 +76,7 @@ return {
         "configure.ac",
         ".git",
     },
-    capabilities = require("lsp.lsp_init").set_lsp_capabilities(capabilities),
+    capabilities = require("lsp.lsp_features").set_lsp_capabilities(capabilities),
     ---@param init_result ClangdInitializeResult
     on_init = function(client, init_result)
         if init_result.offsetEncoding then

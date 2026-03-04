@@ -17,12 +17,12 @@ return {
 
         set("n", "<leader>h", function() harpoon:list():add() end)
         set("n", "<leader>e", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
-        set("n", "<M-h>", function() harpoon:list():select(1) end)
-        set("n", "<M-j>", function() harpoon:list():select(2) end)
-        set("n", "<M-k>", function() harpoon:list():select(3) end)
-        set("n", "<M-l>", function() harpoon:list():select(4) end)
-        set("n", "<M-n>", function() harpoon:list():prev() end)
-        set("n", "<M-p>", function() harpoon:list():next() end)
+        set("n", "<C-h>", function() harpoon:list():select(1) end)
+        set("n", "<C-j>", function() harpoon:list():select(2) end)
+        set("n", "<C-k>", function() harpoon:list():select(3) end)
+        set("n", "<C-l>", function() harpoon:list():select(4) end)
+        set("n", "<C-n>", function() harpoon:list():prev() end)
+        set("n", "<C-p>", function() harpoon:list():next() end)
     end,
     keys = {
         -- { "<leader>a", [[:lua require("harpoon"):list():add()<CR>]],                                    mode = "n", noremap = true, silent = true, },
@@ -35,11 +35,11 @@ return {
         -- { "<M-p>",     [[:lua require("harpoon"):list():next()<CR>]],                                   mode = "n", noremap = true, silent = true, },
         { "<leader>h", mode = "n", },
         { "<leader>e", mode = "n", },
-        { "<M-h>",     mode = "n", },
-        { "<M-j>",     mode = "n", },
-        { "<M-k>",     mode = "n", },
-        { "<M-l>",     mode = "n", },
-        { "<M-n>",     mode = "n", },
-        { "<M-p>",     mode = "n", },
+        { "<C-h>",     mode = "n", },
+        { "<C-j>",     mode = "n", },
+        { "<C-k>",     mode = "n", },
+        { "<C-l>",     mode = "n", },
+        { "<C-n>",     mode = "n", },
+        { "<C-p>",     mode = "n", },
     },
 }

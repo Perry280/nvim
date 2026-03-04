@@ -68,9 +68,9 @@ return {
         -- }
     },
     keys = {
-        { "<leader>N",  ":Neotree toggle current reveal_force_cwd<CR>", mode = "n", noremap = true, silent = true, },
+        { "<leader>T",  ":Neotree toggle current reveal_force_cwd<CR>", mode = "n", noremap = true, silent = true, },
         { "<leader>nt", ":Neotree toggle<CR>",                          mode = "n", noremap = true, silent = true, },
-        { "<C-n>",      ":Neotree reveal<CR>",                          mode = "n", noremap = true, silent = true, },
+        { "<C-t>",      ":Neotree reveal<CR>",                          mode = "n", noremap = true, silent = true, },
         { "<leader>nb", ":Neotree focus buffers<CR>",                   mode = "n", noremap = true, silent = true, },
         { "<leader>ng", ":Neotree focus git_status<CR>",                mode = "n", noremap = true, silent = true, },
         -- { "<leader>ns", ":Neotree focus document_symbols<CR>",          mode = "n", noremap = true, silent = true, },

@@ -1,3 +1,4 @@
+---@param command vim.api.keyset.create_user_command.command_args
 local function set_python_path(command)
     local path = command.args
     local clients = vim.lsp.get_clients({
@@ -27,7 +28,7 @@ return {
         "Pipfile",
         ".git",
     },
-    capabilities = require("lsp.lsp_init").set_lsp_capabilities(),
+    capabilities = require("lsp.lsp_features").set_lsp_capabilities(),
     settings = {
         basedpyright = {
             analysis = {

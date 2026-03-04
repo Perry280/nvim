@@ -3,6 +3,22 @@ if lsp_features then return end
 
 local lsp_features = {}
 
+---@param capabilities? lsp.ClientCapabilities
+---@param use_built_in_capabilities? boolean = false
+---@return lsp.ClientCapabilities
+function lsp_features.set_lsp_capabilities(capabilities, use_built_in_capabilities)
+    ---@type lsp.ClientCapabilities
+    local c = capabilities or {}
+
+    if use_built_in_capabilities or false then
+        c = vim.tbl_deep_extend("force", c, vim.lsp.protocol.make_client_capabilities())
+    end
+
+    c = vim.tbl_deep_extend("force", c, require('blink.cmp').get_lsp_capabilities({}, false))
+
+    return c
+end
+
 ---@param args vim.api.keyset.create_autocmd.callback_args
 ---@param method string
 ---@return vim.lsp.Client | nil
@@ -21,7 +37,6 @@ function lsp_features.autocompletion(args)
     if client == nil then return end
 
     vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
-    vim.cmd("set completeopt+=menuone,noselect") -- fuzzy
 end
 
 ---@param args vim.api.keyset.create_autocmd.callback_args
@@ -74,6 +89,7 @@ end
 function lsp_features.tab_completion()
     vim.opt.shortmess:append("c")
 
+    ---@return string
     local function tab_complete()
         if vim.fn.pumvisible() == 1 then
             return "<Down>"
@@ -98,6 +114,7 @@ function lsp_features.tab_completion()
         return "<C-x><C-n>"
     end
 
+    ---@return string
     local function tab_prev()
         if vim.fn.pumvisible() == 1 then
             return "<Up>"

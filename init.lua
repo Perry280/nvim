@@ -1,13 +1,10 @@
 require("setup.setup")
-require("lsp.lsp_init").setup()
+require("lsp.lsp_init").setup({
+    autocompletion = true,
+    format_on_save = true,
+})
 
 require("config.lazy")
 vim.cmd.colorscheme("catppuccin-mocha")
 
-vim.lsp.enable({
-    -- "basedpyright",
-    -- "bashls",
-    -- "clangd",
-    "lua_ls",
-    -- "pyright",
-})
+require("lsp.lsp_init").enable()

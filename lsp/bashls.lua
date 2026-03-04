@@ -8,5 +8,5 @@ return {
             globPattern = vim.env.GLOB_PATTERN or "*@(.sh|.inc|.bash|.command)",
         },
     },
-    capabilities = require("lsp.lsp_init").set_lsp_capabilities(),
+    capabilities = require("lsp.lsp_features").set_lsp_capabilities(),
 }

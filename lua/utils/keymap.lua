@@ -1,5 +1,3 @@
----@diagnostic disable-next-line: undefined-global
-if keymap_utils then return end
 local keymap_utils = {}
 
 ---@param mode string | string[]

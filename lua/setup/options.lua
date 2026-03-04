@@ -3,6 +3,8 @@ vim.g.have_nerd_font = true
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+vim.opt.completeopt = "menu,popup,menuone,noselect" -- fuzzy
+
 vim.opt.cursorline = true
 vim.opt.number = true
 vim.opt.relativenumber = true

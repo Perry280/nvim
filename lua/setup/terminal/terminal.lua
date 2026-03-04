@@ -1,5 +1,3 @@
----@diagnostic disable-next-line: undefined-global
-if terminal then return end
 local terminal = {}
 
 ---@param direction "horizontal" | "vertical" | "float"

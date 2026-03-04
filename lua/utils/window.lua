@@ -1,14 +1,18 @@
----@diagnostic disable-next-line: undefined-global
-if window_utils then return end
 local window_utils = {}
 
 ---@type number
 window_utils.default_window_size = 1 / 3
 
+---@param size number
+local function check_size(size)
+    assert(size > 0, "size must be greater than 0.")
+end
+
 ---@param size? number
 ---@return number
 function window_utils.height(size)
     size = size or window_utils.default_window_size
+    check_size(size)
     if size < 1 then
         return math.floor(vim.o.lines * size)
     else
@@ -21,6 +25,7 @@ end
 ---@return number
 function window_utils.width(size)
     size = size or window_utils.default_window_size
+    check_size(size)
     if size < 1 then
         return math.floor(vim.o.columns * size)
     else

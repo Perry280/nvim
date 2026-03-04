@@ -16,7 +16,7 @@ local root_markers2 = {
 
 ---@param rm1 string[]
 ---@param rm2 string[]
----@return table
+---@return (string | string[])[]
 local function root_markers(rm1, rm2)
     return vim.fn.has("nvim-0.11.3") == 1 and { rm1, rm2, { ".git" } } or vim.list_extend(vim.list_extend(rm1, rm2), { ".git" })
 end
@@ -26,7 +26,7 @@ return {
     cmd = { "lua-language-server" },
     filetypes = { "lua", },
     root_markers = root_markers(root_markers1, root_markers2),
-    capabilities = require("lsp.lsp_init").set_lsp_capabilities(),
+    capabilities = require("lsp.lsp_features").set_lsp_capabilities(),
     settings = {
         Lua = {
             codeLens = { enable = true },
