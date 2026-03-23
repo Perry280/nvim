@@ -1,6 +1,8 @@
 local lsp_init = {}
 
----@param features? { autocompletion: boolean, format_on_save: boolean, highlight_words: boolean, inlay_hints: boolean, tab_completion: boolean }
+---@alias features { autocompletion: boolean, format_on_save: boolean, highlight_words: boolean, inlay_hints: boolean, tab_completion: boolean }
+
+---@param features? features
 function lsp_init.setup(features)
     features = features or {}
 
@@ -13,20 +15,15 @@ function lsp_init.setup(features)
 
     vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)
+            local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
             local lsp_features = require("lsp.lsp_features")
 
-            if features.autocompletion then
-                lsp_features.autocompletion(args)
+            for k, _ in ipairs(features) do
+                if k ~= "tab_completion" and features[k] then
+                    lsp_features[k](args, client)
+                end
             end
-            if features.format_on_save then
-                lsp_features.format_on_save(args)
-            end
-            if features.highlight_words then
-                lsp_features.highlight_words(args)
-            end
-            if features.inlay_hints then
-                lsp_features.inlay_hints(args)
-            end
+
             if features.tab_completion then
                 lsp_features.tab_completion()
             end
@@ -36,12 +33,13 @@ end
 
 ---@param LSPs? string | string[]
 function lsp_init.enable(LSPs)
-    vim.lsp.enable(LSPs or {
+    local lsps = {
         "basedpyright",
         "bashls",
         "clangd",
         "lua_ls",
-    })
+    }
+    vim.lsp.enable(LSPs or lsps)
 end
 
 return lsp_init

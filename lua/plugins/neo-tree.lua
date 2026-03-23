@@ -6,7 +6,6 @@ return {
         "MunifTanjim/nui.nvim",
         "nvim-tree/nvim-web-devicons",
     },
-    -- enabled = false,
     lazy = false,
     init = function()
         vim.g.loaded_netrw = 1

@@ -1,6 +1,3 @@
----@diagnostic disable-next-line: undefined-global
-if lsp_features then return end
-
 local lsp_features = {}
 
 ---@param capabilities? lsp.ClientCapabilities
@@ -20,29 +17,16 @@ function lsp_features.set_lsp_capabilities(capabilities, use_built_in_capabiliti
 end
 
 ---@param args vim.api.keyset.create_autocmd.callback_args
----@param method string
----@return vim.lsp.Client | nil
-local function supports_method(args, method)
-    if args == nil then return nil end
-
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-    if client == nil then return nil end
-
-    return (client:supports_method(method) or nil) and client
-end
-
----@param args vim.api.keyset.create_autocmd.callback_args
-function lsp_features.autocompletion(args)
-    local client = supports_method(args, "textDocument/completion")
-    if client == nil then return end
+---@param client vim.lsp.Client
+function lsp_features.autocompletion(args, client)
+    if not client:supports_method("textDocument/completion") then return end
 
     vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
 end
 
 ---@param args vim.api.keyset.create_autocmd.callback_args
-function lsp_features.format_on_save(args)
-    local client = supports_method(args, "textDocument/formatting")
-    if client == nil then return end
+function lsp_features.format_on_save(args, client)
+    if not client:supports_method("textDocument/formatting") then return end
 
     vim.api.nvim_create_autocmd("BufWritePre", {
         buffer = args.buf,
@@ -56,17 +40,15 @@ function lsp_features.format_on_save(args)
 end
 
 ---@param args vim.api.keyset.create_autocmd.callback_args
-function lsp_features.inlay_hints(args)
-    local client = supports_method(args, "textDocument/inlayHint")
-    if client == nil then return end
+function lsp_features.inlay_hints(args, client)
+    if not client:supports_method("textDocument/inlayHint") then return end
 
     vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
 end
 
 ---@param args vim.api.keyset.create_autocmd.callback_args
-function lsp_features.highlight_words(args)
-    local client = supports_method(args, "textDocument/documentHighlight")
-    if client == nil then return end
+function lsp_features.highlight_words(args, client)
+    if not client:supports_method("textDocument/documentHighlight") then return end
 
     local autocmd = vim.api.nvim_create_autocmd
     local augroup = autocmd("lsp_highlight", { clear = false })

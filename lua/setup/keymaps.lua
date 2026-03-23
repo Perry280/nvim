@@ -26,10 +26,10 @@ set("t", "<M-j>", "<C-\\><C-N><C-W>j", { desc = "Jump to buffer below" })
 set("t", "<M-k>", "<C-\\><C-N><C-W>k", { desc = "Jump to buffer above" })
 set("t", "<M-l>", "<C-\\><C-N><C-W>l", { desc = "Jump to buffer to the" })
 
-set({ "n", "t" }, "<C-Up>", ":resize +2<CR>", { desc = "Increase height of the current window" })
-set({ "n", "t" }, "<C-Down>", ":resize -2<CR>", { desc = "Decrease height of the current window" })
-set({ "n", "t" }, "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase width of the current window" })
-set({ "n", "t" }, "<C-Left>", ":vertical resize -2<CR>", { desc = "Decrease width of the current window" })
+set("n", "<C-Up>", ":resize +2<CR>", { desc = "Increase height of the current window" })
+set("n", "<C-Down>", ":resize -2<CR>", { desc = "Decrease height of the current window" })
+set("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase width of the current window" })
+set("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Decrease width of the current window" })
 
 set({ "i", "c", "t" }, "<C-S-h>", "<Del>", { desc = "Same as <Del>" })
 
