@@ -12,7 +12,7 @@ vim.opt.signcolumn = "yes:1"
 
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
-vim.opt.termguicolors = true
+vim.opt.termguicolors = vim.uv.os_uname().sysname ~= "Linux" or ((os.getenv("TERM") and os.getenv("TERM") ~= "linux") and os.getenv("COLORTERM") ~= nil)
 vim.opt.winborder = "none"
 
 vim.opt.scrolloff = 20

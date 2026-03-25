@@ -50,15 +50,13 @@ if vim.g.loaded_netrw ~= 1 then
     vim.api.nvim_create_autocmd("filetype", {
         pattern = "netrw",
         callback = function()
-            local kopts = { noremap = false, remap = true, buffer = true, }
-            local bind = function(lhs, rhs, opts)
-                if opts == nil then
-                    opts = kopts
-                else
+            local function bind(lhs, rhs, opts)
+                local kopts = { noremap = false, remap = true, buffer = true, }
+                if opts ~= nil then
                     kopts = vim.tbl_deep_extend("force", opts, kopts)
                 end
 
-                set("n", lhs, rhs, opts)
+                set("n", lhs, rhs, kopts)
             end
 
             bind("n", "%", { desc = "Create new file" })

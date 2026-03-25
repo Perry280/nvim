@@ -77,6 +77,10 @@ return {
         ".git",
     },
     capabilities = require("lsp.lsp_features").set_lsp_capabilities(capabilities),
+    get_language_id = function(_, ftype)
+        local t = { objc = 'objective-c', objcpp = 'objective-cpp', cuda = 'cuda-cpp' }
+        return t[ftype] or ftype
+    end,
     ---@param init_result ClangdInitializeResult
     on_init = function(client, init_result)
         if init_result.offsetEncoding then

@@ -38,6 +38,8 @@ function lsp_init.enable(LSPs)
         "bashls",
         "clangd",
         "lua_ls",
+        "ruff",
+        "ty",
     }
     vim.lsp.enable(LSPs or lsps)
 end
