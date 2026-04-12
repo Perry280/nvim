@@ -1,5 +1,7 @@
 require('pack.autocmd')
 
+vim.cmd.packadd('nvim.undotree')
+
 local function gh(plugin) return 'https://github.com/' .. plugin end
 
 vim.pack.add({
