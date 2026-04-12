@@ -1,9 +1,10 @@
-return {
+---@alias colorscheme_table { [1]: string, name: string, opts: table}
+
+---@type colorscheme_table[]
+local colorschemes = {
     -- {
     --     "rose-pine/neovim",
     --     name = "rose-pine",
-    --     lazy = false,
-    --     priority = 1000,
     --     opts = {
     --         -- dim_inactive_windows = true,
     --         extend_background_behind_borders = true,
@@ -29,14 +30,41 @@ return {
     --     },
     -- },
     {
-        "catppuccin/nvim",
+        'catppuccin/nvim',
         name = "catppuccin",
-        lazy = false,
-        priority = 1000,
         opts = {
             term_colors = true,
             default_integrations = false,
-            auto_integrations = true,
+            integrations = {
+                blink = {
+                    style = 'solid',
+                },
+                lualine = {
+                    all = function(colors)
+                        return {
+                            normal = {
+                                a = { bg = colors.lavender, gui = "italic" },
+                                b = { fg = colors.lavender },
+                            }
+                        }
+                    end,
+                    macchiato = { normal = { a = { bg = "#abcdef" }, }, },
+                },
+                harpoon = true,
+                mini = {
+                    enabled = true,
+                    indentscope_color = "",
+                },
+                snacks = {
+                    enabled = true,
+                    indent_scope_color = "",
+                },
+                telescope = {
+                    enabled = true,
+                },
+                lsp_trouble = true,
+                neotree = true,
+            },
             highlight = {
                 enable = true,
                 additional_vim_regex_highlighting = false
@@ -45,8 +73,7 @@ return {
     },
     -- {
     --     "alexvzyl/nordic.nvim",
-    --     lazy = false,
-    --     priority = 1000,
+    --     name = 'nordic',
     --     opts = {
     --         bold_keywords = true,
     --         bright_border = true,
@@ -64,28 +91,23 @@ return {
     -- },
     -- {
     --     "folke/tokyonight.nvim",
-    --     lazy = false,
-    --     priority = 1000,
+    --     name = 'tokyonight',
     -- },
     -- {
     --     "cocopon/iceberg.vim",
-    --     lazy = false,
-    --     priority = 1000,
+    --     name = 'iceberg',
     -- },
     -- {
     --     "shaunsingh/nord.nvim",
-    --     lazy = false,
-    --     priority = 1000,
+    --     name = 'nord',
     -- },
     -- {
     --     "darkvoid-theme/darkvoid.nvim",
-    --     lazy = false,
-    --     priority = 1000,
+    --     name = 'darkvoid',
     -- },
     -- {
     --     "rebelot/kanagawa.nvim",
-    --     lazy = false,
-    --     priority = 1000,
+    --     name = 'kanagawa',
     --     opts = {
     --         colors = {
     --             theme = {
@@ -100,17 +122,19 @@ return {
     -- },
     -- {
     --     "vague-theme/vague.nvim",
-    --     lazy = false,
-    --     priority = 1000,
+    --     name = 'vague',
     -- },
     -- {
     --     "olivercederborg/poimandres.nvim",
-    --     lazy = false,
-    --     priority = 1000,
+    --     name = 'poimandres',
     -- },
     -- {
     --     "slugbyte/lackluster.nvim",
-    --     lazy = false,
-    --     priority = 1000,
+    --     name = 'lackluster',
     -- },
 }
+local require_plugin = require('utils.plugin').require_plugin
+for _, colorscheme in ipairs(colorschemes) do
+    local cs = require_plugin(colorscheme.name)
+    if cs ~= nil then cs.setup(colorscheme.opts) end
+end

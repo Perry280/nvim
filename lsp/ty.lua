@@ -1,14 +1,14 @@
 ---@type vim.lsp.Config
 return {
-    cmd = { "ty", "server" },
-    filetypes = { "python" },
+    cmd = { 'ty', 'server' },
+    filetypes = { 'python' },
     root_markers = {
-        "ty.toml",
-        "pyproject.toml",
-        "setup.py",
-        "setup.cfg",
-        "requirements.txt",
-        ".git"
+        'ty.toml',
+        'pyproject.toml',
+        'setup.py',
+        'setup.cfg',
+        'requirements.txt',
+        '.git'
     },
-    capabilities = require("lsp.lsp_features").set_lsp_capabilities(),
+    capabilities = require('lsp').set_lsp_capabilities(),
 }
