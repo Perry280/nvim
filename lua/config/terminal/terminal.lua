@@ -1,43 +1,40 @@
 local terminal = {}
 
----@param direction "horizontal" | "vertical" | "float"
+---@param direction 'horizontal' | 'vertical' | 'float'
 ---@param size? number
 function terminal.open_term(direction, size)
-    local wu = require("utils.window")
-    size = size or wu.default_window_size
-    assert(size > 0, "size must be greater than 0.")
+    local w = require('utils').windows
 
     local window_direction = nil
-    if direction == "horizontal" then
-        window_direction = { split = "below", height = wu.height(size), }
-    elseif direction == "vertical" then
-        window_direction = { split = "right", width = wu.width(size), }
-    elseif direction == "float" then
+    if direction == 'horizontal' then
+        window_direction = { split = 'below', height = w.height(size), }
+    elseif direction == 'vertical' then
+        window_direction = { split = 'right', width = w.width(size), }
+    elseif direction == 'float' then
         local padding = (1 - size) / 2
         window_direction = {
-            border = "single", -- "bold", "double", "none", "rounded", "shadow", "single", "solid"
-            relative = "win",
-            row = wu.height(padding),
-            col = wu.width(padding),
-            height = wu.height(size),
-            width = wu.width(size),
+            border = 'single', -- 'bold', 'double', 'none', 'rounded', 'shadow', 'single', 'solid'
+            relative = 'win',
+            row = w.height(padding),
+            col = w.width(padding),
+            height = w.height(size),
+            width = w.width(size),
         }
     else
-        error("Invalid direction.")
+        vim.notify('ERROR: Invalid direction.', vim.log.levels.ERROR)
     end
-
 
     local bufnr = vim.api.nvim_create_buf(false, false)
     if bufnr == 0 then
-        vim.notify("Error: could not create terminal buffer", vim.log.level.ERROR)
+        vim.notify('ERROR: could not create terminal buffer', vim.log.level.ERROR)
         return
     end
 
-    local wconfig = vim.tbl_deep_extend("force", window_direction, { win = vim.api.nvim_get_current_win(), })
+    local wconfig = vim.tbl_deep_extend('force', window_direction --[[@as table]], { win = vim.api.nvim_get_current_win(), })
     local winnr = vim.api.nvim_open_win(bufnr, true, wconfig)
     if winnr == 0 then
         vim.api.nvim_buf_delete(bufnr, { force = true, unload = false })
-        vim.notify("Error: could not open terminal windows", vim.log.level.ERROR)
+        vim.notify('ERROR: could not open terminal windows', vim.log.level.ERROR)
         return
     end
     vim.api.nvim_set_current_buf(bufnr)
@@ -47,9 +44,9 @@ function terminal.open_term(direction, size)
     --     vim.api.nvim_win_close(wid, true)
     --     vim.api.nvim_buf_delete(bid, { force = true, unload = false })
     --     if jid == 0 then
-    --         vim.notify("Error: could not open terminal: jobstart() arguments are invalid", vim.log.level.ERROR)
+    --         vim.notify('Error: could not open terminal: jobstart() arguments are invalid', vim.log.level.ERROR)
     --     elseif jid == -1 then
-    --         vim.notify("Error: could not open terminal: jobstart() argument {cmd} cannot be executed",
+    --         vim.notify('Error: could not open terminal: jobstart() argument {cmd} cannot be executed',
     --             vim.log.level.ERROR)
     --     end
     -- end

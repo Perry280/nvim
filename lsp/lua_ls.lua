@@ -26,7 +26,6 @@ return {
     cmd = { 'lua-language-server' },
     filetypes = { 'lua', },
     root_markers = root_markers(root_markers1, root_markers2),
-    capabilities = require('lsp').set_lsp_capabilities(),
     settings = {
         Lua = {
             codeLens = { enable = true },

@@ -1,4 +1,4 @@
-local neotree = require('utils.plugin').require_plugin('neo-tree')
+local neotree = require('utils').lua.require_plugin('neo-tree')
 if neotree == nil then return end
 
 vim.g.loaded_netrw = 1
@@ -59,11 +59,10 @@ neotree.setup({
 
     -- }
 })
-local set = require('utils.keymap').set
+local set = require('utils').keys.set
 
-set('n', '<leader>T', ':Neotree toggle current reveal_force_cwd<CR>')
-set('n', '<leader>nt', ':Neotree toggle<CR>')
-set('n', '<C-t>', ':Neotree reveal<CR>')
-set('n', '<leader>nb', ':Neotree focus buffers<CR>')
-set('n', '<leader>ng', ':Neotree focus git_status<CR>')
--- set('n', '<leader>ns', ':Neotree focus document_symbols<CR>')
+set('n', '<leader>nt', '<Cmd>Neotree toggle<CR>')
+set('n', '<C-t>', '<Cmd>Neotree reveal<CR>')
+set('n', '<leader>nb', '<Cmd>Neotree focus buffers<CR>')
+set('n', '<leader>ng', '<Cmd>Neotree focus git_status<CR>')
+-- set('n', '<leader>ns', '<Cmd>Neotree focus document_symbols<CR>')

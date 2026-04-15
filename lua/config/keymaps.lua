@@ -1,7 +1,8 @@
-local set = require('utils.keymap').set
+local set = require('utils').keys.set
 
-set('n', '<leader>P', function() vim.pack.update(nil, { offline = true }) end)
-set('n', '<leader>U', function() vim.pack.update() end)
+set('n', '<leader>P', function() vim.pack.update(nil, { offline = true }) end, { desc = 'View installed packages' })
+set('n', '<leader>U', vim.pack.update, { desc = 'Update installed packages' })
+set('n', '<leader>R', vim.cmd.restart, { desc = 'Restart' })
 
 set('n', '<leader>s', ':wa<CR>', { desc = 'Save' })
 set('n', '<leader>q', ':xa<CR>', { desc = 'Save and quit' })
@@ -34,7 +35,7 @@ set('n', '<C-Down>', ':resize -2<CR>', { desc = 'Decrease height of the current 
 set('n', '<C-Right>', ':vertical resize +2<CR>', { desc = 'Increase width of the current window' })
 set('n', '<C-Left>', ':vertical resize -2<CR>', { desc = 'Decrease width of the current window' })
 
-set({ 'i', 'c', 't' }, '<C-S-h>', '<Del>', { desc = 'Same as <Del>' })
+-- set({ 'i', 'c', 't' }, '<C-S-h>', '<Del>', { desc = 'Same as <Del>' })
 
 set({ 'i', 'c' }, '<M-h>', '<Left>', { desc = 'Same as <Left>' })
 set({ 'i', 'c' }, '<M-j>', '<Down>', { desc = 'Same as <Down>' })

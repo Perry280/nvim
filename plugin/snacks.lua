@@ -1,4 +1,4 @@
-local snacks = require('utils.plugin').require_plugin('snacks')
+local snacks = require('utils').lua.require_plugin('snacks')
 if snacks == nil then return end
 
 snacks.setup({

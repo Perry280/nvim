@@ -10,5 +10,4 @@ return {
         'requirements.txt',
         '.git'
     },
-    capabilities = require('lsp').set_lsp_capabilities(),
 }

@@ -1,6 +1,27 @@
-local undotree = require('undotree')
+local utils = require('utils')
 
 local size = 0.2
-local cmd = vim.fn.string(require('utils.window').width(size)) .. 'vnew'
+---@type vim.undotree.opts
+local opts = { command = utils.windows.width(size) .. 'vnew' }
 
-require('utils.keymap').set('n', '<leader><F5>', function() undotree.open({ command = cmd }) end)
+---@type pluginLazySpec
+local spec = {}
+
+spec.setup = function(keys)
+    vim.cmd.packadd('nvim.undotree')
+    utils.keys.set_keymaps(keys)
+end
+
+spec.keys = {
+    {
+        modes = 'n',
+        lhs = '<leader><F5>',
+        rhs = function() require('undotree').open(opts) end,
+    },
+}
+
+spec.cmds = {
+    'Undotree',
+}
+
+require('lazy').lazy_load(spec)

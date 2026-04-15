@@ -80,7 +80,7 @@ return {
         'configure.ac',
         '.git',
     },
-    capabilities = require('lsp').set_lsp_capabilities(capabilities),
+    capabilities = capabilities,
     get_language_id = function(_, ftype)
         local t = { objc = 'objective-c', objcpp = 'objective-cpp', cuda = 'cuda-cpp' }
         return t[ftype] or ftype

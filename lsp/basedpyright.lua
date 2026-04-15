@@ -29,7 +29,6 @@ return {
         'Pipfile',
         '.git',
     },
-    capabilities = require('lsp').set_lsp_capabilities(),
     settings = {
         basedpyright = {
             analysis = {

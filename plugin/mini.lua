@@ -1,6 +1,24 @@
--- if not require('utils.pack').is_plugin_active('mini.nvim') then return end
+---@alias MiniPlugins 'ai' | 'align' | 'animate' | 'base16' | 'basics' | 'bracketed' | 'bufremove' | 'clue' | 'cmdline' | 'colors' | 'comment' | 'completion' | 'cursorword' | 'deps' | 'diff' | 'doc' | 'extra' | 'files' | 'fuzzy' | 'git' | 'hipatterns' | 'hues' | 'icons' | 'indentscope' | 'jump' | 'jump2d' | 'keymap' | 'map' | 'misc' | 'move' | 'notify' | 'operators' | 'pairs' | 'pick' | 'sessions' | 'snippets' | 'splitjoin' | 'starter' | 'statusline' | 'surround' | 'tabline' | 'test' | 'trailspace' | 'visits'
 
-local active_plugins = { 'comment', 'cursorword', 'pairs', 'surround', }
+---@type table<MiniPlugins, table>
+local active_plugins = {
+    comment = { options = { ignore_blank_line = true, }, },
+    cursorword = { delay = 80, },
+    pairs = {
+        ['('] = { action = 'open', pair = '()', neigh_pattern = '^[^\\][%s%p%]}]$' },
+        ['['] = { action = 'open', pair = '[]', neigh_pattern = '^[^\\][%s%p)}]$' },
+        ['{'] = { action = 'open', pair = '{}', neigh_pattern = '^[^\\][%s%p)%]]$' },
+
+        [')'] = { action = 'close', pair = '()', neigh_pattern = '^[^\\]' },
+        [']'] = { action = 'close', pair = '[]', neigh_pattern = '^[^\\]' },
+        ['}'] = { action = 'close', pair = '{}', neigh_pattern = '^[^\\]' },
+
+        ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '^[^\\][%s%p)%]}]$', register = { cr = false } },
+        ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '^[^\\][%s%p)%]}]$', register = { cr = false } },
+        ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '^[^\\][%s%p)%]}]$', register = { cr = false } },
+    },
+    surround = { respect_selection_type = true, },
+}
 
 
 vim.g.miniai_disable          = true -- ai
@@ -49,30 +67,13 @@ vim.g.minitrailspace_disable  = true -- trailspace
 vim.g.minivisits_disable      = true -- visits
 
 
-local require_plugin = require('utils.plugin').require_plugin
+local require_plugin = require('utils').lua.require_plugin
+---@type table<MiniPlugins, table>
 local mini = {}
 
-for _, plugin in ipairs(active_plugins) do
+for plugin, opts in pairs(active_plugins) do
     vim.g['mini' .. plugin .. '_disable'] = false
     mini[plugin] = require_plugin('mini.' .. plugin)
     if mini[plugin] == nil then return end
+    mini[plugin].setup(opts)
 end
-
-mini['comment'].setup({ options = { ignore_blank_line = true, }, })
-mini['cursorword'].setup({ delay = 80, })
-mini['pairs'].setup({
-    mappings = {
-        ['('] = { action = 'open', pair = '()', neigh_pattern = '^[^\\][%s%]}]$' },
-        ['['] = { action = 'open', pair = '[]', neigh_pattern = '^[^\\][%s)}]$' },
-        ['{'] = { action = 'open', pair = '{}', neigh_pattern = '^[^\\][%s)%]]$' },
-
-        [')'] = { action = 'close', pair = '()', neigh_pattern = '^[^\\]' },
-        [']'] = { action = 'close', pair = '[]', neigh_pattern = '^[^\\]' },
-        ['}'] = { action = 'close', pair = '{}', neigh_pattern = '^[^\\]' },
-
-        ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '^[^\\][%s)%]}]$', register = { cr = false } },
-        ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '^[^\\][%s)%]}]$', register = { cr = false } },
-        ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '^[^\\][%s)%]}]$', register = { cr = false } },
-    },
-})
-mini['surround'].setup({ respect_selection_type = true, })

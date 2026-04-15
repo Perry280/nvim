@@ -15,11 +15,11 @@
       "version": "'harpoon2'"
     },
     "lualine": {
-      "rev": "f5d2a8570f8b736ddb9bb4be504355bcd6e15ec8",
+      "rev": "a905eeebc4e63fdc48b5135d3bf8aea5618fb21c",
       "src": "https://github.com/nvim-lualine/lualine.nvim"
     },
     "mini": {
-      "rev": "4182d64727fb4876407af65c181b85428a4a70d1",
+      "rev": "27a3e747a4e603b4121f5759e74020430ec7b7d5",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "neo-tree": {
@@ -63,10 +63,6 @@
     "telescope-ui-select": {
       "rev": "6e51d7da30bd139a6950adf2a47fda6df9fa06d2",
       "src": "https://github.com/nvim-telescope/telescope-ui-select.nvim"
-    },
-    "tiny-inline-diagnostic": {
-      "rev": "57a0eb84b2008c76e77930639890d9874195b1e1",
-      "src": "https://github.com/rachartier/tiny-inline-diagnostic.nvim"
     },
     "trouble": {
       "rev": "bd67efe408d4816e25e8491cc5ad4088e708a69a",

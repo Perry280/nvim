@@ -33,6 +33,10 @@ local colorschemes = {
         'catppuccin/nvim',
         name = "catppuccin",
         opts = {
+            -- transparent_background = true,
+            -- float = {
+            --     transparent = true,
+            -- },
             term_colors = true,
             default_integrations = false,
             integrations = {
@@ -133,7 +137,10 @@ local colorschemes = {
     --     name = 'lackluster',
     -- },
 }
-local require_plugin = require('utils.plugin').require_plugin
+
+vim.cmd.colorscheme('catppuccin-mocha')
+
+local require_plugin = require('utils').lua.require_plugin
 for _, colorscheme in ipairs(colorschemes) do
     local cs = require_plugin(colorscheme.name)
     if cs ~= nil then cs.setup(colorscheme.opts) end

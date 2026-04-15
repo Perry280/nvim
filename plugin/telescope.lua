@@ -1,31 +1,63 @@
-local require_plugin = require('utils.plugin').require_plugin
+---@type pluginLazySpec
+local spec = {}
 
-local telescope = require_plugin('telescope')
-if telescope == nil then return end
+spec.setup = function(keys)
+    vim.cmd.packadd('telescope')
+    vim.cmd.packadd('telescope-ui-select')
+    vim.cmd.packadd('telescope-fzf-native')
 
-local opts = nil
+    local utils = require('utils')
 
-local ui, _ = pcall(telescope.load_extension, 'ui-select')
-if ui then
-    local ui_select = {
-        extensions = {
-            ['ui-select'] = { require('telescope.themes').get_dropdown(), }
+    local telescope = utils.lua.require_plugin('telescope')
+    if telescope == nil then return end
+
+    local opts = {}
+
+    local ui, _ = pcall(telescope.load_extension, 'ui-select')
+    if ui then
+        local ui_select = {
+            extensions = {
+                ['ui-select'] = { require('telescope.themes').get_dropdown(), }
+            }
         }
-    }
-    opts = vim.tbl_deep_extend('force', opts or {}, ui_select)
-else
-    vim.notify("ERROR: telescope-ui-select could not be loaded", vim.log.levels.ERROR)
+        opts = vim.tbl_deep_extend('force', opts, ui_select)
+    else
+        vim.notify("ERROR: telescope-ui-select could not be loaded", vim.log.levels.ERROR)
+    end
+
+    telescope.setup(opts)
+
+    local fzf, _ = pcall(telescope.load_extension, 'fzf')
+    if not fzf then
+        vim.notify("ERROR: telescope-fzf-native could not be loaded", vim.log.levels.ERROR)
+    end
+
+    utils.keys.set_keymaps(keys)
 end
 
-telescope.setup(opts)
+spec.keys = {
+    {
+        modes = 'n',
+        lhs = '<leader>ff',
+        rhs = '<Cmd>Telescope find_files<CR>',
+        opts = { desc = 'Telescope find files', },
+    },
+    {
+        modes = 'n',
+        lhs = '<leader>fg',
+        rhs = '<Cmd>Telescope live_grep<CR>',
+        opts = { desc = 'Telescope live grep', },
+    },
+    {
+        modes = 'n',
+        lhs = '<leader>fb',
+        rhs = '<Cmd>Telescope buffers<CR>',
+        opts = { desc = 'Telescope buffers', },
+    },
+}
 
-local fzf, _ = pcall(telescope.load_extension, 'fzf')
-if not fzf then
-    vim.notify("ERROR: telescope-fzf-native could not be loaded", vim.log.levels.ERROR)
-end
+spec.cmds = {
+    'Telescope',
+}
 
-local set = require('utils.keymap').set
-
-set('n', '<leader>ff', ':Telescope find_files<CR>', { desc = 'Telescope find files', })
-set('n', '<leader>fg', ':Telescope live_grep<CR>', { desc = 'Telescope live grep', })
-set('n', '<leader>fb', ':Telescope buffers<CR>', { desc = 'Telescope buffers', })
+require('lazy').lazy_load(spec)

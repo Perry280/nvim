@@ -1,4 +1,4 @@
-local set = require("utils.keymap").set
+local set = require("utils").keys.set
 
 set("t", "<ESC>", "<C-\\><C-N>", { desc = "Switch to normal mode" })
 if vim.uv.os_uname().sysname == "Windows_NT" then

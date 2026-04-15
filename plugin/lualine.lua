@@ -1,4 +1,4 @@
-local lualine = require('utils.plugin').require_plugin('lualine')
+local lualine = require('utils').lua.require_plugin('lualine')
 if lualine == nil then return end
 
 lualine.setup({
