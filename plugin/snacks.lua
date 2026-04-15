@@ -1,7 +1,4 @@
-local snacks = require('utils').lua.require_plugin('snacks')
-if snacks == nil then return end
-
-snacks.setup({
+require('snacks').setup({
     indent = { -- │
         enabled = true,
         animate = { enabled = false, },

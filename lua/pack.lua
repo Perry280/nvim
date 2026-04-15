@@ -1,5 +1,3 @@
--- vim.cmd.packadd('nvim.undotree')
-
 local function gh(plugin) return 'https://github.com/' .. plugin end
 
 vim.pack.add({
@@ -12,7 +10,6 @@ vim.pack.add({
     { src = gh 'nvim-lualine/lualine.nvim',                   name = 'lualine', },
 
     -- dependencies
-    -- { src = gh 'saghen/blink.lib', },
     { src = gh 'nvim-lua/plenary.nvim',                       name = 'plenary', },
     { src = gh 'MunifTanjim/nui.nvim',                        name = 'nui' },
     { src = gh 'nvim-tree/nvim-web-devicons', },
@@ -26,19 +23,6 @@ vim.pack.add({
     { src = gh 'nvim-telescope/telescope-ui-select.nvim',  name = 'telescope-ui-select', },
     { src = gh 'folke/trouble.nvim',                       name = 'trouble', },
 }, { load = function() end, })
-
--- require('plugins.colorscheme')
--- require('plugins.harpoon')
--- require('plugins.lualine')
--- require('plugins.mini')
--- require('plugins.neo-tree')
--- require('plugins.nvim-treesitter')
--- require('plugins.snacks')
--- require('plugins.telescope')
--- require('plugins.trouble')
--- require('plugins.ui2')
--- require('plugins.undotree')
-
 
 -- vim.pack.del({
 --     'catppuccin',

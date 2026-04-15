@@ -23,35 +23,36 @@ vim.g.loaded_spellfile_plugin  = 1
 -- vim.opt.shada                  = ''
 -- vim.opt.shadafile              = 'NONE'
 
-vim.opt.completeopt:append('menuone,noselect')
+-- Check 'autocomplete'
+vim.opt.completeopt            = 'menu,popup,menuone,noselect,fuzzy,preview'
 
-vim.opt.cursorline     = true
-vim.opt.number         = true
-vim.opt.relativenumber = true
-vim.opt.signcolumn     = 'yes:1'
+vim.opt.cursorline             = true
+vim.opt.number                 = true
+vim.opt.relativenumber         = true
+vim.opt.signcolumn             = 'yes:1'
 
-vim.opt.hlsearch       = true
-vim.opt.incsearch      = true
-vim.opt.termguicolors  = vim.uv.os_uname().sysname ~= 'Linux' or (os.getenv('TERM') and os.getenv('TERM') ~= 'linux')
-vim.opt.winborder      = 'none'
+vim.opt.hlsearch               = true
+vim.opt.incsearch              = true
+vim.opt.termguicolors          = vim.uv.os_uname().sysname ~= 'Linux' or (os.getenv('TERM') and os.getenv('TERM') ~= 'linux')
+vim.opt.winborder              = 'none'
 
-vim.opt.scrolloff      = 20
-vim.opt.sidescrolloff  = 10
-vim.opt.splitbelow     = true
-vim.opt.splitright     = true
+vim.opt.scrolloff              = 20
+vim.opt.sidescrolloff          = 10
+vim.opt.splitbelow             = true
+vim.opt.splitright             = true
 
-vim.opt.clipboard:append('unnamedplus')
-vim.opt.swapfile    = false
-vim.opt.undofile    = true
-vim.opt.undolevels  = 1000
+vim.opt.clipboard              = 'unnamedplus'
+vim.opt.swapfile               = false
+vim.opt.undofile               = true
+vim.opt.undolevels             = 1000
 
-vim.opt.expandtab   = true
-vim.opt.tabstop     = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth  = 4
-vim.opt.smartindent = true
-vim.opt.autoindent  = true
-vim.opt.wrap        = false
-vim.opt.foldenable  = false
+vim.opt.expandtab              = true
+vim.opt.tabstop                = 4
+vim.opt.softtabstop            = 4
+vim.opt.shiftwidth             = 4
+vim.opt.smartindent            = true
+vim.opt.autoindent             = true
+vim.opt.wrap                   = false
+vim.opt.foldenable             = false
 
-vim.opt.mouse       = 'a'
+vim.opt.mouse                  = 'a'

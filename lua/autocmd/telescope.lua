@@ -8,23 +8,15 @@ vim.api.nvim_create_autocmd('PackChanged', {
             if not active then vim.cmd.packadd('telescope-fzf-native') end
             vim.system({ 'make', '-C', path },
                 {
-                    stdout = function(_, data)
-                        if data then
-                            io.write(data)
-                        end
-                    end,
-                    stderr = function(_, data)
-                        if data then
-                            io.write('ERR: ', data)
-                        end
-                    end,
+                    stdout = function(_, data) if data then io.write(data) end end,
+                    stderr = function(_, data) if data then io.write('ERR: ', data) end end,
                 },
                 function(out)
-                    if out.code == 0 then
-                        io.write('telescope-fzf-native.nvim built successfully.')
-                    else
-                        io.write('Failed to build telescope-fzf-native.nvim.')
-                    end
+                    io.write(
+                        out.code == 0
+                        and 'telescope-fzf-native.nvim built successfully.'
+                        or 'Failed to build telescope-fzf-native.nvim.'
+                    )
                 end
             ):wait()
         end

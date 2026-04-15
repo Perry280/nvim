@@ -1,7 +1,4 @@
-local lualine = require('utils').lua.require_plugin('lualine')
-if lualine == nil then return end
-
-lualine.setup({
+require('lualine').setup({
     options = {
         theme = 'auto',
         -- globalstatus = true,

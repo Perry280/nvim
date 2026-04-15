@@ -140,8 +140,7 @@ local colorschemes = {
 
 vim.cmd.colorscheme('catppuccin-mocha')
 
-local require_plugin = require('utils').lua.require_plugin
 for _, colorscheme in ipairs(colorschemes) do
-    local cs = require_plugin(colorscheme.name)
-    if cs ~= nil then cs.setup(colorscheme.opts) end
+    local cs = require(colorscheme.name)
+    if colorscheme.opts then cs.setup(colorscheme.opts) end
 end

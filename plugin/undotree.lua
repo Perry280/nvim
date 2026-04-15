@@ -24,4 +24,4 @@ spec.cmds = {
     'Undotree',
 }
 
-require('lazy').lazy_load(spec)
+require('lazyloading').lazy_load(spec)

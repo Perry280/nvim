@@ -1,23 +1,9 @@
-local utils = {
+local M = {
     keys = {},
-    lazy = {},
     lua = {},
+    terminal = {},
     windows = {},
 }
-
--- LUA
-
----@param name string
----@return unknown | nil
-function utils.lua.require_plugin(name)
-    local status, res = pcall(require, name)
-
-    if not status then
-        vim.notify('ERROR: ' .. name .. ' could not be loaded.', vim.log.levels.ERROR)
-    end
-
-    return status and res or nil
-end
 
 -- KEYS
 
@@ -27,7 +13,7 @@ end
 ---@param lhs string
 ---@param rhs string | function
 ---@param opts? vim.keymap.set.Opts
-function utils.keys.set(mode, lhs, rhs, opts)
+function M.keys.set(mode, lhs, rhs, opts)
     local kopts = { noremap = true, silent = true, }
     vim.keymap.set(mode,
         lhs,
@@ -37,22 +23,22 @@ function utils.keys.set(mode, lhs, rhs, opts)
 end
 
 ---@param keymaps keymap_set[]
-function utils.keys.set_keymaps(keymaps)
+function M.keys.set_keymaps(keymaps)
     for _, km in ipairs(keymaps) do
-        utils.keys.set(km.modes, km.lhs, km.rhs, km.opts)
+        M.keys.set(km.modes, km.lhs, km.rhs, km.opts)
     end
 end
 
 -- WINDOWS
 
 ---@type number
-utils.windows.fallback_window_size = 1 / 3
+M.windows.fallback_window_size = 1 / 3
 
 ---@param size? number
 ---@param direction 'horizontal' | 'vertical'
 ---@return integer
 local function compute_size(size, direction)
-    size = size or utils.windows.fallback_window_size
+    size = size or M.windows.fallback_window_size
     assert(size > 0, 'Window size must be greater than 0.')
 
     local available_space = vim.o.columns
@@ -70,14 +56,71 @@ end
 
 ---@param size? number
 ---@return number
-function utils.windows.height(size)
+function M.windows.height(size)
     return compute_size(size, 'horizontal')
 end
 
 ---@param size? number
 ---@return number
-function utils.windows.width(size)
+function M.windows.width(size)
     return compute_size(size, 'vertical')
 end
 
-return utils
+-- TERMINAL
+
+---@param direction 'horizontal' | 'vertical' | 'float'
+---@param size? number
+function M.terminal.open_term(direction, size)
+    local w = M.windows
+
+    local window_direction = nil
+    if direction == 'horizontal' then
+        window_direction = { split = 'below', height = w.height(size), }
+    elseif direction == 'vertical' then
+        window_direction = { split = 'right', width = w.width(size), }
+    elseif direction == 'float' then
+        local padding = (1 - size) / 2
+        window_direction = {
+            border = 'single', -- 'bold', 'double', 'none', 'rounded', 'shadow', 'single', 'solid'
+            relative = 'win',
+            row = w.height(padding),
+            col = w.width(padding),
+            height = w.height(size),
+            width = w.width(size),
+        }
+    else
+        vim.notify('ERROR: Invalid direction.', vim.log.levels.ERROR)
+        return
+    end
+
+    local bufnr = vim.api.nvim_create_buf(false, false)
+    if bufnr == 0 then
+        vim.notify('ERROR: could not create terminal buffer', vim.log.level.ERROR)
+        return
+    end
+
+    local wconfig = vim.tbl_deep_extend('force', window_direction --[[@as table]], { win = vim.api.nvim_get_current_win(), })
+    local winnr = vim.api.nvim_open_win(bufnr, true, wconfig)
+    if winnr == 0 then
+        vim.api.nvim_buf_delete(bufnr, { force = true, unload = false })
+        vim.notify('ERROR: could not open terminal windows', vim.log.level.ERROR)
+        return
+    end
+    vim.api.nvim_set_current_buf(bufnr)
+
+    -- local jid = vim.fn.jobstart(vim.o.shell, { term = true, })
+    -- if jid == 0 or jid == -1 then
+    --     vim.api.nvim_win_close(wid, true)
+    --     vim.api.nvim_buf_delete(bid, { force = true, unload = false })
+    --     if jid == 0 then
+    --         vim.notify('Error: could not open terminal: jobstart() arguments are invalid', vim.log.level.ERROR)
+    --     elseif jid == -1 then
+    --         vim.notify('Error: could not open terminal: jobstart() argument {cmd} cannot be executed',
+    --             vim.log.level.ERROR)
+    --     end
+    -- end
+    vim.cmd.terminal()
+    vim.cmd.startinsert()
+end
+
+return M

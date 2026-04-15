@@ -1,7 +1,3 @@
-local utils = require('utils')
-local ts = utils.lua.require_plugin('nvim-treesitter')
-if ts == nil then return end
-
 vim.opt.foldenable = false
 
 local languages = {
@@ -17,7 +13,7 @@ local languages = {
     'vimdoc',
 }
 
-ts.install(languages)
+require('nvim-treesitter').install(languages)
 vim.api.nvim_create_autocmd('FileType', {
     pattern = languages,
     callback = function()
@@ -28,12 +24,9 @@ vim.api.nvim_create_autocmd('FileType', {
     end,
 })
 
-local ts_textobjects = utils.lua.require_plugin('nvim-treesitter-textobjects')
-if ts_textobjects == nil then return end
-
 vim.g.no_plugin_maps = true
 
-ts_textobjects.setup({
+require('nvim-treesitter-textobjects').setup({
     select = {
         lookahead = true,
         selection_modes = {
@@ -47,7 +40,7 @@ ts_textobjects.setup({
     },
 })
 
-local set = utils.keys.set
+local set = require('utils').keys.set
 
 local select_textobject = require('nvim-treesitter-textobjects.select').select_textobject
 local move = require('nvim-treesitter-textobjects.move')

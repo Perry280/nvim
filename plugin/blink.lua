@@ -8,9 +8,7 @@ spec.events = {
 
 spec.setup = function()
     vim.cmd.packadd('blink.cmp')
-
-    local blink = require('utils').lua.require_plugin('blink.cmp')
-    if blink == nil then return end
+    local blink = require('blink.cmp')
 
     blink.setup({
         keymap = {
@@ -51,8 +49,12 @@ spec.setup = function()
     })
 
     vim.lsp.config('*', {
-        capabilities = blink.get_lsp_capabilities({}, false),
+        -- capabilities = vim.tbl_deep_extend('force',
+        --     vim.lsp.protocol.make_client_capabilities(),
+        --     blink.get_lsp_capabilities({}, false)
+        -- ),
+        capabilities = blink.get_lsp_capabilities(),
     })
 end
 
-require('lazy').lazy_load(spec)
+require('lazyloading').lazy_load(spec)

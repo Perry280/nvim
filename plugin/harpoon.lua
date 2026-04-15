@@ -4,12 +4,7 @@ local spec = {}
 spec.setup = function(keys)
     vim.cmd.packadd('harpoon')
 
-    local utils = require('utils')
-
-    local harpoon = utils.lua.require_plugin('harpoon')
-    if harpoon == nil then return end
-
-    harpoon:setup({
+    require('harpoon'):setup({
         settings = {
             key = vim.uv.cwd,
         },
@@ -18,7 +13,7 @@ spec.setup = function(keys)
         }
     })
 
-    utils.keys.set_keymaps(keys)
+    require('utils').keys.set_keymaps(keys)
 end
 
 spec.keys = {
@@ -64,4 +59,4 @@ spec.keys = {
     },
 }
 
-require('lazy').lazy_load(spec)
+require('lazyloading').lazy_load(spec)

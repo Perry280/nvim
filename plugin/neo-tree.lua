@@ -1,10 +1,7 @@
-local neotree = require('utils').lua.require_plugin('neo-tree')
-if neotree == nil then return end
-
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
-neotree.setup({
+require('neo-tree').setup({
     sources = {
         'filesystem',
         'buffers',

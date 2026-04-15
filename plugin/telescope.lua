@@ -6,33 +6,28 @@ spec.setup = function(keys)
     vim.cmd.packadd('telescope-ui-select')
     vim.cmd.packadd('telescope-fzf-native')
 
-    local utils = require('utils')
-
-    local telescope = utils.lua.require_plugin('telescope')
-    if telescope == nil then return end
-
+    local telescope = require('telescope')
     local opts = {}
 
     local ui, _ = pcall(telescope.load_extension, 'ui-select')
-    if ui then
+    if not ui then
+        vim.notify("ERROR: telescope-ui-select could not be loaded", vim.log.levels.ERROR)
+    else
         local ui_select = {
             extensions = {
                 ['ui-select'] = { require('telescope.themes').get_dropdown(), }
             }
         }
         opts = vim.tbl_deep_extend('force', opts, ui_select)
-    else
-        vim.notify("ERROR: telescope-ui-select could not be loaded", vim.log.levels.ERROR)
     end
-
-    telescope.setup(opts)
 
     local fzf, _ = pcall(telescope.load_extension, 'fzf')
     if not fzf then
         vim.notify("ERROR: telescope-fzf-native could not be loaded", vim.log.levels.ERROR)
     end
 
-    utils.keys.set_keymaps(keys)
+    telescope.setup(opts)
+    require('utils').keys.set_keymaps(keys)
 end
 
 spec.keys = {
@@ -60,4 +55,4 @@ spec.cmds = {
     'Telescope',
 }
 
-require('lazy').lazy_load(spec)
+require('lazyloading').lazy_load(spec)

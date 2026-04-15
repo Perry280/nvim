@@ -47,6 +47,15 @@ set({ 'i', 'c' }, '<M-e>', '<End>', { desc = 'Same as <End>' })
 set({ 'i', 'c' }, '<M-0>', '<C-o>0', { desc = 'Same as <Home>' })
 set({ 'i', 'c' }, '<M-i>', '<C-o>_', { desc = 'Jump to start of the line' })
 
+-- Terminal
+set('t', '<ESC>', '<C-\\><C-N>', { desc = 'Switch to normal mode' })
+set('n', '<leader>tt', ':tabnew<CR>:terminal<CR>i', { desc = 'Open terminal in a new tab', })
+
+local open_term = require('utils').terminal.open_term
+set('n', '<leader>th', function() open_term('horizontal') end, { desc = 'Open terminal in a new horizontal buffer', })
+set('n', '<leader>tv', function() open_term('vertical') end, { desc = 'Open terminal in a new vertical buffer', })
+set('n', '<leader>tf', function() open_term('float') end, { desc = 'Open terminal in a new floating window', })
+
 if vim.g.loaded_netrw ~= 1 then
     set('n', '<C-n>', ':Ex<CR>2j', { desc = 'Open netrw in current directory' })
     set('n', '<leader>N', ':e .<CR>', { desc = 'Open netrw in root directory' })
@@ -56,11 +65,7 @@ if vim.g.loaded_netrw ~= 1 then
         callback = function()
             local function bind(lhs, rhs, opts)
                 local kopts = { noremap = false, remap = true, buffer = true, }
-                if opts ~= nil then
-                    kopts = vim.tbl_deep_extend('force', opts, kopts)
-                end
-
-                set('n', lhs, rhs, kopts)
+                set('n', lhs, rhs, opts and vim.tbl_deep_extend('force', opts, kopts) or kopts)
             end
 
             bind('n', '%', { desc = 'Create new file' })

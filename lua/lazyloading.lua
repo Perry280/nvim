@@ -1,4 +1,4 @@
-local lazy = {}
+local M = {}
 
 local utils_keys = require('utils').keys
 
@@ -40,7 +40,7 @@ local function plugin_setup(spec, autocmd_ids)
 end
 
 ---@param spec pluginLazySpec
-function lazy.lazy_load(spec)
+function M.lazy_load(spec)
     ---@type integer[]
     local autocmd_ids = {}
 
@@ -83,4 +83,4 @@ function lazy.lazy_load(spec)
     end
 end
 
-return lazy
+return M

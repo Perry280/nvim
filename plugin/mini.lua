@@ -67,13 +67,13 @@ vim.g.minitrailspace_disable  = true -- trailspace
 vim.g.minivisits_disable      = true -- visits
 
 
-local require_plugin = require('utils').lua.require_plugin
----@type table<MiniPlugins, table>
-local mini = {}
+-- ---@type table<MiniPlugins, table>
+-- local mini = {}
 
 for plugin, opts in pairs(active_plugins) do
     vim.g['mini' .. plugin .. '_disable'] = false
-    mini[plugin] = require_plugin('mini.' .. plugin)
-    if mini[plugin] == nil then return end
-    mini[plugin].setup(opts)
+    local m = require('mini.' .. plugin)
+    if opts then m.setup(opts) end
+    -- mini[plugin] = require('mini.' .. plugin)
+    -- mini[plugin].setup(opts)
 end

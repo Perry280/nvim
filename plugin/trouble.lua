@@ -4,12 +4,7 @@ local spec = {}
 spec.setup = function(keys)
     vim.cmd.packadd('trouble')
 
-    local utils = require('utils')
-
-    local trouble = utils.lua.require_plugin('trouble')
-    if trouble == nil then return end
-
-    trouble.setup({
+    require('trouble').setup({
         focus = true,
         win = {
             type = 'split',
@@ -17,7 +12,7 @@ spec.setup = function(keys)
         },
     })
 
-    utils.keys.set_keymaps(keys)
+    require('utils').keys.set_keymaps(keys)
 end
 
 spec.keys = {
@@ -63,4 +58,4 @@ spec.cmds = {
     'Trouble',
 }
 
-require('lazy').lazy_load(spec)
+require('lazyloading').lazy_load(spec)
