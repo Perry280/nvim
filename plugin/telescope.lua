@@ -1,7 +1,7 @@
 ---@type pluginLazySpec
 local spec = {}
 
-spec.setup = function(keys)
+spec.setup = function()
     vim.cmd.packadd('telescope')
     vim.cmd.packadd('telescope-ui-select')
     vim.cmd.packadd('telescope-fzf-native')
@@ -27,7 +27,6 @@ spec.setup = function(keys)
     end
 
     telescope.setup(opts)
-    require('utils').keys.set_keymaps(keys)
 end
 
 spec.keys = {

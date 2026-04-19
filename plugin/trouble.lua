@@ -1,7 +1,7 @@
 ---@type pluginLazySpec
 local spec = {}
 
-spec.setup = function(keys)
+spec.setup = function()
     vim.cmd.packadd('trouble')
 
     require('trouble').setup({
@@ -11,8 +11,6 @@ spec.setup = function(keys)
             size = 0.25,
         },
     })
-
-    require('utils').keys.set_keymaps(keys)
 end
 
 spec.keys = {

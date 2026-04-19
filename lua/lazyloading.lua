@@ -3,7 +3,7 @@ local M = {}
 local utils_keys = require('utils').keys
 
 
----@alias pluginLazySpec { keys: keymap_set[], events: vim.api.keyset.events[], cmds: string[], setup: fun(keys?: keymap_set[]) }
+---@alias pluginLazySpec { keys: keymap_set[], events: vim.api.keyset.events[], cmds: string[], setup: fun() }
 
 ---@param keys keymap_set[]
 local function del_lazy_keymaps(keys)
@@ -28,15 +28,14 @@ end
 ---@param spec pluginLazySpec
 ---@param autocmd_ids integer[]
 local function plugin_setup(spec, autocmd_ids)
-    if spec.keys ~= nil then del_lazy_keymaps(spec.keys) end
-    if spec.events ~= nil then del_lazy_autocmds(autocmd_ids) end
-    if spec.cmds ~= nil then del_lazy_cmds(spec.cmds) end
-
+    if spec.events then del_lazy_autocmds(autocmd_ids) end
+    if spec.cmds then del_lazy_cmds(spec.cmds) end
     if spec.keys then
-        spec.setup(spec.keys)
-    else
-        spec.setup()
+        del_lazy_keymaps(spec.keys)
+        utils_keys.set_keymaps(spec.keys)
     end
+
+    spec.setup()
 end
 
 ---@param spec pluginLazySpec
@@ -44,7 +43,7 @@ function M.lazy_load(spec)
     ---@type integer[]
     local autocmd_ids = {}
 
-    if spec.events ~= nil then
+    if spec.events then
         for _, ev in ipairs(spec.events) do
             table.insert(autocmd_ids, vim.api.nvim_create_autocmd(ev, {
                 once = true,
@@ -55,7 +54,7 @@ function M.lazy_load(spec)
         end
     end
 
-    if spec.cmds ~= nil then
+    if spec.cmds then
         for _, cmd in ipairs(spec.cmds) do
             vim.api.nvim_create_user_command(cmd, function(args)
                 plugin_setup(spec, autocmd_ids)
@@ -66,7 +65,7 @@ function M.lazy_load(spec)
         end
     end
 
-    if spec.keys ~= nil then
+    if spec.keys then
         for _, km in ipairs(spec.keys) do
             utils_keys.set(km.modes, km.lhs, function()
                 plugin_setup(spec, autocmd_ids)

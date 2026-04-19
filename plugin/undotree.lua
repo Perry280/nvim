@@ -1,15 +1,12 @@
-local utils = require('utils')
-
 local size = 0.2
 ---@type vim.undotree.opts
-local opts = { command = utils.windows.width(size) .. 'vnew' }
+local opts = { command = require('utils').windows.width(size) .. 'vnew' }
 
 ---@type pluginLazySpec
 local spec = {}
 
-spec.setup = function(keys)
+spec.setup = function()
     vim.cmd.packadd('nvim.undotree')
-    utils.keys.set_keymaps(keys)
 end
 
 spec.keys = {

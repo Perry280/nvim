@@ -23,7 +23,7 @@ vim.g.loaded_spellfile_plugin  = 1
 -- vim.opt.shada                  = ''
 -- vim.opt.shadafile              = 'NONE'
 
--- Check 'autocomplete'
+-- vim.opt.autocomplete           = true
 vim.opt.completeopt            = 'menu,popup,menuone,noselect,fuzzy,preview'
 
 vim.opt.cursorline             = true
@@ -35,6 +35,7 @@ vim.opt.hlsearch               = true
 vim.opt.incsearch              = true
 vim.opt.termguicolors          = vim.uv.os_uname().sysname ~= 'Linux' or (os.getenv('TERM') and os.getenv('TERM') ~= 'linux')
 vim.opt.winborder              = 'none'
+vim.opt.fillchars              = 'eob: '
 
 vim.opt.scrolloff              = 20
 vim.opt.sidescrolloff          = 10
@@ -45,14 +46,18 @@ vim.opt.clipboard              = 'unnamedplus'
 vim.opt.swapfile               = false
 vim.opt.undofile               = true
 vim.opt.undolevels             = 1000
+vim.opt.history                = 1000
 
 vim.opt.expandtab              = true
 vim.opt.tabstop                = 4
 vim.opt.softtabstop            = 4
 vim.opt.shiftwidth             = 4
-vim.opt.smartindent            = true
 vim.opt.autoindent             = true
+vim.opt.smartindent            = true
+vim.opt.cindent                = true
+vim.opt.cinoptions             = '>s,e0,n0,f0,{0,}0,^0,L-1,:s,=s,l0,b0,gs,hs,N0,E0,ps,ts,is,+s,c3,C0,/0,(2s,us,U0,w0,W0,k0,m0,j0,J0,)20,*70,#0,P0'
 vim.opt.wrap                   = false
 vim.opt.foldenable             = false
+vim.opt.syntax                 = 'ON'
 
 vim.opt.mouse                  = 'a'

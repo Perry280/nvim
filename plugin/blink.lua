@@ -48,13 +48,13 @@ spec.setup = function()
         signature = { enabled = true },
     })
 
-    vim.lsp.config('*', {
-        -- capabilities = vim.tbl_deep_extend('force',
-        --     vim.lsp.protocol.make_client_capabilities(),
-        --     blink.get_lsp_capabilities({}, false)
-        -- ),
-        capabilities = blink.get_lsp_capabilities(),
-    })
+    -- vim.lsp.config('*', {
+    --     -- capabilities = vim.tbl_deep_extend('force',
+    --     --     vim.lsp.protocol.make_client_capabilities(),
+    --     --     blink.get_lsp_capabilities({}, false)
+    --     -- ),
+    --     capabilities = blink.get_lsp_capabilities(),
+    -- })
 end
 
 require('lazyloading').lazy_load(spec)

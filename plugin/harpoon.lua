@@ -1,7 +1,7 @@
 ---@type pluginLazySpec
 local spec = {}
 
-spec.setup = function(keys)
+spec.setup = function()
     vim.cmd.packadd('harpoon')
 
     require('harpoon'):setup({
@@ -12,8 +12,6 @@ spec.setup = function(keys)
             get_root_dir = vim.uv.cwd,
         }
     })
-
-    require('utils').keys.set_keymaps(keys)
 end
 
 spec.keys = {
