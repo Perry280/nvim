@@ -3,9 +3,13 @@ local M = {}
 local utils_keys = require('utils').keys
 
 
----@alias pluginLazySpec { keys: keymap_set[], events: vim.api.keyset.events[], cmds: string[], setup: fun() }
+---@class pluginLazySpec
+---@field setup? fun()
+---@field keys? keymapSet[]
+---@field events? vim.api.keyset.events[]
+---@field cmds? string[]
 
----@param keys keymap_set[]
+---@param keys keymapSet[]
 local function del_lazy_keymaps(keys)
     for _, k in ipairs(keys) do
         vim.keymap.del(k.modes, k.lhs)
@@ -35,7 +39,7 @@ local function plugin_setup(spec, autocmd_ids)
         utils_keys.set_keymaps(spec.keys)
     end
 
-    spec.setup()
+    if spec.setup then spec.setup() end
 end
 
 ---@param spec pluginLazySpec

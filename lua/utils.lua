@@ -7,7 +7,11 @@ local M = {
 
 -- KEYS
 
----@alias keymap_set { modes: string|string[], lhs: string, rhs: string|function, opts: vim.keymap.set.Opts }
+---@class keymapSet
+---@field modes string|string[]
+---@field lhs string
+---@field rhs? string|function
+---@field opts? vim.keymap.set.Opts
 
 ---@param mode string | string[]
 ---@param lhs string
@@ -22,7 +26,7 @@ function M.keys.set(mode, lhs, rhs, opts)
     )
 end
 
----@param keymaps keymap_set[]
+---@param keymaps keymapSet[]
 function M.keys.set_keymaps(keymaps)
     for _, km in ipairs(keymaps) do
         M.keys.set(km.modes, km.lhs, km.rhs, km.opts)
@@ -55,13 +59,13 @@ local function compute_size(size, direction)
 end
 
 ---@param size? number
----@return number
+---@return integer
 function M.windows.height(size)
     return compute_size(size, 'horizontal')
 end
 
 ---@param size? number
----@return number
+---@return integer
 function M.windows.width(size)
     return compute_size(size, 'vertical')
 end

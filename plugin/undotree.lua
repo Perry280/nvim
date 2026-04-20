@@ -1,24 +1,19 @@
-local size = 0.2
----@type vim.undotree.opts
-local opts = { command = require('utils').windows.width(size) .. 'vnew' }
-
----@type pluginLazySpec
-local spec = {}
-
-spec.setup = function()
-    vim.cmd.packadd('nvim.undotree')
-end
-
-spec.keys = {
-    {
-        modes = 'n',
-        lhs = '<leader><F5>',
-        rhs = function() require('undotree').open(opts) end,
+require('lazyloading').lazy_load({
+    setup = function()
+        vim.cmd.packadd('nvim.undotree')
+    end,
+    keys = {
+        {
+            modes = 'n',
+            lhs = '<leader><F5>',
+            rhs = function()
+                require('undotree').open({
+                    command = require('utils').windows.width(0.2) .. 'vnew'
+                } --[[@as vim.undotree.opts]])
+            end,
+        },
     },
-}
-
-spec.cmds = {
-    'Undotree',
-}
-
-require('lazyloading').lazy_load(spec)
+    cmds = {
+        'Undotree',
+    },
+})

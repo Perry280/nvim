@@ -17,8 +17,8 @@ set('n', '<C-d>', '<C-d>zz', { desc = 'Page down and center' })
 
 set('v', '<', '<gv', { desc = 'Add a level of indentation to selected lines' })
 set('v', '>', '>gv', { desc = 'Remove a level of indentation from selected lines' })
-set('v', 'J', "<Cmd>m '>+1<CR>gv=gv", { desc = 'Move selected lines up' })
-set('v', 'K', "<Cmd>m '<-2<CR>gv=gv", { desc = 'Move selected lines down' })
+set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move selected lines up' })
+set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move selected lines down' })
 
 set('n', '<M-h>', '<C-W>h', { desc = 'Jump to buffer to the left' })
 set('n', '<M-j>', '<C-W>j', { desc = 'Jump to buffer below' })

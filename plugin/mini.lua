@@ -4,6 +4,7 @@
 local active_plugins = {
     comment = { options = { ignore_blank_line = true, }, },
     cursorword = { delay = 80, },
+    diff = { view = { style = 'sign' }, },
     pairs = {
         ['('] = { action = 'open', pair = '()', neigh_pattern = '^[^\\][%s%p%]}]$' },
         ['['] = { action = 'open', pair = '[]', neigh_pattern = '^[^\\][%s%p)}]$' },
