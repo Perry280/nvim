@@ -18,7 +18,9 @@ local root_markers2 = {
 ---@param rm2 string[]
 ---@return (string | string[])[]
 local function root_markers(rm1, rm2)
-    return vim.fn.has('nvim-0.11.3') == 1 and { rm1, rm2, { '.git' } } or vim.list_extend(vim.list_extend(rm1, rm2), { '.git' })
+    return vim.fn.has('nvim-0.11.3') == 1
+        and { rm1, rm2, { '.git' } }
+        or vim.list_extend(vim.list_extend(rm1, rm2), { '.git' })
 end
 
 ---@type vim.lsp.Config
@@ -29,13 +31,34 @@ return {
     settings = {
         Lua = {
             codeLens = { enable = true },
-            hint = { enable = true, semicolon = 'Disable' },
+            completion = {
+                callSnippet = 'Both',
+                keywordSnippet = 'Both',
+            },
+            diagnostics = {
+                -- neededFileStatus = {
+                --     ['codestyle-check'] = 'Any',
+                -- },
+            },
+            hint = {
+                enable = true,
+                semicolon = 'Disable',
+            },
             format = {
                 enable = true,
                 defaultConfig = {
-                    max_line_length = 'unset',
+                    call_arg_parentheses = 'always',
+                    max_line_length = 100,
+                    trailing_table_separator = 'always',
+
+                    space_around_table_field_list = true,
+
+                    align_function_params = false,
                 }
-            }
+            },
+            type = {
+                checkTableShape = true,
+            },
         },
     },
     on_init = function(client)

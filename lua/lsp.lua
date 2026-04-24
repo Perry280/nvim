@@ -3,9 +3,10 @@ local buf = vim.lsp.buf
 
 local set = require('utils').keys.set
 
----@alias method vim.lsp.protocol.Method.ClientToServer | vim.lsp.protocol.Method.Registration
+---@alias LspMethod vim.lsp.protocol.Method.ClientToServer | vim.lsp.protocol.Method.Registration
+---@alias LspRequest vim.lsp.protocol.Method.ClientToServer.Request
 
----@type { method: method, enabled: boolean, config: fun(client: vim.lsp.Client, bufnr: integer)}[]
+---@type { method: LspMethod, enabled: boolean, config: fun(client: vim.lsp.Client, bufnr: integer)}[]
 local method_config = {
     {
         method = 'textDocument/codeLens',

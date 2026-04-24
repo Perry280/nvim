@@ -2,18 +2,18 @@
 ---@param client vim.lsp.Client
 local function switch_source_header(bufnr, client)
     local method_name = 'textDocument/switchSourceHeader'
-    ---@diagnostic disable-next-line: param-type-mismatch
-    if not client or not client:supports_method(method_name) then
+    if not client or not client:supports_method(method_name --[[@as LspMethod]]) then
         vim.notify(('method %s is not supported by any servers active on the current buffer'):format(method_name))
         return
     end
     local params = vim.lsp.util.make_text_document_params(bufnr)
     ---@diagnostic disable-next-line: param-type-mismatch
-    client:request(method_name, params,
+    client:request(
+        method_name --[[@as LspRequest]],
+        params,
         function(err, result)
-            if err then
-                error(tostring(err))
-            end
+            if err then error(tostring(err)) end
+
             if not result then
                 vim.notify('corresponding file cannot be determined')
                 return
@@ -28,15 +28,15 @@ end
 ---@param client vim.lsp.Client
 local function symbol_info(bufnr, client)
     local method_name = 'textDocument/symbolInfo'
-    ---@diagnostic disable-next-line: param-type-mismatch
-    if not client or not client:supports_method(method_name) then
+    if not client or not client:supports_method(method_name --[[@as LspMethod]]) then
         vim.notify('Clangd client not found', vim.log.levels.ERROR)
         return
     end
     local win = vim.api.nvim_get_current_win()
     local params = vim.lsp.util.make_position_params(win, client.offset_encoding)
-    ---@diagnostic disable-next-line: param-type-mismatch
-    client:request(method_name, params,
+    client:request(
+        method_name --[[@as LspRequest]],
+        params,
         function(err, res)
             if err or #res == 0 then return end
 
@@ -54,16 +54,6 @@ local function symbol_info(bufnr, client)
     )
 end
 
----@type lsp.ClientCapabilities
-local capabilities = {
-    textDocument = {
-        completion = {
-            editsNearCursor = true,
-        },
-    },
-    -- offsetEncoding = { 'utf-8', 'utf-16' },
-}
-
 ---@class ClangdInitializeResult: lsp.InitializeResult
 ---@field offsetEncoding? string
 
@@ -80,7 +70,14 @@ return {
         'configure.ac',
         '.git',
     },
-    capabilities = capabilities,
+    capabilities = {
+        textDocument = {
+            completion = {
+                editsNearCursor = true,
+            },
+        },
+        -- offsetEncoding = { 'utf-8', 'utf-16' },
+    },
     get_language_id = function(_, ftype)
         local t = { objc = 'objective-c', objcpp = 'objective-cpp', cuda = 'cuda-cpp' }
         return t[ftype] or ftype
@@ -93,17 +90,17 @@ return {
     end,
     on_attach = function(client, bufnr)
         vim.api.nvim_buf_create_user_command(bufnr, 'LspClangdSwitchSourceHeader',
-            function()
-                switch_source_header(bufnr, client)
-            end,
+            function() switch_source_header(bufnr, client) end,
             { desc = 'Switch between source/header' }
         )
 
         vim.api.nvim_buf_create_user_command(bufnr, 'LspClangdShowSymbolInfo',
-            function()
-                symbol_info(bufnr, client)
-            end,
+            function() symbol_info(bufnr, client) end,
             { desc = 'Show symbol info' }
         )
+
+        local set = require('utils').keys.set
+        set('n', 'grh', '<Cmd>LspClangdSwitchSourceHeader<CR>', { buf = bufnr, })
+        set('n', 'grs', '<Cmd>LspClangdShowSymbolInfo<CR>', { buf = bufnr, })
     end,
 }

@@ -1,4 +1,7 @@
 vim.g.c_syntax_for_h           = true
+vim.g.c_functions              = true
+vim.g.c_function_pointers      = true
+
 vim.g.have_nerd_font           = true
 vim.g.mapleader                = ' '
 vim.g.maplocalleader           = '\\'
@@ -33,7 +36,10 @@ vim.opt.signcolumn             = 'yes:1'
 
 vim.opt.hlsearch               = true
 vim.opt.incsearch              = true
-vim.opt.termguicolors          = vim.uv.os_uname().sysname ~= 'Linux' or (os.getenv('TERM') and os.getenv('TERM') ~= 'linux')
+
+vim.opt.termguicolors          = vim.uv.os_uname().sysname ~= 'Linux'
+    or (os.getenv('TERM') and os.getenv('TERM') ~= 'linux')
+
 vim.opt.winborder              = 'none'
 vim.opt.fillchars              = 'eob: '
 
@@ -55,7 +61,8 @@ vim.opt.shiftwidth             = 4
 vim.opt.autoindent             = true
 vim.opt.smartindent            = true
 vim.opt.cindent                = true
-vim.opt.cinoptions             = '>s,e0,n0,f0,{0,}0,^0,L-1,:s,=s,l0,b0,gs,hs,N0,E0,ps,ts,is,+s,c3,C0,/0,(2s,us,U0,w0,W0,k0,m0,j0,J0,)20,*70,#0,P0'
+vim.opt.cinoptions             =
+'>s,e0,n0,f0,{0,}0,^0,L-1,:s,=s,l0,b0,gs,hs,N0,E0,ps,ts,is,+s,c3,C0,/0,(2s,us,U0,w0,W0,k0,m0,j0,J0,)20,*70,#0,P0'
 vim.opt.wrap                   = false
 vim.opt.foldenable             = false
 vim.opt.syntax                 = 'ON'

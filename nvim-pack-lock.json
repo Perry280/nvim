@@ -3,7 +3,11 @@
     "blink.cmp": {
       "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
       "src": "https://github.com/saghen/blink.cmp",
-      "version": "1.0.0 - 2.0.0"
+      "version": "'main'"
+    },
+    "blink.lib": {
+      "rev": "1c9dfb261b8be35f689c6d83dfd3e92b7f59ecf8",
+      "src": "https://github.com/saghen/blink.lib"
     },
     "catppuccin": {
       "rev": "426dbebe06b5c69fd846ceb17b42e12f890aedf1",
@@ -19,7 +23,7 @@
       "src": "https://github.com/nvim-lualine/lualine.nvim"
     },
     "mini": {
-      "rev": "d76247d6e3ffa222784be5b156770e37c665f67e",
+      "rev": "5849ef04c32a6a8e55957b946c0a275801d87530",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "neo-tree": {

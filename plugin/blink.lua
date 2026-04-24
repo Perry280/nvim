@@ -1,5 +1,6 @@
 require('lazyloading').lazy_load({
     setup = function()
+        -- vim.cmd.packadd('blink.lib')
         vim.cmd.packadd('blink.cmp')
         local blink = require('blink.cmp')
 
@@ -11,7 +12,14 @@ require('lazyloading').lazy_load({
             },
             appearance = { nerd_font_variant = 'mono' },
             sources = { default = { 'lsp', 'path', 'snippets', 'buffer', --[['omni',]] --[['cmdline',]] }, },
-            fuzzy = { implementation = 'prefer_rust_with_warning' },
+            fuzzy = {
+                implementation = 'prefer_rust_with_warning',
+                sorts = {
+                    'exact',
+                    'score',
+                    'sort_text',
+                },
+            },
 
             completion = {
                 keyword = { range = 'full' },

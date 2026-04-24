@@ -1,6 +1,6 @@
----@alias colorscheme_table { [1]: string, name: string, opts: table}
+---@alias Colorscheme { [1]: string, name: string, opts: table}
 
----@type colorscheme_table[]
+---@type Colorscheme[]
 local colorschemes = {
     -- {
     --     "rose-pine/neovim",
@@ -141,6 +141,7 @@ local colorschemes = {
 vim.cmd.colorscheme('catppuccin-mocha')
 
 for _, colorscheme in ipairs(colorschemes) do
-    local cs = require(colorscheme.name)
-    if colorscheme.opts then cs.setup(colorscheme.opts) end
+    if colorscheme.opts then
+        require(colorscheme.name).setup(colorscheme.opts)
+    end
 end
