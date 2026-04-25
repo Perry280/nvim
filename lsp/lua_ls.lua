@@ -35,11 +35,11 @@ return {
                 callSnippet = 'Both',
                 keywordSnippet = 'Both',
             },
-            diagnostics = {
-                -- neededFileStatus = {
-                --     ['codestyle-check'] = 'Any',
-                -- },
-            },
+            -- diagnostics = {
+            --     neededFileStatus = {
+            --         ['codestyle-check'] = 'Any',
+            --     },
+            -- },
             hint = {
                 enable = true,
                 semicolon = 'Disable',
@@ -61,7 +61,7 @@ return {
             },
         },
     },
-    on_init = function(client)
+    on_init = function(client, _)
         if client.workspace_folders then
             local path = client.workspace_folders[1].name
             if path ~= vim.fn.stdpath('config') and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then
@@ -69,26 +69,28 @@ return {
             end
         end
 
-        ---@diagnostic disable-next-line: param-type-mismatch
-        client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
-            runtime = {
-                version = 'LuaJIT',
-                path = {
-                    'lua/?.lua',
-                    'lua/?/init.lua'
+        client.config.settings.Lua = vim.tbl_deep_extend('force',
+            client.config.settings.Lua --[[@as table]],
+            {
+                runtime = {
+                    version = 'LuaJIT',
+                    path = {
+                        'lua/?.lua',
+                        'lua/?/init.lua'
+                    },
                 },
-            },
-            diagnostics = { globals = { 'vim', }, },
-            workspace = {
-                checkThirdParty = false,
-                library = {
-                    vim.env.VIMRUNTIME,
-                    '${3rd}/luv/library',
-                    -- '${3rd}/busted/library',
-                    -- vim.fn.stdpath('config'),
-                }
-                -- library = vim.api.nvim_get_runtime_file('', true),
-            },
-        })
+                diagnostics = { globals = { 'vim', }, },
+                workspace = {
+                    checkThirdParty = false,
+                    library = {
+                        vim.env.VIMRUNTIME,
+                        -- '${3rd}/luv/library',
+                        -- '${3rd}/busted/library',
+                        -- vim.fn.stdpath('config'),
+                        -- '~/.local/share/nvim/site/pack/core'
+                    }
+                    -- library = vim.api.nvim_get_runtime_file('', true),
+                },
+            })
     end,
 }

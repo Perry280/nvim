@@ -1,7 +1,20 @@
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+local function snacks_rename()
+    local function on_move(data)
+        ---@diagnostic disable-next-line: undefined-global
+        Snacks.rename.on_rename_file(data.source, data.destination)
+    end
+    local events = require("neo-tree.events")
+    return {
+        { event = events.FILE_MOVED,   handler = on_move },
+        { event = events.FILE_RENAMED, handler = on_move },
+    }
+end
+
 require('neo-tree').setup({
+    event_handlers = snacks_rename(),
     sources = {
         'filesystem',
         'buffers',
@@ -16,6 +29,7 @@ require('neo-tree').setup({
             { source = 'git_status' },
             -- { source = 'document_symbols' },
         },
+        truncation_character = '...',
     },
     window = {
         mappings = {

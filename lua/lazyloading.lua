@@ -8,6 +8,7 @@ local utils_keys = require('utils').keys
 ---@field keys? keymapSet[]
 ---@field events? vim.api.keyset.events[]
 ---@field cmds? string[]
+---@field ft? string | string[]
 
 ---@param keys keymapSet[]
 local function del_lazy_keymaps(keys)
@@ -83,6 +84,16 @@ function M.lazy_load(spec)
                 end
             end)
         end
+    end
+
+    if spec.ft then
+        table.insert(autocmd_ids, vim.api.nvim_create_autocmd('FileType', {
+            pattern = spec.ft,
+            once = true,
+            callback = function()
+                plugin_setup(spec, autocmd_ids)
+            end,
+        }))
     end
 end
 

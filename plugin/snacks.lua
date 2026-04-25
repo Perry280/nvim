@@ -1,4 +1,5 @@
 require('snacks').setup({
+    image = { enabled = true, },
     indent = { -- │
         enabled = true,
         animate = { enabled = false, },
@@ -28,7 +29,6 @@ require('snacks').setup({
     gh = { enabled = false, },
     git = { enabled = false, },
     gitbrowse = { enabled = false, },
-    image = { enabled = false, },
     input = { enabled = false, },
     keymap = { enabled = false, },
     layout = { enabled = false, },
@@ -49,7 +49,6 @@ require('snacks').setup({
 })
 
 local set = require('utils').keys.set
----@diagnostic disable-next-line: undefined-global
 local SP = Snacks.picker
 set('n', '<leader>ff', function() SP.smart({ multi = { "files", }, }) end, { desc = 'Snacks: find files', })
 set('n', '<leader>fg', SP.grep, { desc = 'Snacks: grep', })

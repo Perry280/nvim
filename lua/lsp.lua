@@ -131,8 +131,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
         local client = vim.lsp.get_client_by_id(args.data.client_id)
         if client == nil then
-            vim.notify('LspAttach autocommand failed.', vim.log.levels.ERROR)
-            return
+            error('LspAttach autocommand failed.', vim.log.levels.ERROR)
         end
 
         local bufnr = args.buf

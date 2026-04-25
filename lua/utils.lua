@@ -72,59 +72,131 @@ end
 
 -- TERMINAL
 
----@param direction 'horizontal' | 'vertical' | 'float'
+---@class TermID
+---@field bufnr integer
+---@field winnr integer
+---@field jobnr integer
+
+---@alias direction 'horizontal' | 'vertical' | 'floating'
+
+---@type { terminals: { vertical: TermID[], horizontal: TermID[], floating: TermID[], }, buf_dir: table<integer, direction>, }
+local active_terminals = {
+    terminals = {
+        vertical = {},
+        horizontal = {},
+        floating = {},
+    },
+    buf_dir = {},
+}
+
+---@param size? number
+---@return vim.api.keyset.win_config
+local function horizontal_window_config(size)
+    local height = #active_terminals.terminals.horizontal == 0 and M.windows.height(size)
+        or M.windows.height(1 / (#active_terminals.terminals.horizontal + 1))
+
+    return { split = 'below', height = height, }
+end
+
+---@param size? number
+---@return vim.api.keyset.win_config
+local function vertical_window_config(size)
+    local width = #active_terminals.terminals.vertical == 0 and M.windows.width(size)
+        or M.windows.width(1 / (#active_terminals.terminals.vertical + 1))
+
+    return { split = 'right', width = width, }
+end
+
+---@param size? number
+---@return vim.api.keyset.win_config
+local function floating_window_config(size)
+    local padding = (1 - (size or M.windows.fallback_window_size)) / 2
+    return {
+        border = 'single', -- 'bold', 'double', 'none', 'rounded', 'shadow', 'single', 'solid'
+        relative = 'win',
+        row = M.windows.height(padding),
+        col = M.windows.width(padding),
+        height = M.windows.height(size),
+        width = M.windows.width(size),
+    }
+end
+
+---@param direction direction
 ---@param size? number
 function M.terminal.open_term(direction, size)
-    local w = M.windows
-
-    local window_direction = nil
+    local win_config = nil
     if direction == 'horizontal' then
-        window_direction = { split = 'below', height = w.height(size), }
+        win_config = horizontal_window_config(size)
     elseif direction == 'vertical' then
-        window_direction = { split = 'right', width = w.width(size), }
-    elseif direction == 'float' then
-        local padding = (1 - size) / 2
-        window_direction = {
-            border = 'single', -- 'bold', 'double', 'none', 'rounded', 'shadow', 'single', 'solid'
-            relative = 'win',
-            row = w.height(padding),
-            col = w.width(padding),
-            height = w.height(size),
-            width = w.width(size),
-        }
+        win_config = vertical_window_config(size)
+    elseif direction == 'floating' then
+        if #active_terminals.terminals.floating > 0 then
+            vim.notify('ERROR: A floating terminal is already open.', vim.log.levels.ERROR)
+        end
+        win_config = floating_window_config(size)
     else
-        vim.notify('ERROR: Invalid direction.', vim.log.levels.ERROR)
-        return
+        error('ERROR: Invalid direction.', vim.log.levels.ERROR)
     end
 
     local bufnr = vim.api.nvim_create_buf(false, false)
     if bufnr == 0 then
-        vim.notify('ERROR: could not create terminal buffer', vim.log.level.ERROR)
-        return
+        error('ERROR: could not create terminal buffer', vim.log.level.ERROR)
     end
 
-    local wconfig = vim.tbl_deep_extend('force', window_direction --[[@as table]], { win = vim.api.nvim_get_current_win(), })
-    local winnr = vim.api.nvim_open_win(bufnr, true, wconfig)
+    win_config.win = vim.api.nvim_get_current_win()
+    local winnr = vim.api.nvim_open_win(bufnr, true, win_config)
     if winnr == 0 then
         vim.api.nvim_buf_delete(bufnr, { force = true, unload = false })
-        vim.notify('ERROR: could not open terminal windows', vim.log.level.ERROR)
-        return
+        error('ERROR: could not open terminal windows', vim.log.level.ERROR)
     end
     vim.api.nvim_set_current_buf(bufnr)
 
-    -- local jid = vim.fn.jobstart(vim.o.shell, { term = true, })
-    -- if jid == 0 or jid == -1 then
-    --     vim.api.nvim_win_close(wid, true)
-    --     vim.api.nvim_buf_delete(bid, { force = true, unload = false })
-    --     if jid == 0 then
-    --         vim.notify('Error: could not open terminal: jobstart() arguments are invalid', vim.log.level.ERROR)
-    --     elseif jid == -1 then
-    --         vim.notify('Error: could not open terminal: jobstart() argument {cmd} cannot be executed',
-    --             vim.log.level.ERROR)
-    --     end
-    -- end
-    vim.cmd.terminal()
+    local jobnr = vim.fn.jobstart(vim.o.shell, { term = true, })
+    if jobnr == 0 or jobnr == -1 then
+        vim.api.nvim_win_close(winnr, true)
+        vim.api.nvim_buf_delete(bufnr, { force = true, unload = false })
+        if jobnr == 0 then
+            error('Error: could not open terminal: jobstart() arguments are invalid', vim.log.level.ERROR)
+        elseif jobnr == -1 then
+            error(
+                'Error: could not open terminal: jobstart() argument {cmd} cannot be executed',
+                vim.log.level.ERROR
+            )
+        end
+    end
+    -- print('bufnr: ' .. bufnr .. '\nwinnr: ' .. winnr .. '\njobnr: ' .. jobnr)
+    -- vim.cmd.terminal()
     vim.cmd.startinsert()
+
+    ---@type TermID
+    local term_id = {
+        bufnr = bufnr,
+        winnr = winnr,
+        jobnr = jobnr,
+    }
+
+    table.insert(active_terminals.terminals[direction], term_id)
 end
+
+vim.api.nvim_create_autocmd('TermClose', {
+    callback = function(args)
+        -- vim.print(vim.v.event)
+        -- vim.print(args.buf)
+        local bufnr = args.buf
+        local term_dir = active_terminals.buf_dir[bufnr]
+        if term_dir == nil then return false end
+
+        local tlist = active_terminals.terminals[term_dir] --[[@as TermID[] --]]
+
+        for i, term in ipairs(tlist) do
+            if term.bufnr == bufnr then
+                table.remove(term, i)
+                return false
+            end
+        end
+
+        error('Error in closing terminal.', vim.log.levels.WARN)
+    end
+})
 
 return M

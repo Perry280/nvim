@@ -3,7 +3,7 @@
 local function switch_source_header(bufnr, client)
     local method_name = 'textDocument/switchSourceHeader'
     if not client or not client:supports_method(method_name --[[@as LspMethod]]) then
-        vim.notify(('method %s is not supported by any servers active on the current buffer'):format(method_name))
+        vim.notify('Method ' .. method_name .. ' is not supported by any servers active on the current buffer')
         return
     end
     local params = vim.lsp.util.make_text_document_params(bufnr)
@@ -15,7 +15,7 @@ local function switch_source_header(bufnr, client)
             if err then error(tostring(err)) end
 
             if not result then
-                vim.notify('corresponding file cannot be determined')
+                vim.notify('Corresponding file cannot be determined')
                 return
             end
             vim.cmd.edit(vim.uri_to_fname(result))
@@ -40,8 +40,8 @@ local function symbol_info(bufnr, client)
         function(err, res)
             if err or #res == 0 then return end
 
-            local container = string.format('container: %s', res[1].containerName)
-            local name = string.format('name: %s', res[1].name)
+            local container = 'Container: ' .. res[1].containerName
+            local name = 'Name: ' .. res[1].name
             vim.lsp.util.open_floating_preview({ name, container }, '', {
                 height = 2,
                 width = math.max(string.len(name), string.len(container)),

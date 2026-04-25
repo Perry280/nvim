@@ -24,7 +24,7 @@ user_command('PackDelAll', function()
     vim.pack.del(get_plugins('all'))
 end, {})
 
-user_command('PackDelAllInactive', function()
+user_command('PackDelInactive', function()
     local pkg_names = get_plugins('inactive')
     if #pkg_names == 0 then
         vim.notify('No inactive plugins found.', vim.log.levels.INFO)
@@ -35,9 +35,9 @@ end, {})
 
 user_command('PackGet', function(args)
     vim.print(vim.pack.get(args.fargs))
-end, {})
+end, { nargs = '+', })
 
-user_command('PackGetNames', function()
+user_command('PackGetAll', function()
     local pkg_names = get_plugins('all')
     if #pkg_names == 0 then
         vim.notify('No plugins found.', vim.log.levels.INFO)
@@ -46,7 +46,7 @@ user_command('PackGetNames', function()
     end
 end, {})
 
-user_command('PackGetNamesInactive', function()
+user_command('PackGetInactive', function()
     local pkg_names = get_plugins('inactive')
     if #pkg_names == 0 then
         vim.notify('No inactive plugins found.', vim.log.levels.INFO)
@@ -55,7 +55,7 @@ user_command('PackGetNamesInactive', function()
     end
 end, {})
 
-user_command('PackGetNamesActive', function()
+user_command('PackGetActive', function()
     local pkg_names = get_plugins('active')
     if #pkg_names == 0 then
         vim.notify('No active plugins found.', vim.log.levels.INFO)

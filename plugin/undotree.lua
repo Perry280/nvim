@@ -1,3 +1,5 @@
+local width = require('utils').windows.width
+
 require('lazyloading').lazy_load({
     setup = function()
         vim.cmd.packadd('nvim.undotree')
@@ -8,8 +10,8 @@ require('lazyloading').lazy_load({
             lhs = '<leader><F5>',
             rhs = function()
                 require('undotree').open({
-                    command = require('utils').windows.width(0.2) .. 'vnew'
-                } --[[@as vim.undotree.opts]])
+                    command = width(0.2) .. 'vnew'
+                })
             end,
         },
     },

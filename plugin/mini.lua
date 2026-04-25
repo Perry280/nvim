@@ -1,26 +1,48 @@
----@alias MiniPlugins 'ai' | 'align' | 'animate' | 'base16' | 'basics' | 'bracketed' | 'bufremove' | 'clue' | 'cmdline' | 'colors' | 'comment' | 'completion' | 'cursorword' | 'deps' | 'diff' | 'doc' | 'extra' | 'files' | 'fuzzy' | 'git' | 'hipatterns' | 'hues' | 'icons' | 'indentscope' | 'jump' | 'jump2d' | 'keymap' | 'map' | 'misc' | 'move' | 'notify' | 'operators' | 'pairs' | 'pick' | 'sessions' | 'snippets' | 'splitjoin' | 'starter' | 'statusline' | 'surround' | 'tabline' | 'test' | 'trailspace' | 'visits'
-
----@type table<MiniPlugins, table>
-local active_plugins = {
-    comment = { options = { ignore_blank_line = true, }, },
-    cursorword = { delay = 80, },
-    diff = { view = { style = 'sign' }, },
-    pairs = {
-        ['('] = { action = 'open', pair = '()', neigh_pattern = '^[^\\][%s%p%]}]$' },
-        ['['] = { action = 'open', pair = '[]', neigh_pattern = '^[^\\][%s%p)}]$' },
-        ['{'] = { action = 'open', pair = '{}', neigh_pattern = '^[^\\][%s%p)%]]$' },
-
-        [')'] = { action = 'close', pair = '()', neigh_pattern = '^[^\\]' },
-        [']'] = { action = 'close', pair = '[]', neigh_pattern = '^[^\\]' },
-        ['}'] = { action = 'close', pair = '{}', neigh_pattern = '^[^\\]' },
-
-        ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '^[^\\][%s%p)%]}]$', register = { cr = false } },
-        ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '^[^\\][%s%p)%]}]$', register = { cr = false } },
-        ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '^[^\\][%s%p)%]}]$', register = { cr = false } },
-    },
-    surround = { respect_selection_type = true, },
-}
-
+---@alias MiniPlugins
+---| 'ai'
+---| 'align'
+---| 'animate'
+---| 'base16'
+---| 'basics'
+---| 'bracketed'
+---| 'bufremove'
+---| 'clue'
+---| 'cmdline'
+---| 'colors'
+---| 'comment'
+---| 'completion'
+---| 'cursorword'
+---| 'deps'
+---| 'diff'
+---| 'doc'
+---| 'extra'
+---| 'files'
+---| 'fuzzy'
+---| 'git'
+---| 'hipatterns'
+---| 'hues'
+---| 'icons'
+---| 'indentscope'
+---| 'jump'
+---| 'jump2d'
+---| 'keymap'
+---| 'map'
+---| 'misc'
+---| 'move'
+---| 'notify'
+---| 'operators'
+---| 'pairs'
+---| 'pick'
+---| 'sessions'
+---| 'snippets'
+---| 'splitjoin'
+---| 'starter'
+---| 'statusline'
+---| 'surround'
+---| 'tabline'
+---| 'test'
+---| 'trailspace'
+---| 'visits'
 
 vim.g.miniai_disable          = true -- ai
 vim.g.minialign_disable       = true -- align
@@ -67,6 +89,26 @@ vim.g.minitest_disable        = true -- test
 vim.g.minitrailspace_disable  = true -- trailspace
 vim.g.minivisits_disable      = true -- visits
 
+---@type table<MiniPlugins, table>
+local active_plugins          = {
+    comment = { options = { ignore_blank_line = true, }, },
+    cursorword = { delay = 80, },
+    diff = { view = { style = 'sign' }, },
+    pairs = {
+        ['('] = { action = 'open', pair = '()', neigh_pattern = '^[^\\][%s%p%]}]$' },
+        ['['] = { action = 'open', pair = '[]', neigh_pattern = '^[^\\][%s%p)}]$' },
+        ['{'] = { action = 'open', pair = '{}', neigh_pattern = '^[^\\][%s%p)%]]$' },
+
+        [')'] = { action = 'close', pair = '()', neigh_pattern = '^[^\\]' },
+        [']'] = { action = 'close', pair = '[]', neigh_pattern = '^[^\\]' },
+        ['}'] = { action = 'close', pair = '{}', neigh_pattern = '^[^\\]' },
+
+        ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '^[^\\][%s%p)%]}]$', register = { cr = false } },
+        ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '^[^\\][%s%p)%]}]$', register = { cr = false } },
+        ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '^[^\\][%s%p)%]}]$', register = { cr = false } },
+    },
+    surround = { respect_selection_type = true, },
+}
 
 -- ---@type table<MiniPlugins, table>
 -- local mini = {}

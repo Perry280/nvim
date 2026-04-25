@@ -54,7 +54,7 @@ set('n', '<leader>tt', '<Cmd>tabnew<CR><Cmd>terminal<CR>i', { desc = 'Open termi
 local open_term = require('utils').terminal.open_term
 set('n', '<leader>th', function() open_term('horizontal') end, { desc = 'Open terminal in a new horizontal buffer', })
 set('n', '<leader>tv', function() open_term('vertical') end, { desc = 'Open terminal in a new vertical buffer', })
-set('n', '<leader>tf', function() open_term('float') end, { desc = 'Open terminal in a new floating window', })
+set('n', '<leader>tf', function() open_term('floating') end, { desc = 'Open terminal in a new floating window', })
 
 if vim.g.loaded_netrw ~= 1 then
     set('n', '<C-n>', '<Cmd>Ex<CR>2j', { desc = 'Open netrw in current directory' })
