@@ -84,13 +84,14 @@ return {
                     checkThirdParty = false,
                     library = {
                         vim.env.VIMRUNTIME,
-                        -- '${3rd}/luv/library',
+                        '${3rd}/luv/library',
                         -- '${3rd}/busted/library',
                         -- vim.fn.stdpath('config'),
                         -- '~/.local/share/nvim/site/pack/core'
                     }
                     -- library = vim.api.nvim_get_runtime_file('', true),
                 },
-            })
+            }
+        )
     end,
 }

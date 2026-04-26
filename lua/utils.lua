@@ -175,22 +175,22 @@ function M.terminal.open_term(direction, size)
         jobnr = jobnr,
     }
 
+    active_terminals.buf_dir[bufnr] = direction
     table.insert(active_terminals.terminals[direction], term_id)
 end
 
 vim.api.nvim_create_autocmd('TermClose', {
     callback = function(args)
-        -- vim.print(vim.v.event)
-        -- vim.print(args.buf)
         local bufnr = args.buf
         local term_dir = active_terminals.buf_dir[bufnr]
         if term_dir == nil then return false end
 
+        active_terminals.buf_dir[bufnr] = nil
         local tlist = active_terminals.terminals[term_dir] --[[@as TermID[] --]]
 
         for i, term in ipairs(tlist) do
             if term.bufnr == bufnr then
-                table.remove(term, i)
+                table.remove(tlist, i)
                 return false
             end
         end

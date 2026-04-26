@@ -24,6 +24,5 @@ vim.pack.add({
     -- { src = gh 'nvim-telescope/telescope.nvim',            name = 'telescope',                 version = vim.version.range('0.2.*'), },
     -- { src = gh 'nvim-telescope/telescope-fzf-native.nvim', name = 'telescope-fzf-native', },
     -- { src = gh 'nvim-telescope/telescope-ui-select.nvim',  name = 'telescope-ui-select', },
-    { src = gh 'folke/lazydev.nvim',   name = 'lazydev', },
     { src = gh 'folke/trouble.nvim',   name = 'trouble', },
 }, { load = function() end, })

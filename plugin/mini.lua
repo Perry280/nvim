@@ -95,17 +95,19 @@ local active_plugins          = {
     cursorword = { delay = 80, },
     diff = { view = { style = 'sign' }, },
     pairs = {
-        ['('] = { action = 'open', pair = '()', neigh_pattern = '^[^\\][%s%p%]}]$' },
-        ['['] = { action = 'open', pair = '[]', neigh_pattern = '^[^\\][%s%p)}]$' },
-        ['{'] = { action = 'open', pair = '{}', neigh_pattern = '^[^\\][%s%p)%]]$' },
+        mappings = {
+            ['('] = { action = 'open', pair = '()', neigh_pattern = '^[^\\][^%w%)]$' },
+            ['['] = { action = 'open', pair = '[]', neigh_pattern = '^[^\\][^%w]]$' },
+            ['{'] = { action = 'open', pair = '{}', neigh_pattern = '^[^\\][^%w}]$' },
 
-        [')'] = { action = 'close', pair = '()', neigh_pattern = '^[^\\]' },
-        [']'] = { action = 'close', pair = '[]', neigh_pattern = '^[^\\]' },
-        ['}'] = { action = 'close', pair = '{}', neigh_pattern = '^[^\\]' },
+            [')'] = { action = 'close', pair = '()', neigh_pattern = '^[^\\]' },
+            [']'] = { action = 'close', pair = '[]', neigh_pattern = '^[^\\]' },
+            ['}'] = { action = 'close', pair = '{}', neigh_pattern = '^[^\\]' },
 
-        ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '^[^\\][%s%p)%]}]$', register = { cr = false } },
-        ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '^[^\\][%s%p)%]}]$', register = { cr = false } },
-        ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '^[^\\][%s%p)%]}]$', register = { cr = false } },
+            ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '^[^\\][^%w"%)]}]$', register = { cr = false } },
+            ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = "^[^\\][^%w'%)]}]$", register = { cr = false } },
+            ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '^[^\\][^%w`%)]}]$', register = { cr = false } },
+        },
     },
     surround = { respect_selection_type = true, },
 }
