@@ -3,7 +3,9 @@ local function gh(plugin) return 'https://github.com/' .. plugin end
 vim.pack.add({
     -- { src = gh 'catppuccin/nvim',                             name = 'catppuccin', },
     { src = gh 'AlexvZyl/nordic.nvim',                        name = 'nordic', },
-    -- { src = gh 'rebelot/kanagawa.nvim', name = 'kanagawa', },
+    { src = gh 'rebelot/kanagawa.nvim',                       name = 'kanagawa', },
+    -- { src = gh '',                                            name = '', },
+
     { src = gh 'nvim-treesitter/nvim-treesitter', },
     { src = gh 'nvim-treesitter/nvim-treesitter-textobjects', },
     { src = gh 'nvim-mini/mini.nvim',                         name = 'mini', },

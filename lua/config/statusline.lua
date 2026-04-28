@@ -1,4 +1,6 @@
-local hl = function(group)
+local M = {}
+
+local function hl(group)
     return vim.api.nvim_get_hl(0, {
         name = group,
         link = false,
@@ -27,14 +29,6 @@ local function set_hl_groups()
         vim.api.nvim_set_hl(0, group .. "Inverted", opts)
     end
 end
-
-set_hl_groups()
-
-vim.api.nvim_create_autocmd("ColorScheme", {
-    group = vim.api.nvim_create_augroup("my_statusline", {}),
-    desc = "Re-apply statusline highlights on colorscheme change",
-    callback = set_hl_groups,
-})
 
 local function statusline_bufnr()
     return vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0)
@@ -90,19 +84,27 @@ local function mode_component()
     })
 end
 
-return {
-    setup = function()
-        local active_win = vim.fn.win_getid()
-        local status_win = vim.g.statusline_winid
+function M.setup()
+    set_hl_groups()
 
-        if status_win ~= active_win then
-            return "Statusline for inactive windows"
-        end
+    vim.api.nvim_create_autocmd("ColorScheme", {
+        group = vim.api.nvim_create_augroup("my_statusline", {}),
+        desc = "Re-apply statusline highlights on colorscheme change",
+        callback = set_hl_groups,
+    })
 
-        return table.concat({
-            mode_component(),
-            "%=", -- Left/right separator
-            "Statusline right-aligned stuff",
-        })
+    local active_win = vim.fn.win_getid()
+    local status_win = vim.g.statusline_winid
+
+    if status_win ~= active_win then
+        return "Statusline for inactive windows"
     end
-}
+
+    return table.concat({
+        mode_component(),
+        "%=", -- Left/right separator
+        "Statusline right-aligned stuff",
+    })
+end
+
+return M

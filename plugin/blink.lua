@@ -2,9 +2,8 @@ require('lazyloading').lazy_load({
     setup = function()
         -- vim.cmd.packadd('blink.lib')
         vim.cmd.packadd('blink.cmp')
-        local blink = require('blink.cmp')
 
-        blink.setup({
+        require('blink.cmp').setup({
             keymap = {
                 preset = 'default',
                 -- ['<C-u>'] = { 'scroll_signature_up', 'fallback' },

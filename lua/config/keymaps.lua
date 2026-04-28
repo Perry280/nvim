@@ -49,12 +49,12 @@ set({ 'i', 'c' }, '<M-i>', '<C-o>_', { desc = 'Jump to start of the line' })
 
 -- Terminal
 set('t', '<ESC>', '<C-\\><C-N>', { desc = 'Switch to normal mode' })
-set('n', '<leader>tt', '<Cmd>tabnew<CR><Cmd>terminal<CR>i', { desc = 'Open terminal in a new tab', })
+-- set('n', '<leader>tt', '<Cmd>tabnew<CR><Cmd>terminal<CR>i', { desc = 'Open terminal in a new tab', })
 
-local open_term = require('utils').terminal.open_term
-set('n', '<leader>th', function() open_term('horizontal') end, { desc = 'Open terminal in a new horizontal buffer', })
-set('n', '<leader>tv', function() open_term('vertical') end, { desc = 'Open terminal in a new vertical buffer', })
-set('n', '<leader>tf', function() open_term('floating') end, { desc = 'Open terminal in a new floating window', })
+-- local open_term = require('utils').terminal.open_term
+-- set('n', '<leader>th', function() open_term('horizontal') end, { desc = 'Open terminal in a new horizontal buffer', })
+-- set('n', '<leader>tv', function() open_term('vertical') end, { desc = 'Open terminal in a new vertical buffer', })
+-- set('n', '<leader>tf', function() open_term('floating') end, { desc = 'Open terminal in a new floating window', })
 
 if vim.g.loaded_netrw ~= 1 then
     set('n', '<C-n>', '<Cmd>Ex<CR>2j', { desc = 'Open netrw in current directory' })

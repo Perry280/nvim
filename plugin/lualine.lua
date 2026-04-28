@@ -1,3 +1,8 @@
+-- if true then
+--     vim.opt.statusline = "%!v:lua.require('config.statusline').setup()"
+--     return
+-- end
+
 local function get_distro()
     local linux = ''
     local arch = '󰣇'
@@ -24,8 +29,8 @@ require('lualine').setup({
         'trouble',
     },
     sections = {
-        lualine_c = { 'filename', { '', draw_empty = true, }, },
-        lualine_x = { { '', draw_empty = true, }, 'filetype', },
+        lualine_c = { 'filename', },
+        lualine_x = { 'filetype', },
         lualine_y = { 'progress', 'location', },
         lualine_z = {
             {
@@ -37,5 +42,3 @@ require('lualine').setup({
         },
     },
 })
-
--- vim.opt.statusline = "%!v:lua.require('config.statusline').setup()"
