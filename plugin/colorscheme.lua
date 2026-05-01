@@ -78,6 +78,12 @@ local colorschemes = {
     {
         'alexvzyl/nordic.nvim',
         name = 'nordic',
+        opts = {
+            transparent = {
+                bg = true,
+                float = false,
+            }
+        }
     },
     -- {
     --     'folke/tokyonight.nvim',

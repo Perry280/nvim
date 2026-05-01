@@ -1,6 +1,5 @@
 ---@diagnostic disable: undefined-global
 require('snacks').setup({
-    image = { enabled = true, },
     indent = { -- │
         enabled = true,
         animate = { enabled = false, },
@@ -34,6 +33,7 @@ require('snacks').setup({
     gh = { enabled = false, },
     git = { enabled = false, },
     gitbrowse = { enabled = false, },
+    image = { enabled = false, },
     input = { enabled = false, },
     keymap = { enabled = false, },
     layout = { enabled = false, },

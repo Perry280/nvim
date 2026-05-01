@@ -88,7 +88,6 @@ function M.setup()
     set_hl_groups()
 
     vim.api.nvim_create_autocmd("ColorScheme", {
-        group = vim.api.nvim_create_augroup("my_statusline", {}),
         desc = "Re-apply statusline highlights on colorscheme change",
         callback = set_hl_groups,
     })
@@ -96,15 +95,15 @@ function M.setup()
     local active_win = vim.fn.win_getid()
     local status_win = vim.g.statusline_winid
 
-    if status_win ~= active_win then
-        return "Statusline for inactive windows"
+    if status_win == active_win then
+        vim.opt.statusline = table.concat({
+            mode_component(),
+            "%=", -- Left/right separator
+            "Statusline right-aligned stuff",
+        })
+    else
+        vim.opt.statusline = "Inactive"
     end
-
-    return table.concat({
-        mode_component(),
-        "%=", -- Left/right separator
-        "Statusline right-aligned stuff",
-    })
 end
 
 return M

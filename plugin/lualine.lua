@@ -1,5 +1,5 @@
 -- if true then
---     vim.opt.statusline = "%!v:lua.require('config.statusline').setup()"
+--     require('config.statusline').setup()
 --     return
 -- end
 
@@ -42,3 +42,5 @@ require('lualine').setup({
         },
     },
 })
+
+vim.opt.showmode = false
