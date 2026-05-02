@@ -2,7 +2,9 @@ vim.g.c_syntax_for_h           = true
 vim.g.c_functions              = true
 vim.g.c_function_pointers      = true
 
-vim.g.have_nerd_font           = true
+vim.g.have_nerd_font           = vim.uv.os_uname().sysname ~= 'Linux'
+    or (os.getenv('TERM') and os.getenv('TERM') ~= 'linux')
+
 vim.g.mapleader                = ' '
 vim.g.maplocalleader           = '\\'
 
@@ -11,8 +13,9 @@ vim.g.loaded_perl_provider     = 0
 vim.g.loaded_python3_provider  = 0
 vim.g.loaded_ruby_provider     = 0
 
-vim.g.loaded_netrw             = 1
-vim.g.loaded_netrwPlugin       = 1
+local user                     = vim.uv.os_getenv("USER")
+vim.g.loaded_netrw             = not user and 1 or (user ~= "root" and 1 or 0)
+vim.g.loaded_netrwPlugin       = vim.g.loaded_netrw
 vim.g.loaded_shada_plugin      = 1
 vim.g.loaded_gzip              = 1
 vim.g.loaded_spec              = 1
