@@ -50,17 +50,16 @@ set({ 'i', 'c' }, '<M-i>', '<C-o>_', { desc = 'Jump to start of the line' })
 -- Terminal
 set('t', '<ESC>', '<C-\\><C-N>', { desc = 'Switch to normal mode' })
 
-local user = vim.uv.os_getenv("USER")
-if user and user == "root" then
+if vim.g.loaded_netrw ~= 1 then
+    -- Terminal
     set('n', '<leader>tt', '<Cmd>tabnew<CR><Cmd>terminal<CR>i', { desc = 'Open terminal in a new tab', })
 
     local open_term = require('utils').terminal.open_term
     set('n', '<leader>th', function() open_term('horizontal') end, { desc = 'Open terminal in a new horizontal buffer', })
     set('n', '<leader>tv', function() open_term('vertical') end, { desc = 'Open terminal in a new vertical buffer', })
     set('n', '<leader>tf', function() open_term('floating') end, { desc = 'Open terminal in a new floating window', })
-end
 
-if vim.g.loaded_netrw ~= 1 then
+    -- netrw
     set('n', '<C-n>', '<Cmd>Ex<CR>2j', { desc = 'Open netrw in current directory' })
     set('n', '<leader>N', '<Cmd>e .<CR>', { desc = 'Open netrw in root directory' })
 

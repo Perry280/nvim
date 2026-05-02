@@ -1,6 +1,7 @@
 require('config')
 
-if vim.uv.os_getenv("USER") == "root" then
+local user = vim.uv.os_getenv("USER")
+if user and user == "root" then
     return
 end
 

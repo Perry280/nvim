@@ -14,7 +14,7 @@ vim.g.loaded_python3_provider  = 0
 vim.g.loaded_ruby_provider     = 0
 
 local user                     = vim.uv.os_getenv("USER")
-vim.g.loaded_netrw             = not user and 1 or (user ~= "root" and 1 or 0)
+vim.g.loaded_netrw             = not user and 1 or (user ~= "root" and 1 or nil)
 vim.g.loaded_netrwPlugin       = vim.g.loaded_netrw
 vim.g.loaded_shada_plugin      = 1
 vim.g.loaded_gzip              = 1
