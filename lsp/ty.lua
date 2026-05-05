@@ -8,7 +8,8 @@ return {
         'setup.py',
         'setup.cfg',
         'requirements.txt',
-        '.git'
+        '.git',
+        '.venv',
     },
     on_attach = function(client, _)
         client.server_capabilities.semanticTokensProvider = nil

@@ -21,8 +21,8 @@ vim.pack.add({
 
 vim.pack.add({
     { src = gh 'ThePrimeagen/harpoon', version = 'harpoon2' },
-    { src = gh 'saghen/blink.cmp',     version = vim.version.range('1.*'), },
-    -- { src = gh 'saghen/blink.lib', },
+    { src = gh 'saghen/blink.lib', },
+    { src = gh 'saghen/blink.cmp', }, --     version = vim.version.range('2.*'), },
     -- { src = gh 'nvim-telescope/telescope.nvim',            name = 'telescope',                 version = vim.version.range('0.2.*'), },
     -- { src = gh 'nvim-telescope/telescope-fzf-native.nvim', name = 'telescope-fzf-native', },
     -- { src = gh 'nvim-telescope/telescope-ui-select.nvim',  name = 'telescope-ui-select', },
