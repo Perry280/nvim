@@ -10,12 +10,12 @@ vim.pack.add({
     { src = gh 'nvim-treesitter/nvim-treesitter-textobjects', },
     { src = gh 'nvim-mini/mini.nvim',                         name = 'mini', },
     { src = gh 'folke/snacks.nvim',                           name = 'snacks', },
-    { src = gh 'nvim-neo-tree/neo-tree.nvim',                 name = 'neo-tree', version = vim.version.range('3'), },
+    -- { src = gh 'nvim-neo-tree/neo-tree.nvim',                 name = 'neo-tree', version = vim.version.range('3'), },
     { src = gh 'nvim-lualine/lualine.nvim',                   name = 'lualine', },
 
     -- dependencies
-    { src = gh 'nvim-lua/plenary.nvim',                       name = 'plenary', },
-    { src = gh 'MunifTanjim/nui.nvim',                        name = 'nui' },
+    -- { src = gh 'nvim-lua/plenary.nvim',                       name = 'plenary', },
+    -- { src = gh 'MunifTanjim/nui.nvim',                        name = 'nui' },
     { src = gh 'nvim-tree/nvim-web-devicons', },
 }) -- , { load = true, })
 

@@ -30,7 +30,11 @@ vim.g.loaded_spellfile_plugin  = 1
 -- vim.opt.shadafile              = 'NONE'
 
 -- vim.opt.autocomplete           = true
+vim.opt.complete               = '.,w,b,o'
 vim.opt.completeopt            = 'menu,popup,menuone,noselect,fuzzy,preview'
+
+vim.opt.foldmethod             = 'expr'
+vim.opt.foldexpr               = 'v:lua.vim.treesitter.foldexpr()'
 
 vim.opt.cursorline             = true
 vim.opt.number                 = true

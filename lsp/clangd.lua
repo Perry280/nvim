@@ -6,11 +6,9 @@ local function switch_source_header(bufnr, client)
         vim.notify('Method ' .. method_name .. ' is not supported by any servers active on the current buffer')
         return
     end
-    local params = vim.lsp.util.make_text_document_params(bufnr)
-    ---@diagnostic disable-next-line: param-type-mismatch
     client:request(
         method_name --[[@as LspRequest]],
-        params,
+        vim.lsp.util.make_text_document_params(bufnr),
         function(err, result)
             if err then error(tostring(err)) end
 
@@ -33,10 +31,9 @@ local function symbol_info(bufnr, client)
         return
     end
     local win = vim.api.nvim_get_current_win()
-    local params = vim.lsp.util.make_position_params(win, client.offset_encoding)
     client:request(
         method_name --[[@as LspRequest]],
-        params,
+        vim.lsp.util.make_position_params(win, client.offset_encoding),
         function(err, res)
             if err or #res == 0 then return end
 
@@ -100,7 +97,13 @@ return {
         )
 
         local set = require('utils').keys.set
-        set('n', 'grh', '<Cmd>LspClangdSwitchSourceHeader<CR>', { buf = bufnr, })
-        set('n', 'grs', '<Cmd>LspClangdShowSymbolInfo<CR>', { buf = bufnr, })
+        set('n', 'grh',
+            function() switch_source_header(bufnr, client) end,
+            { buf = bufnr, desc = 'Switch between source/header', }
+        )
+        set('n', 'grs',
+            function() symbol_info(bufnr, client) end,
+            { buf = bufnr, desc = 'Show symbol info' }
+        )
     end,
 }
