@@ -1,9 +1,5 @@
 ---@diagnostic disable: undefined-global
 local opts = {
-    explorer = {
-        enabled = true,
-        trash = false,
-    },
     indent = { -- │
         enabled = true,
         animate = { enabled = false, },
@@ -38,6 +34,7 @@ local opts = {
     dashboard = { enabled = false, },
     debug = { enabled = false, },
     dim = { enabled = false, },
+    explorer = { enabled = false, },
     gh = { enabled = false, },
     git = { enabled = false, },
     gitbrowse = { enabled = false, },
@@ -93,13 +90,4 @@ if opts.terminal.enabled then
     local ST = Snacks.terminal
     set('n', '<leader>th', function() ST(nil, horizontal_term_opts) end, { desc = 'Snacks: horizonal terminal', })
     set('n', '<leader>tv', function() ST(nil, vertical_term_opts) end, { desc = 'Snacks: vertical terminal', })
-end
-
-if opts.explorer.enabled then
-    vim.g.loaded_netrw = 1
-    vim.g.loaded_netrwPlugin = 1
-
-    local SE = Snacks.explorer
-    set('n', '<leader>nt', SE.open, { desc = 'Snacks: toggle explorer', })
-    set('n', '<C-t>', SE.reveal, { desc = 'Snacks: reveal explorer', })
 end

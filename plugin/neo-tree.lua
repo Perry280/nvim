@@ -1,5 +1,3 @@
-if true then return end
-
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
@@ -43,6 +41,7 @@ require('neo-tree').setup({
             ['og'] = 'none',
             ['om'] = 'none',
             ['on'] = 'none',
+
             ['os'] = 'none',
             ['ot'] = 'none',
             ['O'] = 'show_help',
