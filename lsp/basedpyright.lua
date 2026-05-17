@@ -1,3 +1,13 @@
+---@param client vim.lsp.Client
+---@param bufnr integer
+function organize_imports(client, bufnr)
+    local params = {
+        command = 'basedpyright.organizeimports',
+        arguments = { vim.uri_from_bufnr(bufnr) },
+    }
+    client:request('workspace/executeCommand', params, nil, bufnr)
+end
+
 ---@param command vim.api.keyset.create_user_command.command_args
 local function set_python_path(command)
     local path = command.args
@@ -33,6 +43,7 @@ return {
         'Pipfile',
         '.git',
     },
+    ---@type settings.basedpyright
     settings = {
         basedpyright = {
             analysis = {
@@ -55,13 +66,7 @@ return {
     },
     on_attach = function(client, bufnr)
         vim.api.nvim_buf_create_user_command(bufnr, 'LspPyrightOrganizeImports',
-            function()
-                local params = {
-                    command = 'basedpyright.organizeimports',
-                    arguments = { vim.uri_from_bufnr(bufnr) },
-                }
-                client:request('workspace/executeCommand', params, nil, bufnr)
-            end,
+            function() organize_imports(client, bufnr) end,
             { desc = 'Organize Imports', }
         )
 
@@ -72,6 +77,14 @@ return {
                 nargs = 1,
                 complete = 'file',
             }
+        )
+
+        local set = require('utils').keys.set
+
+        set('n', 'goi', function() organize_imports(client, bufnr) end, { desc = 'Organize Imports', buf = bufnr, })
+        set('n', 'gsp',
+            set_python_path,
+            { desc = 'Reconfigure basedpyright with the provided python path', buf = bufnr }
         )
     end,
 }

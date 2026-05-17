@@ -1,33 +1,23 @@
----@type string[]
-local root_markers1 = {
-    '.emmyrc.json',
-    '.luarc.json',
-    '.luarc.jsonc',
-}
-
----@type string[]
-local root_markers2 = {
-    '.luacheckrc',
-    '.stylua.toml',
-    'stylua.toml',
-    'selene.toml',
-    'selene.yml',
-}
-
----@param rm1 string[]
----@param rm2 string[]
----@return (string | string[])[]
-local function root_markers(rm1, rm2)
-    return vim.fn.has('nvim-0.11.3') == 1
-        and { rm1, rm2, { '.git' } }
-        or vim.list_extend(vim.list_extend(rm1, rm2), { '.git' })
-end
-
 ---@type vim.lsp.Config
 return {
     cmd = { 'lua-language-server' },
     filetypes = { 'lua', },
-    root_markers = root_markers(root_markers1, root_markers2),
+    root_markers = {
+        {
+            '.emmyrc.json',
+            '.luarc.json',
+            '.luarc.jsonc',
+        },
+        {
+            '.luacheckrc',
+            '.stylua.toml',
+            'stylua.toml',
+            'selene.toml',
+            'selene.yml',
+        },
+        { '.git' },
+    },
+    ---@type settings.lua_ls
     settings = {
         Lua = {
             codeLens = { enable = true },
@@ -64,7 +54,7 @@ return {
     on_init = function(client, _)
         if client.workspace_folders then
             local path = client.workspace_folders[1].name
-            if path ~= vim.fn.stdpath('config') and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then
+            if path ~= vim.fn.stdpath('config') or (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then
                 return
             end
         end

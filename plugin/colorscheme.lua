@@ -2,33 +2,33 @@
 
 ---@type Colorscheme[]
 local colorschemes = {
-    -- {
-    --     'rose-pine/neovim',
-    --     name = 'rose-pine',
-    --     opts = {
-    --         -- dim_inactive_windows = true,
-    --         extend_background_behind_borders = true,
-    --         enable = { legacy_highlights = false, },
-    --         styles = { transparency = false, },
-    --         highlight_groups = {
-    --             CurSearch = { fg = 'base', bg = 'leaf', inherit = false },
-    --             Search = { fg = 'text', bg = 'leaf', blend = 20, inherit = false },
+    {
+        'rose-pine/neovim',
+        name = 'rose-pine',
+        opts = {
+            -- dim_inactive_windows = true,
+            extend_background_behind_borders = true,
+            enable = { legacy_highlights = false, },
+            styles = { transparency = false, },
+            highlight_groups = {
+                CurSearch = { fg = 'base', bg = 'leaf', inherit = false },
+                Search = { fg = 'text', bg = 'leaf', blend = 20, inherit = false },
 
-    --             TelescopeBorder = { fg = 'overlay', bg = 'overlay' },
-    --             TelescopeNormal = { fg = 'subtle', bg = 'overlay' },
-    --             TelescopeSelection = { fg = 'text', bg = 'highlight_med' },
-    --             TelescopeSelectionCaret = { fg = 'love', bg = 'highlight_med' },
-    --             TelescopeMultiSelection = { fg = 'text', bg = 'highlight_high' },
+                -- TelescopeBorder = { fg = 'overlay', bg = 'overlay' },
+                -- TelescopeNormal = { fg = 'subtle', bg = 'overlay' },
+                -- TelescopeSelection = { fg = 'text', bg = 'highlight_med' },
+                -- TelescopeSelectionCaret = { fg = 'love', bg = 'highlight_med' },
+                -- TelescopeMultiSelection = { fg = 'text', bg = 'highlight_high' },
 
-    --             TelescopeTitle = { fg = 'base', bg = 'love' },
-    --             TelescopePromptTitle = { fg = 'base', bg = 'pine' },
-    --             TelescopePreviewTitle = { fg = 'base', bg = 'iris' },
+                -- TelescopeTitle = { fg = 'base', bg = 'love' },
+                -- TelescopePromptTitle = { fg = 'base', bg = 'pine' },
+                -- TelescopePreviewTitle = { fg = 'base', bg = 'iris' },
 
-    --             TelescopePromptNormal = { fg = 'text', bg = 'surface' },
-    --             TelescopePromptBorder = { fg = 'surface', bg = 'surface' },
-    --         },
-    --     },
-    -- },
+                -- TelescopePromptNormal = { fg = 'text', bg = 'surface' },
+                -- TelescopePromptBorder = { fg = 'surface', bg = 'surface' },
+            },
+        },
+    },
     -- {
     --     'catppuccin/nvim',
     --     name = 'catppuccin',
@@ -75,16 +75,16 @@ local colorschemes = {
     --         },
     --     }
     -- },
-    {
-        'alexvzyl/nordic.nvim',
-        name = 'nordic',
-        opts = {
-            transparent = {
-                bg = true,
-                float = false,
-            }
-        }
-    },
+    -- {
+    --     'alexvzyl/nordic.nvim',
+    --     name = 'nordic',
+    --     opts = {
+    --         transparent = {
+    --             bg = true,
+    --             float = false,
+    --         }
+    --     }
+    -- },
     -- {
     --     'folke/tokyonight.nvim',
     --     name = 'tokyonight',
@@ -127,4 +127,4 @@ for _, colorscheme in ipairs(colorschemes) do
     end
 end
 
-vim.cmd.colorscheme('nordic')
+vim.cmd.colorscheme('rose-pine')

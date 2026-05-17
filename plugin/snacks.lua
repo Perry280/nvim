@@ -87,7 +87,7 @@ if opts.terminal.enabled then
         auto_close = true,
         interactive = false,
     }
-    local ST = Snacks.terminal
-    set('n', '<leader>th', function() ST(nil, horizontal_term_opts) end, { desc = 'Snacks: horizonal terminal', })
-    set('n', '<leader>tv', function() ST(nil, vertical_term_opts) end, { desc = 'Snacks: vertical terminal', })
+    local ST_open = Snacks.terminal.open
+    set('n', '<leader>th', function() ST_open(nil, horizontal_term_opts) end, { desc = 'Snacks: horizonal terminal', })
+    set('n', '<leader>tv', function() ST_open(nil, vertical_term_opts) end, { desc = 'Snacks: vertical terminal', })
 end

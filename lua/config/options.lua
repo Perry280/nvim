@@ -29,9 +29,13 @@ vim.g.loaded_spellfile_plugin  = 1
 -- vim.opt.shada                  = ''
 -- vim.opt.shadafile              = 'NONE'
 
--- vim.opt.autocomplete           = true
+vim.opt.autocomplete           = not user and false or user == "root"
 vim.opt.complete               = '.,w,b,o'
 vim.opt.completeopt            = 'menu,popup,menuone,noselect,fuzzy,preview'
+
+-- vim.opt.wildchar               = '<C-Space>'
+vim.opt.wildoptions            = 'pum,fuzzy'
+vim.opt.wildmode               = 'full:noselect'
 
 vim.opt.foldmethod             = 'expr'
 vim.opt.foldexpr               = 'v:lua.vim.treesitter.foldexpr()'

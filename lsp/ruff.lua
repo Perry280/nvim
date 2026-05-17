@@ -9,8 +9,6 @@ return {
         '.git',
         '.venv',
     },
-    -- init_options = {
-    --     settings = {
-    --     },
-    -- },
+    -- ---@type settings.ruff
+    -- settings = {},
 }

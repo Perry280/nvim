@@ -51,9 +51,6 @@ local function symbol_info(bufnr, client)
     )
 end
 
----@class ClangdInitializeResult: lsp.InitializeResult
----@field offsetEncoding? string
-
 ---@type vim.lsp.Config
 return {
     cmd = { 'clangd' },
@@ -79,6 +76,8 @@ return {
         local t = { objc = 'objective-c', objcpp = 'objective-cpp', cuda = 'cuda-cpp' }
         return t[ftype] or ftype
     end,
+    -- ---@type settings.clangd
+    -- settings = {},
     ---@param init_result ClangdInitializeResult
     on_init = function(client, init_result)
         if init_result.offsetEncoding then
