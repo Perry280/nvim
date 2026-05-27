@@ -2,6 +2,15 @@ local set = require('utils').keys.set
 
 set('n', '<leader>P', function() vim.pack.update(nil, { offline = true }) end, { desc = 'View installed packages' })
 set('n', '<leader>U', vim.pack.update, { desc = 'Update installed packages' })
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'nvim-pack',
+    callback = function(args)
+        local bufnr = args.buf
+        set('n', 'Q', '<Cmd>q<CR>', { buffer = bufnr, })
+        set('n', 'U', '<Cmd>w<CR>', { buffer = bufnr, })
+    end
+})
+
 set('n', '<leader>R', vim.cmd.restart, { desc = 'Restart' })
 
 set('n', '<leader>s', '<Cmd>wa<CR>', { desc = 'Save' })
@@ -65,9 +74,14 @@ if vim.g.loaded_netrw ~= 1 then
 
     vim.api.nvim_create_autocmd('FileType', {
         pattern = 'netrw',
-        callback = function()
+        callback = function(args)
+            local bufnr = args.buf
+            ---@param lhs string
+            ---@param rhs string | function
+            ---@param opts vim.keymap.set.Opts
             local function bind(lhs, rhs, opts)
-                local kopts = { noremap = false, remap = true, buffer = true, }
+                ---@type vim.keymap.set.Opts
+                local kopts = { buffer = bufnr, }
                 set('n', lhs, rhs, opts and vim.tbl_deep_extend('force', opts, kopts) or kopts)
             end
 

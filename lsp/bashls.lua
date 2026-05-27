@@ -6,7 +6,15 @@ return {
     ---@type settings.bashls
     settings = {
         bashIde = {
+            enableSourceErrorDiagnostics = true,
             globPattern = vim.env.GLOB_PATTERN or '*@(.sh|.inc|.bash|.command)',
+            shfmt = {
+                caseIndent = true,
+                funcNextLine = false,
+                ignoreEditorconfig = false,
+                simplifyCode = true,
+                spaceRedirects = true,
+            },
         },
     },
 }

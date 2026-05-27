@@ -10,6 +10,7 @@ local languages = {
     'markdown',
     'markdown_inline',
     'python',
+    'query',
     'regex',
     'vim',
     'vimdoc',

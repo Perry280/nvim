@@ -50,12 +50,14 @@ function M.lazy_load(spec)
 
     if spec.events then
         for _, ev in ipairs(spec.events) do
-            table.insert(autocmd_ids, vim.api.nvim_create_autocmd(ev, {
-                once = true,
-                callback = function()
-                    plugin_setup(spec, autocmd_ids)
-                end,
-            }))
+            table.insert(autocmd_ids,
+                vim.api.nvim_create_autocmd(ev, {
+                    once = true,
+                    callback = function()
+                        plugin_setup(spec, autocmd_ids)
+                    end,
+                })
+            )
         end
     end
 
@@ -87,13 +89,15 @@ function M.lazy_load(spec)
     end
 
     if spec.ft then
-        table.insert(autocmd_ids, vim.api.nvim_create_autocmd('FileType', {
-            pattern = spec.ft,
-            once = true,
-            callback = function()
-                plugin_setup(spec, autocmd_ids)
-            end,
-        }))
+        table.insert(autocmd_ids,
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = spec.ft,
+                once = true,
+                callback = function()
+                    plugin_setup(spec, autocmd_ids)
+                end,
+            })
+        )
     end
 end
 
