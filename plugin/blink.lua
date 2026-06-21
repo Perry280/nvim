@@ -1,6 +1,5 @@
 require('lazyloading').lazy_load({
     setup = function()
-        -- vim.cmd.packadd('blink.lib')
         vim.cmd.packadd('blink.lib')
         vim.cmd.packadd('blink.cmp')
 
@@ -63,7 +62,8 @@ require('lazyloading').lazy_load({
         -- })
     end,
     events = {
-        'LspAttach',
         'CmdlineEnter',
+        'InsertEnter',
+        'LspAttach',
     },
 })

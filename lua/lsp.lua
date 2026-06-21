@@ -221,7 +221,10 @@ local function toggle_diagnostics(bufnr)
     set('n', '<leader>dt', function()
         if not vim.diagnostic.is_enabled() then return end
         virtual_lines_enabled = not virtual_lines_enabled
-        vim.diagnostic.config({ virtual_lines = (virtual_lines_enabled and { current_line = true }) })
+        vim.diagnostic.config({
+            virtual_lines = (virtual_lines_enabled and { current_line = true }),
+            -- virtual_text = (not virtual_lines_enabled and { current_line = true }),
+        })
     end, { desc = 'Toggle diagnostics virtual texts', buf = bufnr, })
 
     set('n', '<leader>dT',

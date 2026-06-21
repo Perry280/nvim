@@ -1,13 +1,16 @@
 local g                    = vim.g
 local opt                  = vim.opt
 
+local is_terminal_emulator = vim.uv.os_uname().sysname ~= 'Linux'
+    or (os.getenv('TERM') and os.getenv('TERM') ~= 'linux')
+local user                 = vim.uv.os_getenv("USER")
+local is_root              = not user and false or user == "root"
+
 g.c_syntax_for_h           = true
 g.c_functions              = true
 g.c_function_pointers      = true
 
-g.have_nerd_font           = vim.uv.os_uname().sysname ~= 'Linux'
-    or (os.getenv('TERM') and os.getenv('TERM') ~= 'linux')
-
+g.have_nerd_font           = is_terminal_emulator
 g.mapleader                = ' '
 g.maplocalleader           = '\\'
 
@@ -16,9 +19,8 @@ g.loaded_perl_provider     = 0
 g.loaded_python3_provider  = 0
 g.loaded_ruby_provider     = 0
 
-local user                 = vim.uv.os_getenv("USER")
-g.loaded_netrw             = not user and 1 or (user ~= "root" and 1 or nil)
-g.loaded_netrwPlugin       = vim.g.loaded_netrw
+g.loaded_netrw             = is_root and nil or 1
+g.loaded_netrwPlugin       = is_root and nil or 1
 g.loaded_shada_plugin      = 1
 g.loaded_gzip              = 1
 g.loaded_spec              = 1
@@ -32,7 +34,7 @@ g.loaded_spellfile_plugin  = 1
 -- opt.shada                  = ''
 -- opt.shadafile              = 'NONE'
 
-opt.autocomplete           = not user and false or user == "root"
+opt.autocomplete           = is_root
 opt.complete               = '.,w,b,o'
 opt.completeopt            = 'menu,popup,menuone,noselect,fuzzy,preview'
 opt.pumheight              = 10
@@ -53,8 +55,7 @@ opt.signcolumn             = 'yes:1'
 opt.hlsearch               = true
 opt.incsearch              = true
 
-opt.termguicolors          = vim.uv.os_uname().sysname ~= 'Linux'
-    or (os.getenv('TERM') and os.getenv('TERM') ~= 'linux')
+opt.termguicolors          = is_terminal_emulator
 
 opt.winborder              = 'none'
 opt.fillchars              = 'eob: '

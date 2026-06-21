@@ -12,6 +12,7 @@ local languages = {
     'python',
     'query',
     'regex',
+    'rust',
     'vim',
     'vimdoc',
 }

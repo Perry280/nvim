@@ -1,6 +1,6 @@
 ---@param client vim.lsp.Client
 ---@param bufnr integer
-function organize_imports(client, bufnr)
+local function organize_imports(client, bufnr)
     local params = {
         command = 'basedpyright.organizeimports',
         arguments = { vim.uri_from_bufnr(bufnr) },

@@ -7,6 +7,7 @@ vim.lsp.enable({
     'clangd',
     'lua_ls',
     'ruff',
+    'rust_analyzer',
     'ty',
 })
 
@@ -28,7 +29,6 @@ if user and user == "root" then
             vim.wo[0][0].foldmethod = 'expr'
         end,
     })
-    vim.cmd.colorscheme('catppuccin')
     return
 end
 

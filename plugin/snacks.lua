@@ -5,14 +5,7 @@ local opts = {
         animate = { enabled = false, },
         -- scope = { underline = true, }
     },
-    picker = {
-        enabled = true,
-        sources = {
-            explorer = {
-
-            },
-        },
-    },
+    picker = { enabled = true, },
     quickfile = {
         enabled = true,
         exclude = {},
@@ -24,9 +17,7 @@ local opts = {
             blocks = { enabled = true, },
         },
     },
-    terminal = {
-        enabled = true,
-    },
+    terminal = { enabled = true, },
 
     animate = { enabled = false, },
     bigfile = { enabled = false, },
