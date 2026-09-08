@@ -1,13 +1,6 @@
 ---@meta
 
 ---@class settings.rust_analyzer.RustAnalyzer.Assist.TermSearch
----Enable borrow checking for term search code assists. If set to false, also there will be
----more suggestions, but some of them may not borrow-check.
----
----```lua
----default = true
----```
----@field borrowcheck? boolean
 ---Term search fuel in "units of work" for assists (Defaults to 1800).
 ---
 ---```lua
@@ -122,6 +115,10 @@
 ---default = { "debug_assertions", "miri" }
 ---```
 ---@field cfgs? string[]
+---Path to a `.cargo/config.toml` style file to pass to cargo via `--config`
+---for every cargo invocation (metadata, build scripts, config discovery).
+---Useful to give rust-analyzer a consistent view of the project configuration.
+---@field configPath? string
 ---Extra arguments that are passed to every cargo invocation.
 ---
 ---```lua
@@ -900,7 +897,7 @@
 ---@field minLines? integer
 
 ---@class settings.rust_analyzer.RustAnalyzer.InlayHints.ClosureCaptureHints
----Show inlay hints for closure captures.
+---Show inlay hints for closure and coroutine captures.
 ---@field enable? boolean
 
 ---@class settings.rust_analyzer.RustAnalyzer.InlayHints.ClosureReturnTypeHints
@@ -1241,7 +1238,7 @@
 ---runs in parallel to handle macro expansion.
 ---
 ---```lua
----default = 1
+---default = 2
 ---```
 ---@field processes? number|"physical"
 ---Internal config, path to proc-macro server executable.
@@ -1716,9 +1713,9 @@
 ---
 ---**Warning**: This format is provisional and subject to change.
 ---
----The discover command should output JSON objects, one per
----line (JSONL format). These objects should correspond to
----this Rust data type:
+---The discover command should output JSON objects to stdout,
+---one per line (JSONL format). These objects should correspond
+---to this Rust data type:
 ---
 ---```norun
 ---#[derive(Debug, Clone, Deserialize, Serialize)]
@@ -1758,6 +1755,9 @@
 ---Only the finished event is required, but the other
 ---variants are encouraged to give users more feedback about
 ---progress or errors.
+---
+---Stderr is not parsed as JSONL. It is treated as command log
+---output and forwarded to rust-analyzer's own logs.
 ---@field discoverConfig? any|table
 ---@field symbol? settings.rust_analyzer.RustAnalyzer.Workspace.Symbol
 

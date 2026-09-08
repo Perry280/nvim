@@ -11,27 +11,31 @@ local function reload_workspace(bufnr)
     end
 end
 
+---@param command string
+---@return boolean
+local function executable_exists(command)
+    local exists = vim.fn.executable(command) == 1
+
+    if not exists then vim.notify_once(('[rust_analyzer] %s not found.'):format(command), vim.log.levels.WARN) end
+
+    return exists
+end
+
+---@return any
 local function user_sysroot_src()
     return vim.tbl_get(vim.lsp.config['rust_analyzer'], 'settings', 'rust-analyzer', 'cargo', 'sysrootSrc')
 end
 
+---@return string|nil
 local function default_sysroot_src()
     local sysroot = vim.tbl_get(vim.lsp.config['rust_analyzer'], 'settings', 'rust-analyzer', 'cargo', 'sysroot')
     if not sysroot then
-        local rustc = os.getenv 'RUSTC' or 'rustc'
-        local result = vim.system({ rustc, '--print', 'sysroot' }, { text = true }):wait()
+        local result = vim
+            .system({ 'cargo', '-Z', 'unstable-options', 'rustc', '--print', 'sysroot' }, { text = true })
+            :wait()
 
-        local stdout = result.stdout
-        if result.code == 0 and stdout then
-            if string.sub(stdout, #stdout) == '\n' then
-                if #stdout > 1 then
-                    sysroot = string.sub(stdout, 1, #stdout - 1)
-                else
-                    sysroot = ''
-                end
-            else
-                sysroot = stdout
-            end
+        if result.code == 0 and result.stdout then
+            sysroot = vim.trim(result.stdout)
         end
     end
 
@@ -42,18 +46,18 @@ end
 ---@return string|nil
 local function is_library(fname)
     local user_home = vim.fs.normalize(vim.env.HOME)
-    local cargo_home = os.getenv('CARGO_HOME') or user_home .. '/.cargo'
+    local cargo_home = os.getenv 'CARGO_HOME' or user_home .. '/.cargo'
     local registry = cargo_home .. '/registry/src'
     local git_registry = cargo_home .. '/git/checkouts'
 
-    local rustup_home = os.getenv('RUSTUP_HOME') or user_home .. '/.rustup'
+    local rustup_home = os.getenv 'RUSTUP_HOME' or user_home .. '/.rustup'
     local toolchains = rustup_home .. '/toolchains'
 
     local sysroot_src = user_sysroot_src() or default_sysroot_src()
 
-    for _, item in ipairs({ toolchains, registry, git_registry, sysroot_src }) do
+    for _, item in ipairs { toolchains, registry, git_registry, sysroot_src } do
         if item and vim.fs.relpath(item, fname) then
-            local clients = vim.lsp.get_clients({ name = 'rust_analyzer' })
+            local clients = vim.lsp.get_clients { name = 'rust_analyzer' }
             return #clients > 0 and clients[#clients].config.root_dir or nil
         end
     end
@@ -65,6 +69,10 @@ return {
     filetypes = { 'rust' },
     -- root_markers = { 'Cargo.toml', 'rust-project.json', '.git', },
     root_dir = function(bufnr, on_dir)
+        if not executable_exists('cargo') then
+            return
+        end
+
         local fname = vim.api.nvim_buf_get_name(bufnr)
         local reused_dir = is_library(fname)
         if reused_dir then
@@ -105,8 +113,8 @@ return {
                 on_dir(cargo_workspace_root or cargo_crate_dir)
             else
                 vim.schedule(function()
-                    local error_string = '[rust_analyzer] cmd failed with code %d: %s\n%s'
-                    vim.notify(error_string:format(output.code, cmd, output.stderr))
+                    vim.notify(('[rust_analyzer] cmd failed with code %d: %s\n%s')
+                        :format(output.code, cmd, output.stderr))
                 end)
             end
         end)
