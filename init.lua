@@ -3,11 +3,11 @@ require('lsp')
 
 vim.lsp.enable({
     -- 'basedpyright',
-    'bashls',
+    -- 'bashls',
     'clangd',
     'lua_ls',
     'ruff',
-    'rust_analyzer',
+    -- 'rust_analyzer',
     'ty',
 })
 

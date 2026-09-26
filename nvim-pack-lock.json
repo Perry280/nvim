@@ -1,7 +1,7 @@
 {
   "plugins": {
     "blink.cmp": {
-      "rev": "49d39fda6350d7f789d1da1053e86c9e256f8108",
+      "rev": "8219b58f1c11a2fb1644d3c7116c509fa8348ec0",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.lib": {
@@ -18,7 +18,7 @@
       "src": "https://github.com/nvim-lualine/lualine.nvim"
     },
     "mini": {
-      "rev": "455856f765c78220fe547fb0862708942b52c42c",
+      "rev": "561751e839b99a4baca36b9d963166b66d2536a6",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "neo-tree": {
@@ -31,7 +31,7 @@
       "src": "https://github.com/MunifTanjim/nui.nvim"
     },
     "nvim-treesitter": {
-      "rev": "5cb0114e6242625db56dd6440e945ed1ece10bc7",
+      "rev": "25a9b06a09ea4e10712bec37e7b7d9f423262b91",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "nvim-treesitter-textobjects": {
@@ -39,7 +39,7 @@
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects"
     },
     "nvim-web-devicons": {
-      "rev": "5f032a85be210cd1c6ac98861eb3b187ff3bd5eb",
+      "rev": "58447c1fca354bbf184425e4a8d01deecbd6f3c4",
       "src": "https://github.com/nvim-tree/nvim-web-devicons"
     },
     "plenary": {
