@@ -40,13 +40,12 @@ opt.complete               = '.,w,b,o'
 opt.completeopt            = 'menu,popup,menuone,noselect,fuzzy,preview'
 opt.pumheight              = 10
 
--- opt.wildchar               = '<C-Space>'
 opt.wildoptions            = 'pum,fuzzy'
 opt.wildmode               = 'full:noselect'
 
 opt.foldenable             = false
-opt.foldmethod             = 'expr'
-opt.foldexpr               = 'v:lua.vim.treesitter.foldexpr()'
+-- opt.foldmethod             = 'expr'
+-- opt.foldexpr               = 'v:lua.vim.treesitter.foldexpr()'
 
 opt.cursorline             = true
 opt.number                 = true

@@ -128,13 +128,11 @@ local method_config = {
         method = 'textDocument/moniker',
         enabled = true,
         config = function(client, bufnr)
-            ---@param b integer
-            ---@param c vim.lsp.Client
-            local function show_monikers(b, c)
+            local function show_monikers()
                 local win = vim.api.nvim_get_current_win()
-                c:request(
+                client:request(
                     'textDocument/moniker',
-                    vim.lsp.util.make_position_params(win, c.offset_encoding),
+                    vim.lsp.util.make_position_params(win, client.offset_encoding),
                     function(err, result)
                         if err then
                             vim.notify('LSP moniker error: ' .. vim.inspect(err), vim.log.levels.ERROR)
@@ -158,19 +156,13 @@ local method_config = {
 
                         vim.notify(table.concat(lines, '\n'), vim.log.levels.INFO)
                     end,
-                    b
+                    bufnr
                 )
             end
 
-            vim.api.nvim_create_user_command('LspMoniker',
-                function() show_monikers(bufnr, client) end,
-                {}
-            )
+            vim.api.nvim_create_user_command('LspMoniker', show_monikers, {})
 
-            vim.keymap.set('n', '<leader>lm',
-                function() show_monikers(bufnr, client) end,
-                { bufnr = bufnr, desc = 'LSP: Show monikers' }
-            )
+            vim.keymap.set('n', '<leader>lm', show_monikers, { bufnr = bufnr, desc = 'LSP: Show monikers' })
         end
     },
     {
@@ -246,6 +238,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
         set('i', '<C-Space>', '<C-x><C-o>', { buf = bufnr, })
 
         for _, m in ipairs(method_config) do
+            -- vim.notify(
+            --     m.method .. " " .. client.name ..
+            --     "\nEnabled: " .. tostring(m.enabled) ..
+            --     "\nSupport: " .. tostring(client:supports_method(m.method))
+            -- )
             if m.enabled and client:supports_method(m.method) then
                 m.config(client, bufnr)
             end

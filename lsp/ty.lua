@@ -13,12 +13,19 @@ return {
     },
     on_attach = function(client, _)
         client.server_capabilities.semanticTokensProvider = nil
-    end
-    -- settings = {
-    --     ty = {
-    --         configuration = {
-
-    --         },
-    --     },
-    -- },
+    end,
+    ---@type settings.ty
+    settings = {
+        ty = {
+            configuration = {
+                rules = {
+                    ["unresolved-import"] = "ignore",
+                    ["missing-override-decorator"] = "warn",
+                    ["missing-type-argument"] = "warn",
+                }
+            },
+        },
+    },
+    -- ---@type init_options.ty
+    -- init_options = {},
 }

@@ -1,13 +1,12 @@
 ---@meta
 
----@class settings.ruff
----A list of allowed "confusable" Unicode characters to ignore when
----enforcing `RUF001`, `RUF002`, and `RUF003`.
----@field ["allowed-confusables"]? string[]
----Options to configure import map generation.
----@field analyze? any|any
+---Top-level settings live here; formatter, analyzer and linter settings are nested
+---under `format`, `analyze` and `lint` (in `pyproject.toml`: `[tool.ruff.lint]`, etc.).
+---@class init_options.ruff.settings.configuration
 ---A list of builtins to treat as defined references, in addition to the
 ---system builtins.
+---
+---Default value: `[]`
 ---@field builtins? string[]
 ---A path to the cache directory.
 ---
@@ -19,11 +18,9 @@
 ---
 ---This setting will override even the `RUFF_CACHE_DIR` environment
 ---variable, if set.
+---
+---Default value: `".ruff_cache"`
 ---@field ["cache-dir"]? string
----A regular expression used to identify "dummy" variables, or those which
----should be ignored when enforcing (e.g.) unused-variable rules. The
----default expression matches `_`, `__`, and `_var`, but not `_var_`.
----@field ["dummy-variable-rgx"]? string
 ---A list of file patterns to exclude from formatting and linting.
 ---
 ---Exclusions are based on globs, and can be either:
@@ -39,12 +36,10 @@
 ---For more information on the glob syntax, refer to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
 ---
 ---Note that you'll typically want to use
----[`extend-exclude`](#extend-exclude) to modify the excluded paths.
+---[`extend-exclude`](https://docs.astral.sh/ruff/settings/#extend-exclude) to modify the excluded paths.
+---
+---Default value: `[".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg", ".mypy_cache", ".nox", ".pants.d", ".pytype", ".ruff_cache", ".svn", ".tox", ".venv", "__pypackages__", "_build", "buck-out", "dist", "node_modules", "venv"]`
 ---@field exclude? string[]
----Whether to require exact codes to select preview rules. When enabled,
----preview rules will not be selected by prefixes — the full code of each
----preview rule will be required to enable the rule.
----@field ["explicit-preview-rules"]? boolean
 ---A path to a local `pyproject.toml` or `ruff.toml` file to merge into this
 ---configuration. User home directory and environment variables will be
 ---expanded.
@@ -59,9 +54,11 @@
 ---rules are discarded; if the child configuration omits `lint.select`,
 ---the parent's rule selection is inherited and both parent and child
 ---`lint.ignore` rules are accumulated together.
+---
+---Default value: `null`
 ---@field extend? string
 ---A list of file patterns to omit from formatting and linting, in addition to those
----specified by [`exclude`](#exclude).
+---specified by [`exclude`](https://docs.astral.sh/ruff/settings/#exclude).
 ---
 ---Exclusions are based on globs, and can be either:
 ---
@@ -74,61 +71,19 @@
 ---  (e.g., the directory containing your `pyproject.toml`).
 ---
 ---For more information on the glob syntax, refer to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
----@field ["extend-exclude"]? string[]
----A list of rule codes or prefixes to consider fixable, in addition to those
----specified by [`fixable`](#lint_fixable).
----@field ["extend-fixable"]? any[]
----A list of rule codes or prefixes to ignore, in addition to those
----specified by `ignore`.
 ---
----This option is deprecated because it is now interchangeable with
----[`ignore`](#lint_ignore). In earlier versions of Ruff, `ignore` would
----_replace_ the set of ignored rules when using configuration inheritance
----(via the top-level [`extend`](https://docs.astral.sh/ruff/settings/#extend)
----setting), while `extend-ignore` would _add_ to the inherited set. Ruff
----now merges both `ignore` and `extend-ignore` into a single set, so the
----distinction no longer applies. Use [`ignore`](#lint_ignore) instead.
----@field ["extend-ignore"]? any[]
+---Default value: `[]`
+---@field ["extend-exclude"]? string[]
 ---A list of file patterns to include when linting, in addition to those
----specified by [`include`](#include).
+---specified by [`include`](https://docs.astral.sh/ruff/settings/#include).
 ---
 ---Inclusion are based on globs, and should be single-path patterns, like
 ---`*.pyw`, to include any file with the `.pyw` extension.
 ---
 ---For more information on the glob syntax, refer to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `[]`
 ---@field ["extend-include"]? string[]
----A list of mappings from file pattern to rule codes or prefixes to
----exclude, in addition to any rules excluded by [`per-file-ignores`](#lint_per-file-ignores).
----@field ["extend-per-file-ignores"]? table
----A list of rule codes or prefixes for which unsafe fixes should be considered
----safe.
----@field ["extend-safe-fixes"]? any[]
----A list of rule codes or prefixes to enable, in addition to those
----specified by [`select`](#lint_select).
----
----Unlike [`select`](#lint_select), which _replaces_ the default rule set
----when specified, `extend-select` _adds_ to whatever rules are already
----active. This makes `extend-select` the preferred option when you want
----to enable additional rules on top of the defaults without having to
----enumerate them.
----
----For example, to enable the defaults plus flake8-bugbear:
----
----```toml
----[tool.ruff.lint]
----# Adds flake8-bugbear on top of the default rules.
----extend-select = ["B"]
----```
----
----Using `select = ["B"]` instead would _replace_ the defaults, enabling
----only flake8-bugbear.
----@field ["extend-select"]? any[]
----A list of rule codes or prefixes to consider non-auto-fixable, in addition to those
----specified by [`unfixable`](#lint_unfixable).
----@field ["extend-unfixable"]? any[]
----A list of rule codes or prefixes for which safe fixes should be considered
----unsafe.
----@field ["extend-unsafe-fixes"]? any[]
 ---A mapping of custom file extensions to known file types (overridden
 ---by the `--extension` command-line flag).
 ---
@@ -137,56 +92,20 @@
 ---Any file extensions listed here will be automatically added to the
 ---default `include` list as a `*.{ext}` glob, so that they are linted
 ---and formatted without needing any additional configuration settings.
----@field extension? table
----A list of rule codes or prefixes that are unsupported by Ruff, but should be
----preserved when (e.g.) validating `# noqa` directives. Useful for
----retaining `# noqa` directives that cover plugins not yet implemented
----by Ruff.
----@field external? string[]
+---
+---Default value: `{}`
+---@field extension? table<string, "python" | "pyi" | "ipynb" | "markdown">
 ---Enable fix behavior by-default when running `ruff` (overridden
 ---by the `--fix` and `--no-fix` command-line flags).
 ---Only includes automatic fixes unless `--unsafe-fixes` is provided.
+---
+---Default value: `false`
 ---@field fix? boolean
----Like [`fix`](#fix), but disables reporting on leftover violation. Implies [`fix`](#fix).
+---Like [`fix`](https://docs.astral.sh/ruff/settings/#fix), but disables reporting on leftover violation. Implies [`fix`](https://docs.astral.sh/ruff/settings/#fix).
+---
+---Default value: `false`
 ---@field ["fix-only"]? boolean
----A list of rule codes or prefixes to consider fixable. By default,
----all rules are considered fixable.
----@field fixable? any[]
----Options for the `flake8-annotations` plugin.
----@field ["flake8-annotations"]? any|any
----Options for the `flake8-bandit` plugin.
----@field ["flake8-bandit"]? any|any
----Options for the `flake8-boolean-trap` plugin.
----@field ["flake8-boolean-trap"]? any|any
----Options for the `flake8-bugbear` plugin.
----@field ["flake8-bugbear"]? any|any
----Options for the `flake8-builtins` plugin.
----@field ["flake8-builtins"]? any|any
----Options for the `flake8-comprehensions` plugin.
----@field ["flake8-comprehensions"]? any|any
----Options for the `flake8-copyright` plugin.
----@field ["flake8-copyright"]? any|any
----Options for the `flake8-errmsg` plugin.
----@field ["flake8-errmsg"]? any|any
----Options for the `flake8-gettext` plugin.
----@field ["flake8-gettext"]? any|any
----Options for the `flake8-implicit-str-concat` plugin.
----@field ["flake8-implicit-str-concat"]? any|any
----Options for the `flake8-import-conventions` plugin.
----@field ["flake8-import-conventions"]? any|any
----Options for the `flake8-pytest-style` plugin.
----@field ["flake8-pytest-style"]? any|any
----Options for the `flake8-quotes` plugin.
----@field ["flake8-quotes"]? any|any
----Options for the `flake8_self` plugin.
----@field ["flake8-self"]? any|any
----Options for the `flake8-tidy-imports` plugin.
----@field ["flake8-tidy-imports"]? any|any
----Options for the `flake8-type-checking` plugin.
----@field ["flake8-type-checking"]? any|any
----Options for the `flake8-unused-arguments` plugin.
----@field ["flake8-unused-arguments"]? any|any
----Whether to enforce [`exclude`](#exclude) and [`extend-exclude`](#extend-exclude) patterns,
+---Whether to enforce [`exclude`](https://docs.astral.sh/ruff/settings/#exclude) and [`extend-exclude`](https://docs.astral.sh/ruff/settings/#extend-exclude) patterns,
 ---even for paths that are passed to Ruff explicitly. Typically, Ruff will lint
 ---any paths passed in directly, even if they would typically be
 ---excluded. Setting `force-exclude = true` will cause Ruff to
@@ -196,29 +115,9 @@
 ---changed files to the [`ruff-pre-commit`](https://github.com/astral-sh/ruff-pre-commit)
 ---plugin, regardless of whether they're marked as excluded by Ruff's own
 ---settings.
+---
+---Default value: `false`
 ---@field ["force-exclude"]? boolean
----Options to configure code formatting.
----@field format? any|any
----A list of rule codes or prefixes to ignore. Prefixes can specify exact
----rules (like `F841`), entire groups (like `F`), or anything in
----between.
----
----When breaking ties between enabled and disabled rules (via `select` and
----`ignore`, respectively), more specific prefixes override less
----specific prefixes. `ignore` takes precedence over `select` if the same
----prefix appears in both.
----
----In preview, categories like `correctness` and `suspicious` can be used
----in addition to rule codes and linter group prefixes.
----@field ignore? any[]
----Avoid automatically removing unused imports in `__init__.py` files. Such
----imports will still be flagged, but with a dedicated message suggesting
----that the import is either added to the module's `__all__` symbol, or
----re-exported with a redundant alias (e.g., `import os as os`).
----
----This option is enabled by default, but you can opt-in to removal of imports
----via an unsafe fix.
----@field ["ignore-init-module-imports"]? boolean
 ---A list of file patterns to include when linting.
 ---
 ---Inclusion are based on globs, and should be single-path patterns, like
@@ -230,6 +129,8 @@
 ---Notebook files (`.ipynb` extension) are included by default on Ruff 0.6.0+.
 ---
 ---For more information on the glob syntax, refer to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `["*.py", "*.pyi", "*.pyw", "*.ipynb", "*.md", "**/pyproject.toml", "**/ruff.toml", "**/.ruff.toml"]`
 ---@field include? string[]
 ---The number of spaces per indentation level (tab).
 ---
@@ -240,9 +141,9 @@
 ---using soft-tabs (`indent-style = space`).
 ---
 ---PEP 8 recommends using 4 spaces per [indentation level](https://peps.python.org/pep-0008/#indentation).
----@field ["indent-width"]? any|any
----Options for the `isort` plugin.
----@field isort? any|any
+---
+---Default value: `4`
+---@field ["indent-width"]? integer
 ---The line length to use when enforcing long-lines violations (like `E501`)
 ---and at which `isort` and the formatter prefers to wrap lines.
 ---
@@ -255,40 +156,24 @@
 ---within the `line-length`, it isn't a hard upper bound, and formatted lines may
 ---exceed the `line-length`.
 ---
----See [`pycodestyle.max-line-length`](#lint_pycodestyle_max-line-length) to configure different lengths for `E501` and the formatter.
----@field ["line-length"]? any|any
----@field lint? any|any
----A list of objects that should be treated equivalently to a
----`logging.Logger` object.
+---See [`pycodestyle.max-line-length`](https://docs.astral.sh/ruff/settings/#lint_pycodestyle_max-line-length) to configure different lengths for `E501` and the formatter.
 ---
----This is useful for ensuring proper diagnostics (e.g., to identify
----`logging` deprecations and other best-practices) for projects that
----re-export a `logging.Logger` object from a common module.
----
----For example, if you have a module `logging_setup.py` with the following
----contents:
----```python
----import logging
----
----logger = logging.getLogger(__name__)
----```
----
----Adding `"logging_setup.logger"` to `logger-objects` will ensure that
----`logging_setup.logger` is treated as a `logging.Logger` object when
----imported from other modules (e.g., `from logging_setup import logger`).
----@field ["logger-objects"]? string[]
----Options for the `mccabe` plugin.
----@field mccabe? any|any
+---Default value: `88`
+---@field ["line-length"]? integer
 ---Mark the specified directories as namespace packages. For the purpose of
 ---module resolution, Ruff will treat those directories and all their subdirectories
 ---as if they contained an `__init__.py` file.
+---
+---Default value: `[]`
 ---@field ["namespace-packages"]? string[]
 ---The style in which violation messages should be formatted: `"full"` (default)
 ---(shows source), `"concise"`, `"grouped"` (group messages by file), `"json"`
 ---(machine-readable), `"junit"` (machine-readable XML), `"github"` (GitHub
 ---Actions annotations), `"gitlab"` (GitLab CI code quality report),
 ---`"pylint"` (Pylint text format) or `"azure"` (Azure Pipeline logging commands).
----@field ["output-format"]? any|any
+---
+---Default value: `"full"`
+---@field ["output-format"] "full"|"concise"|"grouped"|"json"|"junit"|"github"|"gitlab"|"pylint"|"azure"|nil
 ---Whether to prefer rule codes over human-readable rule names in diagnostic output, even
 ---when preview mode is enabled.
 ---
@@ -303,15 +188,9 @@
 ---$ ruff check --preview --config 'output-prefer-rule-codes = false' --output-format=concise example.py
 ---example.py:1:8: unused-import: [*] `math` imported but unused
 ---```
----@field ["output-prefer-rule-codes"]? boolean
----Options for the `pep8-naming` plugin.
----@field ["pep8-naming"]? any|any
----A list of mappings from file pattern to rule codes or prefixes to
----exclude, when considering any matching files. An initial '!' negates
----the file pattern.
 ---
----For more information on the glob syntax, refer to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
----@field ["per-file-ignores"]? table
+---Default value: `false`
+---@field ["output-prefer-rule-codes"]? boolean
 ---A list of mappings from glob-style file pattern to Python version to use when checking the
 ---corresponding file(s).
 ---
@@ -324,20 +203,14 @@
 ---This setting is used by the linter to enforce any enabled version-specific lint rules, as
 ---well as by the formatter for any version-specific formatting options, such as parenthesizing
 ---context managers on Python 3.10+.
----@field ["per-file-target-version"]? table
+---
+---Default value: `{}`
+---@field ["per-file-target-version"]? table<string, "py37" | "py38" | "py39" | "py310" | "py311" | "py312" | "py313" | "py314">
 ---Whether to enable preview mode. When preview mode is enabled, Ruff will
 ---use unstable rules, fixes, and formatting.
+---
+---Default value: `false`
 ---@field preview? boolean
----Options for the `pycodestyle` plugin.
----@field pycodestyle? any|any
----Options for the `pydocstyle` plugin.
----@field pydocstyle? any|any
----Options for the `pyflakes` plugin.
----@field pyflakes? any|any
----Options for the `pylint` plugin.
----@field pylint? any|any
----Options for the `pyupgrade` plugin.
----@field pyupgrade? any|any
 ---Enforce a requirement on the version of Ruff, to enforce at runtime.
 ---If the version of Ruff does not meet the requirement, Ruff will exit
 ---with an error.
@@ -346,25 +219,19 @@
 ---`pyproject.toml` file.
 ---
 ---Accepts a [PEP 440](https://peps.python.org/pep-0440/) specifier, like `==0.3.1` or `>=0.3.1`.
----@field ["required-version"]? any|any
+---
+---Default value: `null`
+---@field ["required-version"]? string
 ---Whether to automatically exclude files that are ignored by `.ignore`,
 ---`.gitignore`, `.git/info/exclude`, and global `gitignore` files.
 ---Enabled by default.
+---
+---Default value: `true`
 ---@field ["respect-gitignore"]? boolean
----A list of rule codes or prefixes to enable. Prefixes can specify exact
----rules (like `F841`), entire groups (like `F`), or anything in
----between.
----
----When breaking ties between enabled and disabled rules (via `select` and
----`ignore`, respectively), more specific prefixes override less
----specific prefixes. `ignore` takes precedence over `select` if the
----same prefix appears in both.
----
----In preview, categories like `correctness` and `suspicious` can be used
----in addition to rule codes and linter group prefixes.
----@field select? any[]
 ---Whether to show an enumeration of all fixed lint violations
 ---(overridden by the `--show-fixes` command-line flag).
+---
+---Default value: `false`
 ---@field ["show-fixes"]? boolean
 ---The directories to consider when resolving first- vs. third-party
 ---imports.
@@ -398,6 +265,8 @@
 ---packages in a `python_modules` directory, `src = ["python_modules/*"]`
 ---would expand to incorporate all packages in that directory. User home
 ---directory and environment variables will also be expanded.
+---
+---Default value: `[".", "src"]`
 ---@field src? string[]
 ---The minimum Python version to target, e.g., when considering automatic
 ---code upgrades, like rewriting type annotations. Ruff will not propose
@@ -430,13 +299,538 @@
 ---3.10+. As such, Ruff will often recommend newer features in a stub
 ---file than it would for an equivalent runtime file with the same target
 ---version.
----@field ["target-version"]? any|any
+---
+---Default value: `"py310"`
+---@field ["target-version"] "py37"|"py38"|"py39"|"py310"|"py311"|"py312"|"py313"|"py314"|nil
+---Enable application of unsafe fixes.
+---If excluded, a hint will be displayed when unsafe fixes are available.
+---If set to false, the hint will be hidden.
+---
+---Default value: `null`
+---@field ["unsafe-fixes"]? boolean
+---Configures Ruff's `analyze` command.
+---@field analyze? init_options.ruff.settings.configuration.analyze
+---Configures the way Ruff formats your code.
+---@field format? init_options.ruff.settings.configuration.format
+---Configures how Ruff checks your code.
+---
+---Options specified in the `lint` section take precedence over the deprecated top-level settings.
+---@field lint? init_options.ruff.settings.configuration.lint
+
+---Configures Ruff's `analyze` command.
+---@class init_options.ruff.settings.configuration.analyze
+---Whether to detect imports from string literals. When enabled, Ruff will search for string
+---literals that "look like" import paths, and include them in the import map, if they resolve
+---to valid Python modules.
+---
+---Default value: `false`
+---@field ["detect-string-imports"]? boolean
+---Whether to generate a map from file to files that it depends on (dependencies) or files that
+---depend on it (dependents).
+---
+---Default value: `"dependencies"`
+---@field direction "dependents"|"dependencies"|nil
+---A list of file patterns to exclude from analysis in addition to the files excluded globally (see [`exclude`](https://docs.astral.sh/ruff/settings/#exclude), and [`extend-exclude`](https://docs.astral.sh/ruff/settings/#extend-exclude)).
+---
+---Exclusions are based on globs, and can be either:
+---
+---- Single-path patterns, like `.mypy_cache` (to exclude any directory
+---  named `.mypy_cache` in the tree), `foo.py` (to exclude any file named
+---  `foo.py`), or `foo_*.py` (to exclude any file matching `foo_*.py` ).
+---- Relative patterns, like `directory/foo.py` (to exclude that specific
+---  file) or `directory/*.py` (to exclude any Python files in
+---  `directory`). Note that these paths are relative to the project root
+---  (e.g., the directory containing your `pyproject.toml`).
+---
+---For more information on the glob syntax, refer to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `[]`
+---@field exclude? string[]
+---A map from file path to the list of Python or non-Python file paths or globs that should be
+---considered dependencies of that file, regardless of whether relevant imports are detected.
+---
+---Default value: `{}`
+---@field ["include-dependencies"]? table<string, string[]>
+---Whether to enable preview mode. When preview mode is enabled, Ruff will expose unstable
+---commands.
+---
+---Default value: `false`
+---@field preview? boolean
+---The minimum number of dots in a string to consider it a valid import.
+---
+---This setting is only relevant when [`detect-string-imports`](https://docs.astral.sh/ruff/settings/#detect-string-imports) is enabled.
+---For example, if this is set to `2`, then only strings with at least two dots (e.g., `"path.to.module"`)
+---would be considered valid imports.
+---
+---Default value: `2`
+---@field ["string-imports-min-dots"]? integer
+---Whether to include imports that are only used for type checking (i.e., imports within `if TYPE_CHECKING:` blocks).
+---When enabled (default), type-checking-only imports are included in the import graph.
+---When disabled, they are excluded.
+---
+---Default value: `true`
+---@field ["type-checking-imports"]? boolean
+
+---Configures the way Ruff formats your code.
+---@class init_options.ruff.settings.configuration.format
+---Whether to format code snippets in docstrings.
+---
+---When this is enabled, Python code examples within docstrings are
+---automatically reformatted.
+---
+---For example, when this is enabled, the following code:
+---
+---```python
+---def f(x):
+---    """
+---    Something about `f`. And an example in doctest format:
+---
+---    >>> f(  x  )
+---
+---    Markdown is also supported:
+---
+---    ```py
+---    f(  x  )
+---    ```
+---
+---    As are reStructuredText literal blocks::
+---
+---        f(  x  )
+---
+---
+---    And reStructuredText code blocks:
+---
+---    .. code-block:: python
+---
+---        f(  x  )
+---    """
+---    pass
+---```
+---
+---... will be reformatted (assuming the rest of the options are set to
+---their defaults) as:
+---
+---```python
+---def f(x):
+---    """
+---    Something about `f`. And an example in doctest format:
+---
+---    >>> f(x)
+---
+---    Markdown is also supported:
+---
+---    ```py
+---    f(x)
+---    ```
+---
+---    As are reStructuredText literal blocks::
+---
+---        f(x)
+---
+---
+---    And reStructuredText code blocks:
+---
+---    .. code-block:: python
+---
+---        f(x)
+---    """
+---    pass
+---```
+---
+---If a code snippet in a docstring contains invalid Python code or if the
+---formatter would otherwise write invalid Python code, then the code
+---example is ignored by the formatter and kept as-is.
+---
+---Currently, doctest, Markdown, reStructuredText literal blocks, and
+---reStructuredText code blocks are all supported and automatically
+---recognized. In the case of unlabeled fenced code blocks in Markdown and
+---reStructuredText literal blocks, the contents are assumed to be Python
+---and reformatted. As with any other format, if the contents aren't valid
+---Python, then the block is left untouched automatically.
+---
+---Default value: `false`
+---@field ["docstring-code-format"]? boolean
+---Set the line length used when formatting code snippets in docstrings.
+---
+---This only has an effect when the `docstring-code-format` setting is
+---enabled.
+---
+---The default value for this setting is `"dynamic"`, which has the effect
+---of ensuring that any reformatted code examples in docstrings adhere to
+---the global line length configuration that is used for the surrounding
+---Python code. The point of this setting is that it takes the indentation
+---of the docstring into account when reformatting code examples.
+---
+---Alternatively, this can be set to a fixed integer, which will result
+---in the same line length limit being applied to all reformatted code
+---examples in docstrings. When set to a fixed integer, the indent of the
+---docstring is not taken into account. That is, this may result in lines
+---in the reformatted code example that exceed the globally configured
+---line length limit.
+---
+---For example, when this is set to `20` and [`docstring-code-format`](https://docs.astral.sh/ruff/settings/#docstring-code-format)
+---is enabled, then this code:
+---
+---```python
+---def f(x):
+---    '''
+---    Something about `f`. And an example:
+---
+---    .. code-block:: python
+---
+---        foo, bar, quux = this_is_a_long_line(lion, hippo, lemur, bear)
+---    '''
+---    pass
+---```
+---
+---... will be reformatted (assuming the rest of the options are set
+---to their defaults) as:
+---
+---```python
+---def f(x):
+---    """
+---    Something about `f`. And an example:
+---
+---    .. code-block:: python
+---
+---        (
+---            foo,
+---            bar,
+---            quux,
+---        ) = this_is_a_long_line(
+---            lion,
+---            hippo,
+---            lemur,
+---            bear,
+---        )
+---    """
+---    pass
+---```
+---
+---Default value: `"dynamic"`
+---@field ["docstring-code-line-length"] integer|"dynamic"|nil
+---A list of file patterns to exclude from formatting in addition to the files excluded globally (see [`exclude`](https://docs.astral.sh/ruff/settings/#exclude), and [`extend-exclude`](https://docs.astral.sh/ruff/settings/#extend-exclude)).
+---
+---Exclusions are based on globs, and can be either:
+---
+---- Single-path patterns, like `.mypy_cache` (to exclude any directory
+---  named `.mypy_cache` in the tree), `foo.py` (to exclude any file named
+---  `foo.py`), or `foo_*.py` (to exclude any file matching `foo_*.py` ).
+---- Relative patterns, like `directory/foo.py` (to exclude that specific
+---  file) or `directory/*.py` (to exclude any Python files in
+---  `directory`). Note that these paths are relative to the project root
+---  (e.g., the directory containing your `pyproject.toml`).
+---
+---For more information on the glob syntax, refer to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `[]`
+---@field exclude? string[]
+---Whether to use spaces or tabs for indentation.
+---
+---`indent-style = "space"` (default):
+---
+---```python
+---def f():
+---    print("Hello") #  Spaces indent the `print` statement.
+---```
+---
+---`indent-style = "tab"`:
+---
+---```python
+---def f():
+---    print("Hello") #  A tab `\t` indents the `print` statement.
+---```
+---
+---PEP 8 recommends using spaces for [indentation](https://peps.python.org/pep-0008/#indentation).
+---We care about accessibility; if you do not need tabs for accessibility, we do not recommend you use them.
+---
+---See [`indent-width`](https://docs.astral.sh/ruff/settings/#indent-width) to configure the number of spaces per indentation and the tab width.
+---
+---Default value: `"space"`
+---@field ["indent-style"] "space"|"tab"|nil
+---The character Ruff uses at the end of a line.
+---
+---* `auto`: The newline style is detected automatically on a file per file basis. Files with mixed line endings will be converted to the first detected line ending. Defaults to `\n` for files that contain no line endings.
+---* `lf`: Line endings will be converted to `\n`. The default line ending on Unix.
+---* `cr-lf`: Line endings will be converted to `\r\n`. The default line ending on Windows.
+---* `native`: Line endings will be converted to `\n` on Unix and `\r\n` on Windows.
+---
+---Default value: `"auto"`
+---@field ["line-ending"] "auto"|"lf"|"cr-lf"|"native"|nil
+---Controls the quote style for nested strings inside interpolated string expressions.
+---
+---- `alternating` (default): Use alternating quotes.
+---- `preferred`: Use the configured [`quote-style`](https://docs.astral.sh/ruff/settings/#format_quote-style).
+---
+---```python
+---f"{data['key']}"  # alternating (default)
+---f"{data["key"]}"  # preferred
+---```
+---
+---Note: This setting has no effect when targeting Python versions below 3.12.
+---
+---Default value: `"alternating"`
+---@field ["nested-string-quote-style"] "alternating"|"preferred"|nil
+---Whether to enable the unstable preview style formatting.
+---
+---Default value: `false`
+---@field preview? boolean
+---Configures the preferred quote character for strings. The recommended options are
+---
+---* `double` (default): Use double quotes `"`
+---* `single`: Use single quotes `'`
+---
+---In compliance with [PEP 8](https://peps.python.org/pep-0008/) and [PEP 257](https://peps.python.org/pep-0257/),
+---Ruff prefers double quotes for triple quoted strings and docstrings even when using `quote-style = "single"`.
+---
+---Ruff deviates from using the configured quotes if doing so prevents the need for
+---escaping quote characters inside the string:
+---
+---```python
+---a = "a string without any quotes"
+---b = "It's monday morning"
+---```
+---
+---Ruff will change the quotes of the string assigned to `a` to single quotes when using `quote-style = "single"`.
+---However, Ruff uses double quotes for the string assigned to `b` because using single quotes would require escaping the `'`,
+---which leads to the less readable code: `'It\'s monday morning'`.
+---
+---In addition, Ruff supports the quote style `preserve` for projects that already use
+---a mixture of single and double quotes and can't migrate to the `double` or `single` style.
+---The quote style `preserve` leaves the quotes of all strings unchanged.
+---
+---Default value: `"double"`
+---@field ["quote-style"] "double"|"single"|"preserve"|nil
+---Ruff uses existing trailing commas as an indication that short lines should be left separate.
+---If this option is set to `true`, the magic trailing comma is ignored.
+---
+---For example, Ruff leaves the arguments separate even though
+---collapsing the arguments to a single line doesn't exceed the line length if `skip-magic-trailing-comma = false`:
+---
+---```python
+---# The arguments remain on separate lines because of the trailing comma after `b`
+---def test(
+---    a,
+---    b,
+---): pass
+---```
+---
+---Setting `skip-magic-trailing-comma = true` changes the formatting to:
+---
+---```python
+---# The arguments are collapsed to a single line because the trailing comma is ignored
+---def test(a, b):
+---    pass
+---```
+---
+---Default value: `false`
+---@field ["skip-magic-trailing-comma"]? boolean
+
+---Configures how Ruff checks your code.
+---
+---Options specified in the `lint` section take precedence over the deprecated top-level settings.
+---@class init_options.ruff.settings.configuration.lint
+---A list of allowed "confusable" Unicode characters to ignore when
+---enforcing `RUF001`, `RUF002`, and `RUF003`.
+---
+---Default value: `[]`
+---@field ["allowed-confusables"]? string[]
+---A regular expression used to identify "dummy" variables, or those which
+---should be ignored when enforcing (e.g.) unused-variable rules. The
+---default expression matches `_`, `__`, and `_var`, but not `_var_`.
+---
+---Default value: `"^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"`
+---@field ["dummy-variable-rgx"]? string
+---A list of file patterns to exclude from linting in addition to the files excluded globally (see [`exclude`](https://docs.astral.sh/ruff/settings/#exclude), and [`extend-exclude`](https://docs.astral.sh/ruff/settings/#extend-exclude)).
+---
+---Exclusions are based on globs, and can be either:
+---
+---- Single-path patterns, like `.mypy_cache` (to exclude any directory
+---  named `.mypy_cache` in the tree), `foo.py` (to exclude any file named
+---  `foo.py`), or `foo_*.py` (to exclude any file matching `foo_*.py` ).
+---- Relative patterns, like `directory/foo.py` (to exclude that specific
+---  file) or `directory/*.py` (to exclude any Python files in
+---  `directory`). Note that these paths are relative to the project root
+---  (e.g., the directory containing your `pyproject.toml`).
+---
+---For more information on the glob syntax, refer to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `[]`
+---@field exclude? string[]
+---Whether to require exact codes to select preview rules. When enabled,
+---preview rules will not be selected by prefixes — the full code of each
+---preview rule will be required to enable the rule.
+---
+---Default value: `false`
+---@field ["explicit-preview-rules"]? boolean
+---A list of rule codes or prefixes to consider fixable, in addition to those
+---specified by [`fixable`](https://docs.astral.sh/ruff/settings/#lint_fixable).
+---
+---Default value: `[]`
+---@field ["extend-fixable"]? string[]
+---**Deprecated**: This option has been deprecated. The `extend-ignore` option is now interchangeable with [`ignore`](https://docs.astral.sh/ruff/settings/#lint_ignore). Please update your configuration to use the [`ignore`](https://docs.astral.sh/ruff/settings/#lint_ignore) option instead.
+---
+---A list of rule codes or prefixes to ignore, in addition to those
+---specified by `ignore`.
+---
+---This option is deprecated because it is now interchangeable with
+---[`ignore`](https://docs.astral.sh/ruff/settings/#lint_ignore). In earlier versions of Ruff, `ignore` would
+---_replace_ the set of ignored rules when using configuration inheritance
+---(via the top-level [`extend`](https://docs.astral.sh/ruff/settings/#extend)
+---setting), while `extend-ignore` would _add_ to the inherited set. Ruff
+---now merges both `ignore` and `extend-ignore` into a single set, so the
+---distinction no longer applies. Use [`ignore`](https://docs.astral.sh/ruff/settings/#lint_ignore) instead.
+---
+---Default value: `[]`
+---@field ["extend-ignore"]? string[]
+---A list of mappings from file pattern to rule codes or prefixes to
+---exclude, in addition to any rules excluded by [`per-file-ignores`](https://docs.astral.sh/ruff/settings/#lint_per-file-ignores).
+---
+---Default value: `{}`
+---@field ["extend-per-file-ignores"]? table<string, string[]>
+---A list of rule codes or prefixes for which unsafe fixes should be considered
+---safe.
+---
+---Default value: `[]`
+---@field ["extend-safe-fixes"]? string[]
+---A list of rule codes or prefixes to enable, in addition to those
+---specified by [`select`](https://docs.astral.sh/ruff/settings/#lint_select).
+---
+---Unlike [`select`](https://docs.astral.sh/ruff/settings/#lint_select), which _replaces_ the default rule set
+---when specified, `extend-select` _adds_ to whatever rules are already
+---active. This makes `extend-select` the preferred option when you want
+---to enable additional rules on top of the defaults without having to
+---enumerate them.
+---
+---For example, to enable the defaults plus flake8-bugbear:
+---
+---```toml
+---[tool.ruff.lint]
+---# Adds flake8-bugbear on top of the default rules.
+---extend-select = ["B"]
+---```
+---
+---Using `select = ["B"]` instead would _replace_ the defaults, enabling
+---only flake8-bugbear.
+---
+---Default value: `[]`
+---@field ["extend-select"]? string[]
+---A list of rule codes or prefixes for which safe fixes should be considered
+---unsafe.
+---
+---Default value: `[]`
+---@field ["extend-unsafe-fixes"]? string[]
+---A list of rule codes or prefixes that are unsupported by Ruff, but should be
+---preserved when (e.g.) validating `# noqa` directives. Useful for
+---retaining `# noqa` directives that cover plugins not yet implemented
+---by Ruff.
+---
+---Default value: `[]`
+---@field external? string[]
+---A list of rule codes or prefixes to consider fixable. By default,
+---all rules are considered fixable.
+---
+---Default value: `["ALL"]`
+---@field fixable? string[]
+---Whether to allow rules to add `from __future__ import annotations` in cases where this would
+---simplify a fix or enable a new diagnostic.
+---
+---For example, `TC001`, `TC002`, and `TC003` can move more imports into `TYPE_CHECKING` blocks
+---if `__future__` annotations are enabled.
+---
+---Default value: `false`
+---@field ["future-annotations"]? boolean
+---A list of rule codes or prefixes to ignore. Prefixes can specify exact
+---rules (like `F841`), entire groups (like `F`), or anything in
+---between.
+---
+---When breaking ties between enabled and disabled rules (via `select` and
+---`ignore`, respectively), more specific prefixes override less
+---specific prefixes. `ignore` takes precedence over `select` if the same
+---prefix appears in both.
+---
+---In preview, categories like `correctness` and `suspicious` can be used
+---in addition to rule codes and linter group prefixes.
+---
+---Default value: `[]`
+---@field ignore? string[]
+---**Deprecated**: This option has been deprecated in 0.4.4. `ignore-init-module-imports` will be removed in a future version because F401 now recommends appropriate fixes for unused imports in `__init__.py` (currently in preview mode). See documentation for more information and please update your configuration.
+---
+---Avoid automatically removing unused imports in `__init__.py` files. Such
+---imports will still be flagged, but with a dedicated message suggesting
+---that the import is either added to the module's `__all__` symbol, or
+---re-exported with a redundant alias (e.g., `import os as os`).
+---
+---This option is enabled by default, but you can opt-in to removal of imports
+---via an unsafe fix.
+---
+---Default value: `true`
+---@field ["ignore-init-module-imports"]? boolean
+---A list of objects that should be treated equivalently to a
+---`logging.Logger` object.
+---
+---This is useful for ensuring proper diagnostics (e.g., to identify
+---`logging` deprecations and other best-practices) for projects that
+---re-export a `logging.Logger` object from a common module.
+---
+---For example, if you have a module `logging_setup.py` with the following
+---contents:
+---```python
+---import logging
+---
+---logger = logging.getLogger(__name__)
+---```
+---
+---Adding `"logging_setup.logger"` to `logger-objects` will ensure that
+---`logging_setup.logger` is treated as a `logging.Logger` object when
+---imported from other modules (e.g., `from logging_setup import logger`).
+---
+---Default value: `[]`
+---@field ["logger-objects"]? string[]
+---A list of mappings from file pattern to rule codes or prefixes to
+---exclude, when considering any matching files. An initial '!' negates
+---the file pattern.
+---
+---For more information on the glob syntax, refer to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `{}`
+---@field ["per-file-ignores"]? table<string, string[]>
+---Whether to enable preview mode. When preview mode is enabled, Ruff will
+---use unstable rules and fixes.
+---
+---Default value: `false`
+---@field preview? boolean
+---A list of rule codes or prefixes to enable. Prefixes can specify exact
+---rules (like `F841`), entire groups (like `F`), or anything in
+---between.
+---
+---When breaking ties between enabled and disabled rules (via `select` and
+---`ignore`, respectively), more specific prefixes override less
+---specific prefixes. `ignore` takes precedence over `select` if the
+---same prefix appears in both.
+---
+---In preview, categories like `correctness` and `suspicious` can be used
+---in addition to rule codes and linter group prefixes.
+---
+---Default value: See https://docs.astral.sh/ruff/default-rules/ or run `ruff check --show-settings --isolated`
+---@field select? string[]
 ---A list of task tags to recognize (e.g., "TODO", "FIXME", "XXX").
 ---
 ---Comments starting with these tags will be ignored by commented-out code
 ---detection (`ERA`), and skipped by line-length rules (`E501`) if
----[`ignore-overlong-task-comments`](#lint_pycodestyle_ignore-overlong-task-comments) is set to `true`.
+---[`ignore-overlong-task-comments`](https://docs.astral.sh/ruff/settings/#lint_pycodestyle_ignore-overlong-task-comments) is set to `true`.
+---
+---Default value: `["TODO", "FIXME", "XXX"]`
 ---@field ["task-tags"]? string[]
+---Whether to allow imports from the third-party `typing_extensions` module for Python versions
+---before a symbol was added to the first-party `typing` module.
+---
+---Many rules try to import symbols from the `typing` module but fall back to
+---`typing_extensions` for earlier versions of Python. This option can be used to disable this
+---fallback behavior in cases where `typing_extensions` is not installed.
+---
+---Default value: `true`
+---@field ["typing-extensions"]? boolean
 ---A list of modules whose exports should be treated equivalently to
 ---members of the `typing` module.
 ---
@@ -445,10 +839,1401 @@
 ---from a compatibility module. If omitted, any members imported from
 ---modules apart from `typing` and `typing_extensions` will be treated
 ---as ordinary Python objects.
+---
+---Default value: `[]`
 ---@field ["typing-modules"]? string[]
 ---A list of rule codes or prefixes to consider non-fixable.
----@field unfixable? any[]
----Enable application of unsafe fixes.
----If excluded, a hint will be displayed when unsafe fixes are available.
----If set to false, the hint will be hidden.
----@field ["unsafe-fixes"]? boolean
+---
+---Default value: `[]`
+---@field unfixable? string[]
+---Options for the `flake8-annotations` plugin.
+---@field ["flake8-annotations"]? init_options.ruff.settings.configuration.lint.flake8-annotations
+---Options for the `flake8-bandit` plugin.
+---@field ["flake8-bandit"]? init_options.ruff.settings.configuration.lint.flake8-bandit
+---Options for the `flake8-boolean-trap` plugin
+---@field ["flake8-boolean-trap"]? init_options.ruff.settings.configuration.lint.flake8-boolean-trap
+---Options for the `flake8-bugbear` plugin.
+---@field ["flake8-bugbear"]? init_options.ruff.settings.configuration.lint.flake8-bugbear
+---Options for the `flake8-builtins` plugin.
+---@field ["flake8-builtins"]? init_options.ruff.settings.configuration.lint.flake8-builtins
+---Options for the `flake8-comprehensions` plugin.
+---@field ["flake8-comprehensions"]? init_options.ruff.settings.configuration.lint.flake8-comprehensions
+---Options for the `flake8-copyright` plugin.
+---@field ["flake8-copyright"]? init_options.ruff.settings.configuration.lint.flake8-copyright
+---Options for the `flake8-errmsg` plugin.
+---@field ["flake8-errmsg"]? init_options.ruff.settings.configuration.lint.flake8-errmsg
+---Options for the `flake8-gettext` plugin.
+---@field ["flake8-gettext"]? init_options.ruff.settings.configuration.lint.flake8-gettext
+---Options for the `flake8-implicit-str-concat` plugin
+---@field ["flake8-implicit-str-concat"]? init_options.ruff.settings.configuration.lint.flake8-implicit-str-concat
+---Options for the `flake8-import-conventions` plugin
+---@field ["flake8-import-conventions"]? init_options.ruff.settings.configuration.lint.flake8-import-conventions
+---Options for the `flake8-pytest-style` plugin
+---@field ["flake8-pytest-style"]? init_options.ruff.settings.configuration.lint.flake8-pytest-style
+---Options for the `flake8-quotes` plugin.
+---@field ["flake8-quotes"]? init_options.ruff.settings.configuration.lint.flake8-quotes
+---Options for the `flake8_self` plugin.
+---@field ["flake8-self"]? init_options.ruff.settings.configuration.lint.flake8-self
+---Options for the `flake8-tidy-imports` plugin
+---@field ["flake8-tidy-imports"]? init_options.ruff.settings.configuration.lint.flake8-tidy-imports
+---Options for the `flake8-type-checking` plugin
+---@field ["flake8-type-checking"]? init_options.ruff.settings.configuration.lint.flake8-type-checking
+---Options for the `flake8-unused-arguments` plugin
+---@field ["flake8-unused-arguments"]? init_options.ruff.settings.configuration.lint.flake8-unused-arguments
+---Options for the `isort` plugin.
+---@field isort? init_options.ruff.settings.configuration.lint.isort
+---Options for the `mccabe` plugin.
+---@field mccabe? init_options.ruff.settings.configuration.lint.maccabe
+---Options for the `pep8-naming` plugin.
+---@field ["pep8-naming"]? init_options.ruff.settings.configuration.lint.pep8-naming
+---Options for the `pycodestyle` plugin.
+---@field pycodestyle? init_options.ruff.settings.configuration.lint.pycodestyle
+---Options for the `pydoclint` plugin.
+---@field pydoclint? init_options.ruff.settings.configuration.lint.pydoclint
+---Options for the `pydocstyle` plugin.
+---@field pydocstyle? init_options.ruff.settings.configuration.lint.pydocstyle
+---Options for the `pyflakes` plugin.
+---@field pyflakes? init_options.ruff.settings.configuration.lint.pyflakes
+---Options for the `pylint` plugin.
+---@field pylint? init_options.ruff.settings.configuration.lint.pylint
+---Options for the `pyupgrade` plugin.
+---@field pyupgrade? init_options.ruff.settings.configuration.lint.pyupgrade
+---Options for the `ruff` plugin
+---@field ruff? init_options.ruff.settings.configuration.lint.ruff
+
+---Options for the `flake8-annotations` plugin.
+---@class init_options.ruff.settings.configuration.lint.flake8-annotations
+---Whether to suppress `ANN401` for dynamically typed `*args` and
+---`**kwargs` arguments.
+---
+---Default value: `false`
+---@field ["allow-star-arg-any"]? boolean
+---Whether to suppress `ANN*` rules for any declaration
+---that hasn't been typed at all.
+---This makes it easier to gradually add types to a codebase.
+---
+---Default value: `false`
+---@field ["ignore-fully-untyped"]? boolean
+---Whether to allow the omission of a return type hint for `__init__` if at
+---least one argument is annotated.
+---
+---Default value: `false`
+---@field ["mypy-init-return"]? boolean
+---Whether to suppress `ANN000`-level violations for arguments matching the
+---"dummy" variable regex (like `_`).
+---
+---Default value: `false`
+---@field ["suppress-dummy-args"]? boolean
+---Whether to suppress `ANN200`-level violations for functions that meet
+---either of the following criteria:
+---
+---- Contain no `return` statement.
+---- Explicit `return` statement(s) all return `None` (explicitly or
+---  implicitly).
+---
+---Default value: `false`
+---@field ["suppress-none-returning"]? boolean
+
+---Options for the `flake8-bandit` plugin.
+---@class init_options.ruff.settings.configuration.lint.flake8-bandit
+---A list of callable names, whose result may be safely passed into
+---[`markupsafe.Markup`](https://markupsafe.palletsprojects.com/en/stable/escaping/#markupsafe.Markup).
+---
+---Expects to receive a list of fully-qualified names (e.g., `bleach.clean`, rather than `clean`).
+---
+---This setting helps you avoid false positives in code like:
+---
+---```python
+---from bleach import clean
+---from markupsafe import Markup
+---
+---cleaned_markup = Markup(clean(some_user_input))
+---```
+---
+---Where the use of [`bleach.clean`](https://bleach.readthedocs.io/en/latest/clean.html)
+---usually ensures that there's no XSS vulnerability.
+---
+---Although it is not recommended, you may also use this setting to whitelist other
+---kinds of calls, e.g. calls to i18n translation functions, where how safe that is
+---will depend on the implementation and how well the translations are audited.
+---
+---Another common use-case is to wrap the output of functions that generate markup
+---like [`xml.etree.ElementTree.tostring`](https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.tostring)
+---or template rendering engines where sanitization of potential user input is either
+---already baked in or has to happen before rendering.
+---
+---Default value: `[]`
+---@field ["allowed-markup-calls"]? string[]
+---Whether to disallow `try`-`except`-`pass` (`S110`) for specific
+---exception types. By default, `try`-`except`-`pass` is only
+---disallowed for `Exception` and `BaseException`.
+---
+---Default value: `false`
+---@field ["check-typed-exception"]? boolean
+---A list of additional callable names that behave like
+---[`markupsafe.Markup`](https://markupsafe.palletsprojects.com/en/stable/escaping/#markupsafe.Markup).
+---
+---Expects to receive a list of fully-qualified names (e.g., `webhelpers.html.literal`, rather than
+---`literal`).
+---
+---Default value: `[]`
+---@field ["extend-markup-names"]? string[]
+---A list of directories to consider temporary (see `S108`).
+---
+---Default value: `["/tmp", "/var/tmp", "/dev/shm"]`
+---@field ["hardcoded-tmp-directory"]? string[]
+---A list of directories to consider temporary, in addition to those
+---specified by [`hardcoded-tmp-directory`](https://docs.astral.sh/ruff/settings/#lint_flake8-bandit_hardcoded-tmp-directory) (see `S108`).
+---
+---Default value: `[]`
+---@field ["hardcoded-tmp-directory-extend"]? string[]
+
+---Options for the `flake8-boolean-trap` plugin
+---@class init_options.ruff.settings.configuration.lint.flake8-boolean-trap
+---Additional callable functions with which to allow boolean traps.
+---
+---Expects to receive a list of fully-qualified names (e.g., `pydantic.Field`, rather than
+---`Field`).
+---
+---Default value: `[]`
+---@field ["extend-allowed-calls"]? string[]
+
+---Options for the `flake8-bugbear` plugin.
+---@class init_options.ruff.settings.configuration.lint.flake8-bugbear
+---Additional callable functions to consider "immutable" when evaluating, e.g., the
+---`function-call-in-default-argument` rule (`B008`) or `function-call-in-dataclass-defaults`
+---rule (`RUF009`).
+---
+---Expects to receive a list of fully-qualified names (e.g., `fastapi.Query`, rather than
+---`Query`).
+---
+---Default value: `[]`
+---@field ["extend-immutable-calls"]? string[]
+
+---Options for the `flake8-builtins` plugin.
+---@class init_options.ruff.settings.configuration.lint.flake8-builtins
+---List of builtin module names to allow.
+---
+---Default value: `[]`
+---@field ["allowed-modules"]? string[]
+---**Deprecated**: This option has been deprecated in 0.10.0. `builtins-allowed-modules` has been renamed to `allowed-modules`. Use that instead.
+---
+---DEPRECATED: This option has been renamed to `allowed-modules`. Use `allowed-modules` instead.
+---
+---List of builtin module names to allow.
+---
+---This option is ignored if both `allowed-modules` and `builtins-allowed-modules` are set.
+---
+---Default value: `[]`
+---@field ["builtins-allowed-modules"]? string[]
+---**Deprecated**: This option has been deprecated in 0.10.0. `builtins-ignorelist` has been renamed to `ignorelist`. Use that instead.
+---
+---DEPRECATED: This option has been renamed to `ignorelist`. Use `ignorelist` instead.
+---
+---Ignore list of builtins.
+---
+---This option is ignored if both `ignorelist` and `builtins-ignorelist` are set.
+---
+---Default value: `[]`
+---@field ["builtins-ignorelist"]? string[]
+---**Deprecated**: This option has been deprecated in 0.10.0. `builtins-strict-checking` has been renamed to `strict-checking`. Use that instead.
+---
+---DEPRECATED: This option has been renamed to `strict-checking`. Use `strict-checking` instead.
+---
+---Compare module names instead of full module paths.
+---
+---This option is ignored if both `strict-checking` and `builtins-strict-checking` are set.
+---
+---Default value: `false`
+---@field ["builtins-strict-checking"]? boolean
+---Ignore list of builtins.
+---
+---Default value: `[]`
+---@field ignorelist? string[]
+---Compare module names instead of full module paths.
+---
+---Used by [`A005` - `stdlib-module-shadowing`](https://docs.astral.sh/ruff/rules/stdlib-module-shadowing/).
+---
+---Default value: `false`
+---@field ["strict-checking"]? boolean
+
+---Options for the `flake8-comprehensions` plugin.
+---@class init_options.ruff.settings.configuration.lint.flake8-comprehensions
+---Allow `dict` calls that make use of keyword arguments (e.g., `dict(a=1, b=2)`).
+---
+---Default value: `false`
+---@field ["allow-dict-calls-with-keyword-arguments"]? boolean
+
+---Options for the `flake8-copyright` plugin.
+---@class init_options.ruff.settings.configuration.lint.flake8-copyright
+---Author to enforce within the copyright notice. If provided, the
+---author must be present immediately following the copyright notice.
+---
+---Default value: `null`
+---@field author? string
+---A minimum file size (in bytes) required for a copyright notice to
+---be enforced. By default, all files are validated.
+---
+---Default value: `0`
+---@field ["min-file-size"]? integer
+---The regular expression used to match the copyright notice, compiled
+---with the [`regex`](https://docs.rs/regex/latest/regex/) crate.
+---Defaults to `(?i)Copyright\s+((?:\(C\)|©)\s+)?\d{4}((-|,\s)\d{4})*`, which matches
+---the following:
+---
+---- `Copyright 2023`
+---- `Copyright (C) 2023`
+---- `Copyright 2021-2023`
+---- `Copyright (C) 2021-2023`
+---- `Copyright (C) 2021, 2023`
+---
+---Default value: `"(?i)Copyright\s+((?:\(C\)|©)\s+)?\d{4}((-|,\s)\d{4})*"`
+---@field ["notice-rgx"]? string
+
+---Options for the `flake8-errmsg` plugin.
+---@class init_options.ruff.settings.configuration.lint.flake8-errmsg
+---Maximum string length for string literals in exception messages.
+---
+---Default value: `0`
+---@field ["max-string-length"]? integer
+
+---Options for the `flake8-gettext` plugin.
+---@class init_options.ruff.settings.configuration.lint.flake8-gettext
+---Additional function names to consider as internationalization calls, in addition to those
+---included in [`function-names`](https://docs.astral.sh/ruff/settings/#lint_flake8-gettext_function-names).
+---
+---Default value: `[]`
+---@field ["extend-function-names"]? string[]
+---The function names to consider as internationalization calls.
+---
+---Default value: `["_", "gettext", "ngettext"]`
+---@field ["function-names"]? string[]
+
+---Options for the `flake8-implicit-str-concat` plugin
+---@class init_options.ruff.settings.configuration.lint.flake8-implicit-str-concat
+---Whether to allow implicit string concatenations for multiline strings.
+---By default, implicit concatenations of multiline strings are
+---allowed (but continuation lines, delimited with a backslash, are
+---prohibited).
+---
+---Setting `allow-multiline = false` will automatically disable the
+---`explicit-string-concatenation` (`ISC003`) rule. Otherwise, both
+---implicit and explicit multiline string concatenations would be seen
+---as violations, making it impossible to write a linter-compliant multiline
+---string.
+---
+---Default value: `true`
+---@field ["allow-multiline"]? boolean
+
+---Options for the `flake8-import-conventions` plugin
+---@class init_options.ruff.settings.configuration.lint.flake8-import-conventions
+---The conventional aliases for imports. These aliases can be extended by
+---the [`extend-aliases`](https://docs.astral.sh/ruff/settings/#lint_flake8-import-conventions_extend-aliases) option.
+---
+---Default value: `{"altair": "alt", "matplotlib": "mpl", "matplotlib.pyplot": "plt", "numpy": "np", "numpy.typing": "npt", "pandas": "pd", "seaborn": "sns", "tensorflow": "tf", "tkinter":  "tk", "holoviews": "hv", "panel": "pn", "plotly.express": "px", "polars": "pl", "pyarrow": "pa", "xml.etree.ElementTree": "ET"}`
+---@field aliases? table<string, string>
+---A mapping from module to its banned import aliases.
+---
+---Default value: `{}`
+---@field ["banned-aliases"]? table<string, string[]>
+---A list of modules that should not be imported from using the
+---`from ... import ...` syntax.
+---
+---For example, given `banned-from = ["pandas"]`, `from pandas import DataFrame`
+---would be disallowed, while `import pandas` would be allowed.
+---
+---Default value: `[]`
+---@field ["banned-from"]? string[]
+---A mapping from module to conventional import alias. These aliases will
+---be added to the [`aliases`](https://docs.astral.sh/ruff/settings/#lint_flake8-import-conventions_aliases) mapping
+---and will override any existing `aliases` if the two settings overlap.
+---
+---Default value: `{}`
+---@field ["extend-aliases"]? table<string, string>
+
+---Options for the `flake8-pytest-style` plugin
+---@class init_options.ruff.settings.configuration.lint.flake8-pytest-style
+---Boolean flag specifying whether `@pytest.fixture()` without parameters
+---should have parentheses. If the option is set to `false` (the default),
+---`@pytest.fixture` is valid and `@pytest.fixture()` is invalid. If set
+---to `true`, `@pytest.fixture()` is valid and `@pytest.fixture` is
+---invalid.
+---
+---Default value: `false`
+---@field ["fixture-parentheses"]? boolean
+---Boolean flag specifying whether `@pytest.mark.foo()` without parameters
+---should have parentheses. If the option is set to `false` (the
+---default), `@pytest.mark.foo` is valid and `@pytest.mark.foo()` is
+---invalid. If set to `true`, `@pytest.mark.foo()` is valid and
+---`@pytest.mark.foo` is invalid.
+---
+---Default value: `false`
+---@field ["mark-parentheses"]? boolean
+---Expected type for multiple argument names in `@pytest.mark.parametrize`.
+---The following values are supported:
+---
+---- `csv` — a comma-separated list, e.g.
+---  `@pytest.mark.parametrize("name1,name2", ...)`
+---- `tuple` (default) — e.g.
+---  `@pytest.mark.parametrize(("name1", "name2"), ...)`
+---- `list` — e.g. `@pytest.mark.parametrize(["name1", "name2"], ...)`
+---
+---Default value: `tuple`
+---@field ["parametrize-names-type"] "csv"|"tuple"|"list"|nil
+---Expected type for each row of values in `@pytest.mark.parametrize` in
+---case of multiple parameters. The following values are supported:
+---
+---- `tuple` (default) — e.g.
+---  `@pytest.mark.parametrize(("name1", "name2"), [(1, 2), (3, 4)])`
+---- `list` — e.g.
+---  `@pytest.mark.parametrize(("name1", "name2"), [[1, 2], [3, 4]])`
+---
+---Default value: `tuple`
+---@field ["parametrize-values-row-type"] "tuple"|"list"|nil
+---Expected type for the list of values rows in `@pytest.mark.parametrize`.
+---The following values are supported:
+---
+---- `tuple` — e.g. `@pytest.mark.parametrize("name", (1, 2, 3))`
+---- `list` (default) — e.g. `@pytest.mark.parametrize("name", [1, 2, 3])`
+---
+---Default value: `list`
+---@field ["parametrize-values-type"] "tuple"|"list"|nil
+---List of additional exception names that require a match= parameter in a
+---`pytest.raises()` call. This extends the default list of exceptions
+---that require a match= parameter.
+---This option is useful if you want to extend the default list of
+---exceptions that require a match= parameter without having to specify
+---the entire list.
+---Note that this option does not remove any exceptions from the default
+---list.
+---
+---Supports glob patterns. For more information on the glob syntax, refer
+---to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `[]`
+---@field ["raises-extend-require-match-for"]? string[]
+---List of exception names that require a match= parameter in a
+---`pytest.raises()` call.
+---
+---Supports glob patterns. For more information on the glob syntax, refer
+---to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `["BaseException", "Exception", "ValueError", "OSError", "IOError", "EnvironmentError", "socket.error"]`
+---@field ["raises-require-match-for"]? string[]
+---List of additional warning names that require a match= parameter in a
+---`pytest.warns()` call. This extends the default list of warnings that
+---require a match= parameter.
+---
+---This option is useful if you want to extend the default list of warnings
+---that require a match= parameter without having to specify the entire
+---list.
+---
+---Note that this option does not remove any warnings from the default
+---list.
+---
+---Supports glob patterns. For more information on the glob syntax, refer
+---to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `[]`
+---@field ["warns-extend-require-match-for"]? string[]
+---List of warning names that require a match= parameter in a
+---`pytest.warns()` call.
+---
+---Supports glob patterns. For more information on the glob syntax, refer
+---to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `["Warning", "UserWarning", "DeprecationWarning"]`
+---@field ["warns-require-match-for"]? string[]
+
+---Options for the `flake8-quotes` plugin.
+---@class init_options.ruff.settings.configuration.lint.flake8-quotes
+---Whether to avoid using single quotes if a string contains single quotes,
+---or vice-versa with double quotes, as per [PEP 8](https://peps.python.org/pep-0008/#string-quotes).
+---This minimizes the need to escape quotation marks within strings.
+---
+---Default value: `true`
+---@field ["avoid-escape"]? boolean
+---Quote style to prefer for docstrings (either "single" or "double").
+---
+---When using the formatter, only "double" is compatible, as the formatter
+---enforces double quotes for docstrings strings.
+---
+---Default value: `"double"`
+---@field ["docstring-quotes"] "single"|"double"|nil
+---Quote style to prefer for inline strings (either "single" or
+---"double").
+---
+---When using the formatter, ensure that [`format.quote-style`](https://docs.astral.sh/ruff/settings/#format_quote-style) is set to
+---the same preferred quote style.
+---
+---Default value: `"double"`
+---@field ["inline-quotes"] "single"|"double"|nil
+---Quote style to prefer for multiline strings (either "single" or
+---"double").
+---
+---When using the formatter, only "double" is compatible, as the formatter
+---enforces double quotes for multiline strings.
+---
+---Default value: `"double"`
+---@field ["multiline-quotes"] "single"|"double"|nil
+
+---Options for the `flake8_self` plugin.
+---@class init_options.ruff.settings.configuration.lint.flake8-self
+---Additional names to ignore when considering `flake8-self` violations,
+---in addition to those included in [`ignore-names`](https://docs.astral.sh/ruff/settings/#lint_flake8-self_ignore-names).
+---
+---Default value: `[]`
+---@field ["extend-ignore-names"]? string[]
+---A list of names to ignore when considering `flake8-self` violations.
+---
+---Default value: `["_make", "_asdict", "_replace", "_fields", "_field_defaults", "_name_", "_value_"]`
+---@field ["ignore-names"]? string[]
+
+---Options for the `flake8-tidy-imports` plugin
+---@class init_options.ruff.settings.configuration.lint.flake8-tidy-imports
+---Specific modules that may not be imported lazily, or `"all"` to forbid lazy imports except
+---for any modules excluded from the selector. This rule is only enforced when targeting
+---Python 3.15 or newer.
+---
+---Default value: `[]`
+---@field ["ban-lazy"]? "all"|string[]|{ include: "all"|string[], exclude: string[] }|nil
+---Whether to ban all relative imports (`"all"`), or only those imports
+---that extend into the parent module or beyond (`"parents"`).
+---
+---Default value: `"parents"`
+---@field ["ban-relative-imports"] "parents"|"all"|nil
+---Specific modules or module members that may not be imported or accessed.
+---These can be extended by the
+---[`extend-banned-api`](https://docs.astral.sh/ruff/settings/#lint_flake8-tidy-imports_extend-banned-api) option.
+---
+---Note that this rule is only meant to flag accidental uses,
+---and can be circumvented via `eval` or `importlib`.
+---
+---Default value: `{}`
+---@field ["banned-api"]? table<string, { msg: string }>
+---List of specific modules that may not be imported at module level, and should instead be
+---imported lazily (e.g., within a function definition, or an `if TYPE_CHECKING:`
+---block, or some other nested context). This also affects the rule `import-outside-top-level`
+---if `banned-module-level-imports` is enabled.
+---
+---Default value: `[]`
+---@field ["banned-module-level-imports"]? string[]
+---Additional modules or module members that may not be imported or accessed.
+---These entries will be added to the
+---[`banned-api`](https://docs.astral.sh/ruff/settings/#lint_flake8-tidy-imports_banned-api) mapping and will override
+---any existing entries if the two settings overlap.
+---
+---Default value: `{}`
+---@field ["extend-banned-api"]? table<string, { msg: string }>
+---Specific modules that must be imported lazily in contexts where `lazy import` is legal, or
+---`"all"` to require every lazily-convertible import to use the `lazy` keyword. Ruff ignores
+---contexts where `lazy import` is invalid, such as functions, classes, `try`/`except`
+---blocks, `__future__` imports, and `from ... import *` statements. This rule is only
+---enforced when targeting Python 3.15 or newer.
+---
+---Default value: `[]`
+---@field ["require-lazy"]? "all"|string[]|{ include: "all"|string[], exclude: string[] }|nil
+
+---Options for the `flake8-type-checking` plugin
+---@class init_options.ruff.settings.configuration.lint.flake8-type-checking
+---Exempt certain modules from needing to be moved into type-checking
+---blocks.
+---
+---Default value: `["typing"]`
+---@field ["exempt-modules"]? string[]
+---Whether to add quotes around type annotations, if doing so would allow
+---the corresponding import to be moved into a type-checking block.
+---
+---For example, in the following, Python requires that `Sequence` be
+---available at runtime, despite the fact that it's only used in a type
+---annotation:
+---
+---```python
+---from collections.abc import Sequence
+---
+---
+---def func(value: Sequence[int]) -> None:
+---    ...
+---```
+---
+---In other words, moving `from collections.abc import Sequence` into an
+---`if TYPE_CHECKING:` block above would cause a runtime error, as the
+---type would no longer be available at runtime.
+---
+---By default, Ruff will respect such runtime semantics and avoid moving
+---the import to prevent such runtime errors.
+---
+---Setting `quote-annotations` to `true` will instruct Ruff to add quotes
+---around the annotation (e.g., `"Sequence[int]"`), which in turn enables
+---Ruff to move the import into an `if TYPE_CHECKING:` block, like so:
+---
+---```python
+---from typing import TYPE_CHECKING
+---
+---if TYPE_CHECKING:
+---    from collections.abc import Sequence
+---
+---
+---def func(value: "Sequence[int]") -> None:
+---    ...
+---```
+---
+---Note that this setting has no effect when `from __future__ import annotations`
+---is present, as `__future__` annotations are always treated equivalently
+---to quoted annotations. Similarly, this setting has no effect on Python
+---versions after 3.14 because these annotations are also deferred.
+---
+---Default value: `false`
+---@field ["quote-annotations"]? boolean
+---Exempt classes that list any of the enumerated classes as a base class
+---from needing to be moved into type-checking blocks.
+---
+---Common examples include Pydantic's `pydantic.BaseModel` and SQLAlchemy's
+---`sqlalchemy.orm.DeclarativeBase`, but can also support user-defined
+---classes that inherit from those base classes. For example, if you define
+---a common `DeclarativeBase` subclass that's used throughout your project
+---(e.g., `class Base(DeclarativeBase) ...` in `base.py`), you can add it to
+---this list (`runtime-evaluated-base-classes = ["base.Base"]`) to exempt
+---models from being moved into type-checking blocks.
+---
+---Default value: `[]`
+---@field ["runtime-evaluated-base-classes"]? string[]
+---Exempt classes and functions decorated with any of the enumerated
+---decorators from being moved into type-checking blocks.
+---
+---Common examples include Pydantic's `@pydantic.validate_call` decorator
+---(for functions) and attrs' `@attrs.define` decorator (for classes).
+---
+---This also supports framework decorators like FastAPI's `fastapi.FastAPI.get`
+---which will work across assignments in the same module.
+---
+---For example:
+---```python
+---from fastapi import FastAPI
+---
+---app = FastAPI("app")
+---
+---@app.get("/home")
+---def home() -> str: ...
+---```
+---
+---Here `app.get` will correctly be identified as `fastapi.FastAPI.get`.
+---
+---Default value: `[]`
+---@field ["runtime-evaluated-decorators"]? string[]
+---Enforce `TC001`, `TC002`, and `TC003` rules even when valid runtime imports
+---are present for the same module.
+---
+---See flake8-type-checking's [strict](https://github.com/snok/flake8-type-checking#strict) option.
+---
+---Default value: `false`
+---@field strict? boolean
+
+---Options for the `flake8-unused-arguments` plugin
+---@class init_options.ruff.settings.configuration.lint.flake8-unused-arguments
+---Whether to allow unused variadic arguments, like `*args` and `**kwargs`.
+---
+---Default value: `false`
+---@field ["ignore-variadic-names"]? boolean
+
+---Options for the `isort` plugin.
+---@class init_options.ruff.settings.configuration.lint.isort
+---Sort imports taking into account case sensitivity.
+---
+---Note that the [`order-by-type`](https://docs.astral.sh/ruff/settings/#lint_isort_order-by-type) setting will
+---take precedence over this one when enabled.
+---
+---Default value: `false`
+---@field ["case-sensitive"]? boolean
+---An override list of tokens to always recognize as a Class for
+---[`order-by-type`](https://docs.astral.sh/ruff/settings/#lint_isort_order-by-type) regardless of casing.
+---
+---Default value: `[]`
+---@field classes? string[]
+---Combines as imports on the same line. See isort's [`combine-as-imports`](https://pycqa.github.io/isort/docs/configuration/options.html#combine-as-imports)
+---option.
+---
+---Default value: `false`
+---@field ["combine-as-imports"]? boolean
+---An override list of tokens to always recognize as a CONSTANT
+---for [`order-by-type`](https://docs.astral.sh/ruff/settings/#lint_isort_order-by-type) regardless of casing.
+---
+---Default value: `[]`
+---@field constants? string[]
+---Define a default section for any imports that don't fit into the specified [`section-order`](https://docs.astral.sh/ruff/settings/#lint_isort_section-order).
+---
+---Default value: `"third-party"`
+---@field ["default-section"]? string
+---Whether to automatically mark imports from within the same package as first-party.
+---For example, when `detect-same-package = true`, then when analyzing files within the
+---`foo` package, any imports from within the `foo` package will be considered first-party.
+---
+---This heuristic is often unnecessary when `src` is configured to detect all first-party
+---sources; however, if `src` is _not_ configured, this heuristic can be useful to detect
+---first-party imports from _within_ (but not _across_) first-party packages.
+---
+---Default value: `true`
+---@field ["detect-same-package"]? boolean
+---A list of modules to consider standard-library, in addition to those
+---known to Ruff in advance.
+---
+---Supports glob patterns. For more information on the glob syntax, refer
+---to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `[]`
+---@field ["extra-standard-library"]? string[]
+---Forces all from imports to appear on their own line.
+---
+---Default value: `false`
+---@field ["force-single-line"]? boolean
+---Don't sort straight-style imports (like `import sys`) before from-style
+---imports (like `from itertools import groupby`). Instead, sort the
+---imports by module, independent of import style.
+---
+---Default value: `false`
+---@field ["force-sort-within-sections"]? boolean
+---Force specific imports to the top of their appropriate section.
+---
+---Default value: `[]`
+---@field ["force-to-top"]? string[]
+---Force `import from` statements with multiple members and at least one
+---alias (e.g., `import A as B`) to wrap such that every line contains
+---exactly one member. For example, this formatting would be retained,
+---rather than condensing to a single line:
+---
+---```python
+---from .utils import (
+---    test_directory as test_directory,
+---    test_id as test_id
+---)
+---```
+---
+---Note that this setting is only effective when combined with
+---`combine-as-imports = true`. When [`combine-as-imports`](https://docs.astral.sh/ruff/settings/#lint_isort_combine-as-imports) isn't
+---enabled, every aliased `import from` will be given its own line, in
+---which case, wrapping is not necessary.
+---
+---When using the formatter, ensure that [`format.skip-magic-trailing-comma`](https://docs.astral.sh/ruff/settings/#format_skip-magic-trailing-comma) is set to `false` (default)
+---when enabling `force-wrap-aliases` to avoid that the formatter collapses members if they all fit on a single line.
+---
+---Default value: `false`
+---@field ["force-wrap-aliases"]? boolean
+---A list of modules to separate into auxiliary block(s) of imports,
+---in the order specified.
+---
+---Default value: `[]`
+---@field ["forced-separate"]? string[]
+---Whether to place `import from` imports before straight imports when sorting.
+---
+---For example, by default, imports will be sorted such that straight imports appear
+---before `import from` imports, as in:
+---```python
+---import os
+---import sys
+---from typing import List
+---```
+---
+---Setting `from-first = true` will instead sort such that `import from` imports appear
+---before straight imports, as in:
+---```python
+---from typing import List
+---import os
+---import sys
+---```
+---
+---Default value: `false`
+---@field ["from-first"]? boolean
+---A mapping from import section names to their heading comments.
+---
+---When set, a comment with the specified text will be added above imports
+---in the corresponding section. If a heading comment already exists, it
+---will be replaced.
+---
+---Compatible with isort's `import_heading_{section_name}` settings.
+---
+---Default value: `{}`
+---@field ["import-heading"]? table<"future"|"standard-library"|"third-party"|"first-party"|"local-folder"|string, string>
+---A list of modules to consider first-party, regardless of whether they
+---can be identified as such via introspection of the local filesystem.
+---
+---Supports glob patterns. For more information on the glob syntax, refer
+---to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `[]`
+---@field ["known-first-party"]? string[]
+---A list of modules to consider being a local folder.
+---Generally, this is reserved for relative imports (`from . import module`).
+---
+---Supports glob patterns. For more information on the glob syntax, refer
+---to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `[]`
+---@field ["known-local-folder"]? string[]
+---A list of modules to consider third-party, regardless of whether they
+---can be identified as such via introspection of the local filesystem.
+---
+---Supports glob patterns. For more information on the glob syntax, refer
+---to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `[]`
+---@field ["known-third-party"]? string[]
+---Sort imports by their string length, such that shorter imports appear
+---before longer imports. For example, by default, imports will be sorted
+---alphabetically, as in:
+---```python
+---import collections
+---import os
+---```
+---
+---Setting `length-sort = true` will instead sort such that shorter imports
+---appear before longer imports, as in:
+---```python
+---import os
+---import collections
+---```
+---
+---Default value: `false`
+---@field ["length-sort"]? boolean
+---Sort straight imports by their string length. Similar to [`length-sort`](https://docs.astral.sh/ruff/settings/#lint_isort_length-sort),
+---but applies only to straight imports and doesn't affect `from` imports.
+---
+---Default value: `false`
+---@field ["length-sort-straight"]? boolean
+---The number of blank lines to place after imports.
+---Use `-1` for automatic determination.
+---
+---Ruff uses at most one blank line after imports in typing stub files (files with `.pyi` extension) in accordance to
+---the typing style recommendations ([source](https://typing.python.org/en/latest/guides/writing_stubs.html#blank-lines)).
+---
+---When using the formatter, only the values `-1`, `1`, and `2` are compatible because
+---it enforces at least one empty and at most two empty lines after imports.
+---
+---Default value: `-1`
+---@field ["lines-after-imports"]? integer
+---The number of lines to place between "direct" and `import from` imports.
+---
+---When using the formatter, only the values `0` and `1` are compatible because
+---it preserves up to one empty line after imports in nested blocks.
+---
+---Default value: `0`
+---@field ["lines-between-types"]? integer
+---A list of sections that should _not_ be delineated from the previous
+---section via empty lines.
+---
+---Default value: `[]`
+---@field ["no-lines-before"]? ("future"|"standard-library"|"third-party"|"first-party"|"local-folder"|string)[]
+---Put all imports into the same section bucket.
+---
+---For example, rather than separating standard library and third-party imports, as in:
+---```python
+---import os
+---import sys
+---
+---import numpy
+---import pandas
+---```
+---
+---Setting `no-sections = true` will instead group all imports into a single section:
+---```python
+---import numpy
+---import os
+---import pandas
+---import sys
+---```
+---
+---Default value: `false`
+---@field ["no-sections"]? boolean
+---Order imports by type, which is determined by case, in addition to
+---alphabetically.
+---
+---Note that this option takes precedence over the
+---[`case-sensitive`](https://docs.astral.sh/ruff/settings/#lint_isort_case-sensitive) setting when enabled.
+---
+---Default value: `true`
+---@field ["order-by-type"]? boolean
+---Whether to place "closer" imports (fewer `.` characters, most local)
+---before "further" imports (more `.` characters, least local), or vice
+---versa.
+---
+---The default ("furthest-to-closest") is equivalent to isort's
+---[`reverse-relative`](https://pycqa.github.io/isort/docs/configuration/options.html#reverse-relative) default (`reverse-relative = false`); setting
+---this to "closest-to-furthest" is equivalent to isort's
+---`reverse-relative = true`.
+---
+---Default value: `"furthest-to-closest"`
+---@field ["relative-imports-order"] "furthest-to-closest"|"closest-to-furthest"|nil
+---Add the specified import line to all files.
+---
+---Default value: `[]`
+---@field ["required-imports"]? string[]
+---Override in which order the sections should be output. Can be used to move custom sections.
+---
+---Default value: `["future", "standard-library", "third-party", "first-party", "local-folder"]`
+---@field ["section-order"]? ("future"|"standard-library"|"third-party"|"first-party"|"local-folder"|string)[]
+---A list of mappings from section names to modules.
+---
+---By default, imports are categorized according to their type (e.g., `future`, `third-party`,
+---and so on). This setting allows you to group modules into custom sections, to augment or
+---override the built-in sections.
+---
+---For example, to group all testing utilities, you could create a `testing` section:
+---```toml
+---testing = ["pytest", "hypothesis"]
+---```
+---
+---The values in the list are treated as glob patterns. For example, to match all packages in
+---the LangChain ecosystem (`langchain-core`, `langchain-openai`, etc.):
+---```toml
+---langchain = ["langchain-*"]
+---```
+---
+---Custom sections should typically be inserted into the [`section-order`](https://docs.astral.sh/ruff/settings/#lint_isort_section-order) list to ensure that
+---they're displayed as a standalone group and in the intended order, as in:
+---```toml
+---section-order = [
+---  "future",
+---  "standard-library",
+---  "third-party",
+---  "first-party",
+---  "local-folder",
+---  "testing"
+---]
+---```
+---
+---If a custom section is omitted from [`section-order`](https://docs.astral.sh/ruff/settings/#lint_isort_section-order), imports in that section will be
+---assigned to the [`default-section`](https://docs.astral.sh/ruff/settings/#lint_isort_default-section) (which defaults to `third-party`).
+---
+---Default value: `{}`
+---@field sections? table<string, string[]>
+---One or more modules to exclude from the single line rule.
+---
+---Default value: `[]`
+---@field ["single-line-exclusions"]? string[]
+---If a comma is placed after the last member in a multi-line import, then
+---the imports will never be folded into one line.
+---
+---See isort's [`split-on-trailing-comma`](https://pycqa.github.io/isort/docs/configuration/options.html#split-on-trailing-comma) option.
+---
+---When using the formatter, ensure that [`format.skip-magic-trailing-comma`](https://docs.astral.sh/ruff/settings/#format_skip-magic-trailing-comma) is set to `false` (default) when enabling `split-on-trailing-comma`
+---to avoid that the formatter removes the trailing commas.
+---
+---Default value: `true`
+---@field ["split-on-trailing-comma"]? boolean
+---An override list of tokens to always recognize as a var
+---for [`order-by-type`](https://docs.astral.sh/ruff/settings/#lint_isort_order-by-type) regardless of casing.
+---
+---Default value: `[]`
+---@field variables? string[]
+
+---Options for the `mccabe` plugin.
+---@class init_options.ruff.settings.configuration.lint.maccabe
+---The maximum McCabe complexity to allow before triggering `C901` errors.
+---
+---Default value: `10`
+---@field ["max-complexity"]? integer
+
+---Options for the `pep8-naming` plugin.
+---@class init_options.ruff.settings.configuration.lint.pep8-naming
+---A list of decorators that, when applied to a method, indicate that the
+---method should be treated as a class method (in addition to the builtin
+---`@classmethod`).
+---
+---For example, Ruff will expect that any method decorated by a decorator
+---in this list takes a `cls` argument as its first argument.
+---
+---Expects to receive a list of fully-qualified names (e.g., `pydantic.validator`,
+---rather than `validator`) or alternatively a plain name which is then matched against
+---the last segment in case the decorator itself consists of a dotted name.
+---
+---Default value: `[]`
+---@field ["classmethod-decorators"]? string[]
+---Additional names (or patterns) to ignore when considering `pep8-naming` violations,
+---in addition to those included in [`ignore-names`](https://docs.astral.sh/ruff/settings/#lint_pep8-naming_ignore-names).
+---
+---Supports glob patterns. For example, to ignore all names starting with `test_`
+---or ending with `_test`, you could use `ignore-names = ["test_*", "*_test"]`.
+---For more information on the glob syntax, refer to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `[]`
+---@field ["extend-ignore-names"]? string[]
+---A list of names (or patterns) to ignore when considering `pep8-naming` violations.
+---
+---Supports glob patterns. For example, to ignore all names starting with `test_`
+---or ending with `_test`, you could use `ignore-names = ["test_*", "*_test"]`.
+---For more information on the glob syntax, refer to the [`globset` documentation](https://docs.rs/globset/latest/globset/#syntax).
+---
+---Default value: `["setUp", "tearDown", "setUpClass", "tearDownClass", "setUpModule", "tearDownModule", "asyncSetUp", "asyncTearDown", "setUpTestData", "failureException", "longMessage", "maxDiff"]`
+---@field ["ignore-names"]? string[]
+---A list of decorators that, when applied to a method, indicate that the
+---method should be treated as a static method (in addition to the builtin
+---`@staticmethod`).
+---
+---For example, Ruff will expect that any method decorated by a decorator
+---in this list has no `self` or `cls` argument.
+---
+---Expects to receive a list of fully-qualified names (e.g., `belay.Device.teardown`,
+---rather than `teardown`) or alternatively a plain name which is then matched against
+---the last segment in case the decorator itself consists of a dotted name.
+---
+---Default value: `[]`
+---@field ["staticmethod-decorators"]? string[]
+
+---Options for the `pycodestyle` plugin.
+---@class init_options.ruff.settings.configuration.lint.pycodestyle
+---Whether line-length violations (`E501`) should be triggered for
+---comments starting with [`task-tags`](https://docs.astral.sh/ruff/settings/#lint_task-tags) (by default: "TODO", "FIXME",
+---and "XXX").
+---
+---Default value: `false`
+---@field ["ignore-overlong-task-comments"]? boolean
+---The maximum line length to allow for [`doc-line-too-long`](https://docs.astral.sh/ruff/rules/doc-line-too-long/) violations within
+---documentation (`W505`), including standalone comments. By default,
+---this is set to `null` which disables reporting violations.
+---
+---The length is determined by the number of characters per line, except for lines containing Asian characters or emojis.
+---For these lines, the [unicode width](https://unicode.org/reports/tr11/) of each character is added up to determine the length.
+---
+---See the [`doc-line-too-long`](https://docs.astral.sh/ruff/rules/doc-line-too-long/) rule for more information.
+---
+---Default value: `null`
+---@field ["max-doc-length"]? integer
+---The maximum line length to allow for [`line-too-long`](https://docs.astral.sh/ruff/rules/line-too-long/) violations. By default,
+---this is set to the value of the [`line-length`](https://docs.astral.sh/ruff/settings/#line-length) option.
+---
+---Use this option when you want to detect extra-long lines that the formatter can't automatically split by setting
+---`pycodestyle.line-length` to a value larger than [`line-length`](https://docs.astral.sh/ruff/settings/#line-length).
+---
+---```toml
+---# The formatter wraps lines at a length of 88.
+---line-length = 88
+---
+---[pycodestyle]
+---# E501 reports lines that exceed the length of 100.
+---max-line-length = 100
+---```
+---
+---The length is determined by the number of characters per line, except for lines containing East Asian characters or emojis.
+---For these lines, the [unicode width](https://unicode.org/reports/tr11/) of each character is added up to determine the length.
+---
+---See the [`line-too-long`](https://docs.astral.sh/ruff/rules/line-too-long/) rule for more information.
+---
+---Default value: `null`
+---@field ["max-line-length"]? integer
+
+---Options for the `pydoclint` plugin.
+---@class init_options.ruff.settings.configuration.lint.pydoclint
+---Skip docstrings which fit on a single line.
+---
+---Note: The corresponding setting in `pydoclint`
+---is named `skip-checking-short-docstrings`.
+---
+---Default value: `false`
+---@field ["ignore-one-line-docstrings"]? boolean
+
+---Options for the `pydocstyle` plugin.
+---@class init_options.ruff.settings.configuration.lint.pydocstyle
+---Whether to use Google-style, NumPy-style conventions, or the [PEP 257](https://peps.python.org/pep-0257/)
+---defaults when analyzing docstring sections.
+---
+---Enabling a convention will disable all rules that are not included in
+---the specified convention. As such, the intended workflow is to enable a
+---convention and then selectively enable or disable any additional rules
+---on top of it.
+---
+---For example, to use Google-style conventions but avoid requiring
+---documentation for every function parameter:
+---
+---```toml
+---[tool.ruff.lint]
+---# Enable all `pydocstyle` rules, limiting to those that adhere to the
+---# Google convention via `convention = "google"`, below.
+---select = ["D"]
+---
+---# On top of the Google convention, disable `D417`, which requires
+---# documentation for every function parameter.
+---ignore = ["D417"]
+---
+---[tool.ruff.lint.pydocstyle]
+---convention = "google"
+---```
+---
+---The PEP 257 convention includes all `D` errors apart from:
+---[`D203`](rules/incorrect-blank-line-before-class.md),
+---[`D212`](rules/multi-line-summary-first-line.md),
+---[`D213`](rules/multi-line-summary-second-line.md),
+---[`D214`](rules/overindented-section.md),
+---[`D215`](rules/overindented-section-underline.md),
+---[`D404`](rules/docstring-starts-with-this.md),
+---[`D405`](rules/non-capitalized-section-name.md),
+---[`D406`](rules/missing-new-line-after-section-name.md),
+---[`D407`](rules/missing-dashed-underline-after-section.md),
+---[`D408`](rules/missing-section-underline-after-name.md),
+---[`D409`](rules/mismatched-section-underline-length.md),
+---[`D410`](rules/no-blank-line-after-section.md),
+---[`D411`](rules/no-blank-line-before-section.md),
+---[`D413`](rules/missing-blank-line-after-last-section.md),
+---[`D415`](rules/missing-terminal-punctuation.md),
+---[`D416`](rules/missing-section-name-colon.md),
+---[`D417`](rules/undocumented-param.md), and
+---[`D420`](rules/incorrect-section-order.md).
+---
+---The NumPy convention includes all `D` errors apart from:
+---[`D107`](rules/undocumented-public-init.md),
+---[`D203`](rules/incorrect-blank-line-before-class.md),
+---[`D212`](rules/multi-line-summary-first-line.md),
+---[`D213`](rules/multi-line-summary-second-line.md),
+---[`D402`](rules/signature-in-docstring.md),
+---[`D413`](rules/missing-blank-line-after-last-section.md),
+---[`D415`](rules/missing-terminal-punctuation.md),
+---[`D416`](rules/missing-section-name-colon.md), and
+---[`D417`](rules/undocumented-param.md).
+---
+---The Google convention includes all `D` errors apart from:
+---[`D203`](rules/incorrect-blank-line-before-class.md),
+---[`D204`](rules/incorrect-blank-line-after-class.md),
+---[`D213`](rules/multi-line-summary-second-line.md),
+---[`D215`](rules/overindented-section-underline.md),
+---[`D400`](rules/missing-trailing-period.md),
+---[`D401`](rules/non-imperative-mood.md),
+---[`D404`](rules/docstring-starts-with-this.md),
+---[`D406`](rules/missing-new-line-after-section-name.md),
+---[`D407`](rules/missing-dashed-underline-after-section.md),
+---[`D408`](rules/missing-section-underline-after-name.md),
+---[`D409`](rules/mismatched-section-underline-length.md), and
+---[`D413`](rules/missing-blank-line-after-last-section.md).
+---
+---For more information see the [FAQ](faq.md#does-ruff-support-numpy-or-google-style-docstrings) entry.
+---
+---To enable an additional rule that's excluded from the convention,
+---select the desired rule via its fully qualified rule code (e.g.,
+---`D400` instead of `D4` or `D40`):
+---
+---```toml
+---[tool.ruff.lint]
+---# Enable D400 on top of the Google convention.
+---extend-select = ["D400"]
+---
+---[tool.ruff.lint.pydocstyle]
+---convention = "google"
+---```
+---
+---Default value: `null`
+---@field convention "google"|"numpy"|"pep257"|nil
+---Ignore docstrings for functions or methods decorated with the
+---specified fully-qualified decorators.
+---
+---Default value: `[]`
+---@field ["ignore-decorators"]? string[]
+---If set to `true`, ignore missing documentation for `*args` and `**kwargs` parameters.
+---
+---Default value: `false`
+---@field ["ignore-var-parameters"]? boolean
+---A list of decorators that, when applied to a method, indicate that the
+---method should be treated as a property (in addition to the builtin
+---`@property` and standard-library `@functools.cached_property`).
+---
+---For example, Ruff will expect that any method decorated by a decorator
+---in this list can use a non-imperative summary line.
+---
+---Default value: `[]`
+---@field ["property-decorators"]? string[]
+
+---Options for the `pyflakes` plugin.
+---@class init_options.ruff.settings.configuration.lint.pyflakes
+---A list of modules to ignore when considering unused imports.
+---
+---Used to prevent violations for specific modules that are known to have side effects on
+---import (e.g., `hvplot.pandas`).
+---
+---Modules in this list are expected to be fully-qualified names (e.g., `hvplot.pandas`). Any
+---submodule of a given module will also be ignored (e.g., given `hvplot`, `hvplot.pandas`
+---will also be ignored).
+---
+---Default value: `[]`
+---@field ["allowed-unused-imports"]? string[]
+---Additional functions or classes to consider generic, such that any
+---subscripts should be treated as type annotation (e.g., `ForeignKey` in
+---`django.db.models.ForeignKey["User"]`.
+---
+---Expects to receive a list of fully-qualified names (e.g., `django.db.models.ForeignKey`,
+---rather than `ForeignKey`).
+---
+---Default value: `[]`
+---@field ["extend-generics"]? string[]
+
+---Options for the `pylint` plugin.
+---@class init_options.ruff.settings.configuration.lint.pylint
+---Dunder methods name to allow, in addition to the default set from the
+---Python standard library (see `PLW3201`).
+---
+---Default value: `[]`
+---@field ["allow-dunder-method-names"]? string[]
+---Constant types to ignore when used as "magic values" (see `PLR2004`).
+---
+---Default value: `["str", "bytes"]`
+---@field ["allow-magic-value-types"]? ("str"|"bytes"|"complex"|"float"|"int")[]
+---Maximum number of arguments allowed for a function or method definition
+---(see `PLR0913`).
+---
+---Default value: `5`
+---@field ["max-args"]? integer
+---Maximum number of Boolean expressions allowed within a single `if` statement
+---(see `PLR0916`).
+---
+---Default value: `5`
+---@field ["max-bool-expr"]? integer
+---Maximum number of branches allowed for a function or method body (see `PLR0912`).
+---
+---Default value: `12`
+---@field ["max-branches"]? integer
+---Maximum number of local variables allowed for a function or method body (see `PLR0914`).
+---
+---Default value: `15`
+---@field ["max-locals"]? integer
+---Maximum number of nested blocks allowed within a function or method body
+---(see `PLR1702`).
+---
+---Default value: `5`
+---@field ["max-nested-blocks"]? integer
+---Maximum number of positional arguments allowed for a function or method definition
+---(see `PLR0917`).
+---
+---If not specified, defaults to the value of `max-args`.
+---
+---Default value: `5`
+---@field ["max-positional-args"]? integer
+---Maximum number of public methods allowed for a class (see `PLR0904`).
+---
+---Default value: `20`
+---@field ["max-public-methods"]? integer
+---Maximum number of return statements allowed for a function or method
+---body (see `PLR0911`)
+---
+---Default value: `6`
+---@field ["max-returns"]? integer
+---Maximum number of statements allowed for a function or method body (see `PLR0915`).
+---
+---Default value: `50`
+---@field ["max-statements"]? integer
+---Maximum number of statements allowed for a try clause body (see `W0717`).
+---
+---Default value: `5`
+---@field ["max-statements-in-try"]? integer
+
+---Options for the `pyupgrade` plugin.
+---@class init_options.ruff.settings.configuration.lint.pyupgrade
+---Whether to avoid [PEP 585](https://peps.python.org/pep-0585/) (`List[int]` -> `list[int]`) and [PEP 604](https://peps.python.org/pep-0604/)
+---(`Union[str, int]` -> `str | int`) rewrites even if a file imports
+---`from __future__ import annotations`.
+---
+---This setting is only applicable when the target Python version is below
+---3.9 and 3.10 respectively, and is most commonly used when working with
+---libraries like Pydantic and FastAPI, which rely on the ability to parse
+---type annotations at runtime. The use of `from __future__ import annotations`
+---causes Python to treat the type annotations as strings, which typically
+---allows for the use of language features that appear in later Python
+---versions but are not yet supported by the current version (e.g., `str |
+---int`). However, libraries that rely on runtime type annotations will
+---break if the annotations are incompatible with the current Python
+---version.
+---
+---For example, while the following is valid Python 3.8 code due to the
+---presence of `from __future__ import annotations`, the use of `str | int`
+---prior to Python 3.10 will cause Pydantic to raise a `TypeError` at
+---runtime:
+---
+---```python
+---from __future__ import annotations
+---
+---import pydantic
+---
+---class Foo(pydantic.BaseModel):
+---    bar: str | int
+---```
+---
+---Default value: `false`
+---@field ["keep-runtime-typing"]? boolean
+
+---Options for the `ruff` plugin
+---@class init_options.ruff.settings.configuration.lint.ruff
+---**Deprecated**: This option has been deprecated in 0.10.0. The `allowed-markup-names` option has been moved to the `flake8-bandit` section of the configuration.
+---
+---A list of callable names, whose result may be safely passed into
+---[`markupsafe.Markup`](https://markupsafe.palletsprojects.com/en/stable/escaping/#markupsafe.Markup).
+---
+---Expects to receive a list of fully-qualified names (e.g., `bleach.clean`, rather than `clean`).
+---
+---This setting helps you avoid false positives in code like:
+---
+---```python
+---from bleach import clean
+---from markupsafe import Markup
+---
+---cleaned_markup = Markup(clean(some_user_input))
+---```
+---
+---Where the use of [`bleach.clean`](https://bleach.readthedocs.io/en/latest/clean.html)
+---usually ensures that there's no XSS vulnerability.
+---
+---Although it is not recommended, you may also use this setting to whitelist other
+---kinds of calls, e.g. calls to i18n translation functions, where how safe that is
+---will depend on the implementation and how well the translations are audited.
+---
+---Another common use-case is to wrap the output of functions that generate markup
+---like [`xml.etree.ElementTree.tostring`](https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.tostring)
+---or template rendering engines where sanitization of potential user input is either
+---already baked in or has to happen before rendering.
+---
+---Default value: `[]`
+---@field ["allowed-markup-calls"]? string[]
+---**Deprecated**: This option has been deprecated in 0.10.0. The `extend-markup-names` option has been moved to the `flake8-bandit` section of the configuration.
+---
+---A list of additional callable names that behave like
+---[`markupsafe.Markup`](https://markupsafe.palletsprojects.com/en/stable/escaping/#markupsafe.Markup).
+---
+---Expects to receive a list of fully-qualified names (e.g., `webhelpers.html.literal`, rather than
+---`literal`).
+---
+---Default value: `[]`
+---@field ["extend-markup-names"]? string[]
+---Whether to prefer accessing items keyed by tuples with
+---parentheses around the tuple (see `RUF031`).
+---
+---Default value: `false`
+---@field ["parenthesize-tuple-in-subscript"]? boolean
+---Whether to require `__init__.py` files to contain no code at all, including imports and
+---`__all__` assignments (see `RUF067`). Module and attribute docstrings are still allowed.
+---
+---Default value: `false`
+---@field ["strictly-empty-init-modules"]? boolean
+
+---@class init_options.ruff.settings.codeAction.disableRuleComment
+---Whether to display Quick Fix actions to disable rules via noqa suppression comments.
+---
+---Default value: `true`
+---@field enable? boolean
+
+---@class init_options.ruff.settings.codeAction.fixViolation
+---Whether to display Quick Fix actions to autofix violations.
+---
+---Default value: `true`
+---@field enable? boolean
+
+---Enable or disable code actions provided by the server.
+---@class init_options.ruff.settings.codeAction
+---@field disableRuleComment? init_options.ruff.settings.codeAction.disableRuleComment
+---@field fixViolation? init_options.ruff.settings.codeAction.fixViolation
+
+---Settings specific to the Ruff linter.
+---@class init_options.ruff.settings.lint
+---Whether to enable linting. Set to false to use Ruff exclusively as a formatter.
+---
+---Default value: `true`
+---@field enable? boolean
+---Whether to enable Ruff's preview mode when linting.
+---
+---Default value: `null`
+---@field preview? boolean
+---Rules to enable by default. See the documentation (https://docs.astral.sh/ruff/settings/#lint_select).
+---
+---Default value: `null`
+---@field select? string[]
+---Rules to enable in addition to those in lint.select.
+---
+---Default value: `null`
+---@field extendSelect? string[]
+---Rules to disable by default. See the documentation (https://docs.astral.sh/ruff/settings/#lint_ignore).
+---
+---Default value: `null`
+---@field ignore? string[]
+
+---Settings specific to the Ruff formatter.
+---@class init_options.ruff.settings.format
+---Whether to enable Ruff's preview mode when formatting.
+---
+---Default value: `null`
+---@field preview? boolean
+---The backend to use for formatting files. Following options are available:
+---  "internal": Use the built-in Ruff formatter
+---  "uv": Use uv for formatting (requires uv >= 0.8.13)
+---
+---For internal, the formatter version will match the selected Ruff version while for uv, the formatter version may differ.
+---
+---Starting the server with ruff server --untrusted-workspace disables the uv backend.
+---With this flag, the server always uses the internal formatter, regardless of this setting.
+---This prevents workspace configuration from causing uv to execute untrusted code.
+---
+---Default value: `"internal"`
+---@field backend? "internal" | "uv"
+
+
+---@class init_options.ruff.settings
+---The configuration setting allows you to configure editor-specific Ruff behavior.
+---This can be done in one of the following ways:
+---  1. Configuration file path:
+---     Specify the path to a ruff.toml or pyproject.toml file that contains the configuration.
+---     User home directory and environment variables will be expanded.
+---  2. Inline JSON configuration: Directly provide the configuration as a JSON object.
+---
+---The default behavior, if configuration is unset, is to load the settings
+---from the project's configuration (a ruff.toml or pyproject.toml in the project's directory),
+---consistent with when running Ruff on the command-line.
+---
+---The configurationPreference setting controls the precedence
+---if both an editor-provided configuration (configuration)
+---and a project level configuration file are present.
+---
+---Resolution order
+---In an editor, Ruff supports three sources of configuration, prioritized as follows (from highest to lowest):
+---  1. Specific settings: Individual settings like lineLength or lint.select defined in the editor
+---  2. ruff.configuration: Settings provided via the configuration field (either a path to a configuration file or an inline configuration object)
+---  3. Configuration file: Settings defined in a ruff.toml or pyproject.toml file in the project's directory (if present)
+---
+---For example, if the line length is specified in all three sources, Ruff will use the value from the lineLength setting.
+---
+---Default value: `null`
+---@field configuration? string | init_options.ruff.settings.configuration
+---The strategy to use when resolving settings across VS Code and the filesystem.
+---By default, editor configuration is prioritized over ruff.toml and pyproject.toml files.
+---  "editorFirst": Editor settings take priority over configuration files present in the workspace.
+---  "filesystemFirst": Configuration files present in the workspace takes priority over editor settings.
+---  "editorOnly": Ignore configuration files entirely i.e., only use editor settings.
+---
+---Default value: `"editorFirst"`
+---@field configurationPreference? "editorFirst" | "filesystemFirst" | "editorOnly"
+---A list of file patterns to exclude from linting and formatting.
+---See the documentation (https://docs.astral.sh/ruff/settings/#exclude) for more details.
+---
+---Default value: `null`
+---@field exclude? string[]
+---The line length to use for the linter and formatter.
+---
+---Default value: `null`
+---@field lineLength? integer
+---Whether to register the server as capable of handling source.fixAll code actions.
+---
+---Default value: `true`
+---@field fixAll? boolean
+---Whether to register the server as capable of handling source.organizeImports code actions.
+---
+---Default value: `true`
+---@field organizeImports? boolean
+---Whether to show syntax error diagnostics.
+---
+---Default value: `true`
+---@field showSyntaxErrors? boolean
+---The log level to use for the server
+---
+---Default value: `"info"`
+---@field logLevel? "trace" | "debug" | "info" | "warn" | "error"
+---Path to the log file to use for the server.
+---If not set, logs will be written to stderr.
+---
+---Default value: `null`
+---@field logFile? string
+---@field codeAction? init_options.ruff.settings.codeAction
+---@field lint? init_options.ruff.settings.lint
+---@field format? init_options.ruff.settings.format
+
+---@class init_options.ruff
+---@field settings? init_options.ruff.settings

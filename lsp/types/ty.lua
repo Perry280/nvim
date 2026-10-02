@@ -1,0 +1,445 @@
+---@meta
+
+---@class settings.ty.ty.configuration.rules
+
+---@class settings.ty.ty.configuration.analysis
+---A list of module glob patterns for which unresolved-import diagnostics should be suppressed.
+---
+---Details on supported glob patterns:
+---  * matches zero or more characters except .. For example, foo.* matches foo.bar but not foo.bar.baz; foo* matches foo and foobar but not foo.bar or barfoo; and *foo matches foo and barfoo but not foo.bar or foobar.
+---  ** matches any number of module components (e.g., foo.** matches foo, foo.bar, etc.)
+---  Prefix a pattern with ! to exclude matching modules
+---
+---When multiple patterns match, later entries take precedence.
+---
+---Glob patterns can be used in combinations with each other. For example, to suppress errors for any module where the first component contains the substring test, use *test*.**.
+---
+---Default value: `[]`
+---@field ["allowed-unresolved-imports"]? string[]
+---A list of module glob patterns whose imports should be replaced with typing.Any.
+---
+---Unlike allowed-unresolved-imports, this setting replaces the module's type information with typing.Any even if the module can be resolved.
+---Import diagnostics are unconditionally suppressed for matching modules.
+---  Prefix a pattern with ! to exclude matching modules
+---
+---When multiple patterns match, later entries take precedence.
+---
+---Glob patterns can be used in combinations with each other.
+---For example, to suppress errors for any module where the first component contains the substring test, use *test*.**.
+---
+---When multiple patterns match, later entries take precedence.
+---
+---Default value: `[]`
+---@field ["replace-imports-with-any"]? string[]
+---Whether ty should respect type: ignore comments.
+---
+---When set to false, type: ignore comments are treated like any other normal comment and can't be used to suppress ty errors (you have to use ty: ignore instead).
+---
+---Setting this option can be useful when using ty alongside other type checkers or when you prefer using ty: ignore over type: ignore.
+---
+---Default value: `true`
+---@field ["respect-type-ignore-comments"]? boolean
+---Configure ty's behavior regarding type inference and narrowing of equality checks.
+---Defaults to false.
+---
+---By default, ty makes various assumptions about equality checks
+---that match the intuitions of most Python programmers, but may not be fully sound in all situations.
+---Enabling this option makes ty more conservative about these assumptions,
+---making it less likely to infer Literal[True] or Literal[False] as the result of an equality check.
+---This has various effects on type checking, including fewer type narrowing opportunities
+---and more conservative assumptions regarding control flow.
+---
+---One way in which ty will by default make unsound assumptions is
+---by narrowing an object x of type str to Literal["a"] after an if x == "a" check.
+---This is unsound because a subclass of str with value "a" will (by default) compare equal to "a",
+---but will not be of type Literal["a"]:
+---
+--->>> # `Literal["a"]` can only be inhabited by instances of exactly `str`, not
+--->>> # subclasses, but str subclasses compare equal by default:
+--->>> class StringSubclass(str): ...
+---...
+--->>> StringSubclass("a") == "a"
+---True
+--->>>
+--->>> # This also applies to `StrEnum`s:
+--->>> from enum import StrEnum
+--->>> class MyEnum(StrEnum):
+---...     A = "a"
+---...
+--->>> MyEnum.A == "a"
+---True
+---
+---Enabling this option prevents the unsound narrowing of x to Literal["a"], and instead keeps it as str:
+---
+---from typing import Literal
+---
+---def parse(value: str) -> Literal["a"] | None:
+---    # with `strict-equality-semantics = true`, no narrowing will occur here,
+---    # and an error will be emitted on the `return` statement.
+---    if value == "a":
+---        return value
+---    return None
+---
+---Another assumption ty makes by default is that subclasses will never override __eq__ or __ne__.
+---This allows ty to narrow the following union based on an equality check,
+---despite the fact that an instance of a subclass of Foo could compare equal to None,
+---and it's perfectly valid to pass an instance of a subclass into the x parameter of this function:
+---
+---def narrow(x: Foo | None, other: Foo) -> None:
+---    if x == other:
+---        # with this option enabled, `x` will still have type `Foo | None` here,
+---        # since it is legal to subclass `Foo` and override its `__eq__` method.
+---        reveal_type(x)
+---
+---Many operations in Python implicitly call __eq__ under the hood;
+---enabling this option will also impact those operations.
+---For example, this option will also impact narrowing from in checks,
+---and narrowing in match statements that use value patterns:
+---
+---def narrow_in(x: Foo | None, other: list[Foo]) -> None:
+---    if x in other:
+---        # with this option enabled, `x` will still have type `Foo | None` here,
+---        # since the `in` operator implicitly calls `__eq__` on each element of `other`.
+---        reveal_type(x)
+---
+---
+---def narrow_match(x: str) -> None:
+---    match x:
+---        case "a":
+---            # with this option enabled, `x` will still have type `str` here,
+---            # since this `case` branch will be taken by any object that compares
+---            # equal to `"a"`, including subclasses of `str`.
+---            reveal_type(x)
+---
+---Default value: `false`
+---@field ["strict-equality-semantics"]? boolean
+---Whether ty should use strict narrowing for unspecialized generic classes in isinstance() and issubclass() checks, match class patterns, and TypeIs checks.
+---
+---When enabled, ty narrows to the top materialization of the class.
+---For example, isinstance(value, list) narrows a value of type object to Top[list[Unknown]],
+---representing the (infinite) union of all possible list specializations.
+---Iterating over the list would yield values of type object.
+---
+---When disabled, ty uses gradual generic narrowing, preserving compatible type arguments from the original type where possible.
+---For example, isinstance(value, list) narrows a value of type Sequence[int] to list[int].
+---If no specialization is available, the same check narrows a value of type object to list[Unknown];
+---items of any type can then be appended to the list.
+---Class patterns such as case list(): follow the same behavior.
+---
+---Default value: `false`
+---@field ["strict-generic-narrowing"]? boolean
+
+---@class settings.ty.ty.configuration.environment
+---User-provided paths that should take first priority in module resolution.
+---
+---This is an advanced option that should usually only be used for first-party
+---or third-party modules that are not installed into your Python environment in a conventional way.
+---Use the python option to specify the location of your Python environment.
+---
+---This option is similar to mypy's MYPYPATH environment variable and pyright's stubPath configuration setting.
+---
+---Default value: `[]`
+---@field ["extra-paths"]? string[]
+---Path to your project's Python environment or interpreter.
+---
+---ty uses the site-packages directory of your project's Python environment
+---to resolve third-party (and, in some cases, first-party) imports in your code.
+---
+---This can be a path to:
+---  A Python interpreter, e.g. .venv/bin/python3
+---  A virtual environment directory, e.g. .venv
+---  A system Python [sys.prefix] directory, e.g. /usr
+---
+---If you're using a project management tool such as uv, you should not generally need to specify this option,
+---as commands such as uv run will set the VIRTUAL_ENV environment variable to point to your project's virtual environment.
+---ty can also infer the location of your environment from an activated Conda environment,
+---and will look for a .venv directory in the project root if none of the above apply.
+---Failing that, ty will look for a python3 or python binary available in PATH.
+---
+---Scripts with inline metadata use their own Python environment.
+---They can use an explicitly configured environment, an activated environment,
+---or an environment selected by the editor.
+---Unlike projects, they do not automatically use a .venv directory.
+---
+---Default value: `null`
+---@field python? string
+---Specifies the target platform that will be used to analyze the source code.
+---If specified, ty will understand conditions based on comparisons with sys.platform,
+---such as are commonly found in typeshed to reflect the differing contents of the standard library across platforms.
+---If all is specified, ty will assume that the source code can run on any platform.
+---
+---If no platform is specified, ty will use the current platform:
+---  win32 for Windows
+---  darwin for macOS
+---  android for Android
+---  ios for iOS
+---  linux for everything else
+---
+---Default value: `<current-platform>`
+---@field ["python-platform"]? string | "win32" | "darwin" | "android" | "ios" | "linux" | "all"
+---Specifies the version of Python that will be used to analyze the source code.
+---The version should be specified as a string in the format M.m where M is the major version and m is the minor (e.g. "3.7" or "3.12").
+---If a version is provided, ty will generate errors if the source code makes use of language features that are not supported in that version.
+---
+---ty officially supports type checking code that targets Python 3.10 and later.
+---Python 3.7 through 3.9 can still be selected, but ty may produce false positives or false negatives
+---for standard-library APIs because its bundled stubs do not fully describe those versions.
+---
+---If a version is not specified, ty will try the following techniques
+---in order of preference to determine a value:
+---  1. Check for the project.requires-python setting in a pyproject.toml file and use the minimum version from the specified range
+---  2. Check for an activated or configured Python environment and attempt to infer the Python version of that environment
+---  3. Fall back to the default value (see below)
+---
+---Scripts with inline metadata use their requires-python field instead of project.requires-python.
+---They do not inherit the Python version of the enclosing project.
+---
+---For some language features, ty can also understand conditionals based on comparisons with sys.version_info.
+---These are commonly found in typeshed, for example, to reflect the differing contents of the standard library across Python versions.
+---
+---Default value: `"3.14"`
+---@field ["python-version"]? "3.7" | "3.8" | "3.9" | "3.10" | "3.11" | "3.12" | "3.13" | "3.14" | "3.15"
+---The root paths of the project, used for finding first-party modules.
+---
+---Accepts a list of directory paths searched in priority order (first has highest priority).
+---
+---If left unspecified, ty will try to detect common project layouts and initialize root accordingly.
+---The project root (.) is always included.
+---Additionally, the following directories are included if they exist and
+---are not packages (i.e. they do not contain __init__.py or __init__.pyi files):
+---  ./src
+---  ./<project-name> (if a ./<project-name>/<project-name> directory exists)
+---  ./python
+---
+---Scripts with inline metadata have no first-party roots by default because they are single-file programs.
+---Set root = ["."] to allow importing local modules.
+---
+---Default value: `null`
+---@field root? string[]
+---Optional path to a "typeshed" directory on disk for us to use for standard-library types.
+---If this is not provided, we will fallback to our vendored typeshed stubs for the stdlib,
+---bundled as a zip file in the binary
+---
+---Default value: `null`
+---@field typeshed? string[]
+
+---@alias settings.ty.ty.configuration.overrides.rules settings.ty.ty.configuration.rules
+---@alias settings.ty.ty.configuration.overrides.analysis settings.ty.ty.configuration.analysis
+
+---Configuration override that applies to specific files based on glob patterns.
+---
+---An override allows you to apply different rule configurations to specific files or directories.
+---Multiple overrides can match the same file, with later overrides take precedence.
+---Override rules take precedence over global rules for matching files.
+---@class settings.ty.ty.configuration.overrides
+---A list of file and directory patterns to exclude from this override.
+---
+---Patterns follow a syntax similar to .gitignore.
+---Exclude patterns take precedence over include patterns within the same override.
+---
+---If not specified, defaults to [] (excludes no files).
+---
+---Default value: `null`
+---@field exclude? string[]
+---A list of file and directory patterns to include for this override.
+---
+---The include option follows a similar syntax to .gitignore but reversed:
+---Including a file or directory will make it so that it (and its contents) are affected by this override.
+---
+---If not specified, defaults to ["**"] (matches all files).
+---
+---Default value: `null`
+---@field include? string[]
+---Rule overrides for files matching the include/exclude patterns.
+---
+---These rules will be merged with the global rules, with override rules taking precedence for matching files. You can set rules to different severity levels or disable them entirely.
+---
+---Default value: `{}`
+---@field rules? settings.ty.ty.configuration.overrides.rules
+---@field analysis? settings.ty.ty.configuration.overrides.analysis
+
+---@class settings.ty.ty.configuration.src
+---A list of file and directory patterns to exclude from type checking.
+---
+---Patterns follow a syntax similar to .gitignore:
+---  ./src/ matches only a directory
+---  ./src matches both files and directories
+---  src matches files or directories named src
+---  * matches any (possibly empty) sequence of characters (except /).
+---  ** matches zero or more path components. This sequence must form a single path component, so both **a and b** are invalid and will result in an error. A sequence of more than two consecutive * characters is also invalid.
+---  ? matches any single character except /
+---  [abc] matches any character inside the brackets. Character sequences can also specify ranges of characters, as ordered by Unicode, so e.g. [0-9] specifies any character between 0 and 9 inclusive. An unclosed bracket is invalid.
+---  !pattern negates a pattern (undoes the exclusion of files that would otherwise be excluded)
+---
+---All paths are anchored relative to the project root (src only matches <project_root>/src and not <project_root>/test/src).
+---To exclude any directory or file named src, use **/src instead.
+---
+---By default, ty excludes commonly ignored directories:
+---  **/.bzr/
+---  **/.direnv/
+---  **/.eggs/
+---  **/.git/
+---  **/.git-rewrite/
+---  **/.hg/
+---  **/.mypy_cache/
+---  **/.nox/
+---  **/.pants.d/
+---  **/.pytype/
+---  **/.ruff_cache/
+---  **/.svn/
+---  **/.tox/
+---  **/.venv/
+---  **/__pypackages__/
+---  **/_build/
+---  **/buck-out/
+---  **/dist/
+---  **/node_modules/
+---  **/venv/
+---
+---You can override any default exclude by using a negated pattern. For example, to re-include dist use exclude = ["!dist"]
+---
+---Default value: `null`
+---@field exclude? string[]
+---Whether to exclude files containing PEP 723 inline script metadata
+---unless they are explicitly passed on the command line.
+---
+---Default value: `false`
+---@field ["exclude-scripts"]? boolean
+---A list of files and directories to check. The include option follows a similar syntax to .gitignore but reversed:
+---Including a file or directory will make it so that it (and its contents) are type checked.
+---  ./src/ matches only a directory
+---  ./src matches both files and directories
+---  src matches a file or directory named src
+---  * matches any (possibly empty) sequence of characters (except /).
+---  ** matches zero or more path components. This sequence must form a single path component, so both **a and b** are invalid and will result in an error. A sequence of more than two consecutive * characters is also invalid.
+---  ? matches any single character except /
+---  [abc] matches any character inside the brackets. Character sequences can also specify ranges of characters, as ordered by Unicode, so e.g. [0-9] specifies any character between 0 and 9 inclusive. An unclosed bracket is invalid.
+---
+---All paths are anchored relative to the project root (src only matches <project_root>/src and not <project_root>/test/src).
+---
+---exclude takes precedence over include.
+---
+---Default value: `null`
+---@field include? string[]
+---Whether to automatically exclude files that are ignored by .ignore, .gitignore, .git/info/exclude, and global gitignore files.
+---Enabled by default.
+---
+---Default value: `true`
+---@field ["respect-ignore-files"]? boolean
+
+---@class settings.ty.ty.configuration.terminal
+---Use exit code 1, even if all diagnostics only had warning severity.
+---
+---Default value: `true`
+---@field ["error-on-warning"]? boolean
+---The format to use for printing diagnostic messages.
+---
+---Default value: `"full"`
+---@field ["output-format"]? "full" | "concise" | "github" | "gitlab" | "junit"
+
+---@class settings.ty.ty.configuration
+---@field rules? settings.ty.ty.configuration.rules
+---@field analysis? settings.ty.ty.configuration.analysis
+---@field environment? settings.ty.ty.configuration.environment
+---@field overrides? settings.ty.ty.configuration.overrides
+---@field src? settings.ty.ty.configuration.src
+---@field terminal? settings.ty.ty.configuration.terminal
+
+---These settings control the inline hints that ty provides in an editor.
+---@class settings.ty.ty.inlayHints
+---Whether to show the types of variables as inline hints.
+---
+---Default value: `true`
+---@field variableTypes? boolean
+---Whether to show argument names in call expressions as inline hints.
+---
+---Default value: `true`
+---@field callArgumentNames? boolean
+
+---These settings control how code completions offered by ty work.
+---@class settings.ty.ty.completions
+---Whether to include auto-import suggestions in code completions.
+---That is, code completions will include symbols not currently in scope but available in your environment.
+---
+---Default value: `true`
+---@field autoImport? boolean
+---Whether accepting a function, method, or class completion also inserts parentheses and places the cursor inside them.
+---
+---Default value: `false`
+---@field completeFunctionParentheses? boolean
+
+---@class settings.ty.ty
+---@field configuration? settings.ty.ty.configuration
+---The path to a ty.toml configuration file.
+---ty will use the specified configuration over any automatically discovered configuration.
+---ty will expand a tilde ~ at the start of a string to the user's home directory,
+---as well as variables like $A or ${A}.
+---
+---While ty configuration can be included in a pyproject.toml file, it is not allowed in this context.
+---
+---Default value: `null`
+---@field configurationFile? string
+---Whether to disable the language services for the ty language server
+---like code completion, hover, go to definition, etc.
+---
+---This is useful if you want to use ty exclusively for type checking
+---and want to use another language server for features
+---like code completion, hover, go to definition, etc.
+---
+---Default value: `false`
+---@field disableLanguageServices? boolean
+---Determines the scope of the diagnostics reported by the language server.
+---
+---Setting this to off is useful if you want to use ty exclusively for the language server features
+---like code completion, hover, go to definition, etc.
+---
+---  off: Diagnostics are disabled.
+---  openFilesOnly: Diagnostics are reported only for files that are currently open in the editor.
+---  workspace: Diagnostics are reported for all files in the workspace.
+---
+---Default value: `"openFilesOnly"`
+---@field diagnosticMode? "off" | "workspace" | "openFilesOnly"
+---Whether to show syntax error diagnostics.
+---
+---This is useful when using ty with other language servers,
+---allowing the user to refer to syntax errors from only one source.
+---
+---Default value: `true`
+---@field showSyntaxErrors? boolean
+---@field inlayHints? settings.ty.ty.inlayHints
+---@field completions? settings.ty.ty.completions
+
+---@class settings.ty
+---@field ty? settings.ty.ty
+
+
+
+---@class init_options.ty.experimental
+---Control how ty uses uv:
+---  off: Do not use uv.
+---  scripts: Use uv to create and update environments for standalone scripts with PEP 723 inline metadata.
+---  on: Use uv for project discovery and standalone script environments.
+---
+---This feature is experimental and may change.
+---Enabling it requires uv 0.12.3 or later.
+---All uv integrations are disabled when `untrustedWorkspace` is `true`.
+---
+---Default value: `null`
+---@field useUv? "off" | "scripts" | "on"
+
+---@class init_options.ty
+---@field experimental? init_options.ty.experimental
+---Path to the file to which the language server writes its log messages.
+---By default, ty writes log messages to stderr.
+---
+---Default value: `null`
+---@field logFile? string
+---The log level to use for the language server.
+---
+---Default value: `"info"`
+---@field logLevel? "trace" | "debug" | "info" | "warn" | "error"
+---Whether the language server should treat the workspace as untrusted.
+---When true, ty does not run external commands. This disables all uv integrations.
+---
+---Default value: `false`
+---@field untrustedWorkspace? boolean
