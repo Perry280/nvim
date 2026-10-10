@@ -18,12 +18,10 @@ return {
                     ["docstring-code-format"] = true,
                     ["docstring-code-line-length"] = 80,
                     ["indent-style"] = "space",
-                    ["line-ending"] = "auto",
-                    -- ["skip-magic-trailing-comma"] = true,
+                    ["line-ending"] = "native",
                 },
                 ["indent-width"] = 4,
                 lint = {
-                    -- ["dummy-variable-rgx"] = "^_$", -- "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
                     ["typing-extensions"] = false,
                     ["flake8-builtins"] = {
                         ["strict-checking"] = true,
@@ -34,7 +32,6 @@ return {
                     isort = {
                         ["force-wrap-aliases"] = true,
                         ["combine-as-imports"] = true,
-                        -- ["split-on-trailing-comma"] = false,
                     },
                     pycodestyle = {
                         ["max-doc-length"] = 100,
@@ -71,7 +68,6 @@ return {
                     "TRY300",
                     "TRY301",
                 },
-                -- ignore = { "COM812", },
             }
         },
     }

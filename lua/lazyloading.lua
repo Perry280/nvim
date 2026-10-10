@@ -84,7 +84,7 @@ function M.lazy_load(spec)
                 else
                     km.rhs()
                 end
-            end)
+            end, km.opts)
         end
     end
 

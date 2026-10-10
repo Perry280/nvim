@@ -1,6 +1,2193 @@
 ---@meta
 
+---Rules of the ty Python type checker, as documented at
+---https://docs.astral.sh/ty/reference/rules/
+---
+---Each rule can be set to "ignore", "warn" or "error".
 ---@class settings.ty.ty.configuration.rules
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for methods decorated with both `@abstractmethod` and `@final`.
+---
+---**Why is this bad?**
+---
+---An abstract method must be overridden for a subclass to become concrete, but a final method cannot
+---be overridden. Combining the decorators therefore makes it impossible for a subclass to provide a
+---concrete implementation.
+---@field ["abstract-and-final-method"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for `@final` classes that have unimplemented abstract methods.
+---
+---**Why is this bad?**
+---
+---A class decorated with `@final` cannot be subclassed. If such a class has abstract methods that are
+---not implemented, the class can never be properly instantiated, as the abstract methods can never be
+---implemented (since subclassing is prohibited).
+---
+---At runtime, instantiation of classes with unimplemented abstract methods is only prevented for
+---classes that have `ABCMeta` (or a subclass of it) as their metaclass. However, type checkers also
+---enforce this for classes that do not use `ABCMeta`, since the intent for the class to be abstract is
+---clear from the use of `@abstractmethod`.
+---@field ["abstract-method-in-final-class"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for protocol classes with members that will lead to ambiguous interfaces.
+---
+---**Why is this bad?**
+---
+---Assigning to an undeclared variable in a protocol class, or to an undeclared attribute through a
+---protocol method's `self` or `cls` receiver, leads to an ambiguous interface which may lead to the
+---type checker inferring unexpected things. It's recommended to ensure that all members of a protocol
+---class are explicitly declared.
+---@field ["ambiguous-protocol-member"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for `assert_type()` calls where the actual type is an unspellable subtype of the asserted
+---type.
+---
+---**Why is this bad?**
+---
+---`assert_type()` is intended to ensure that the inferred type of a value is exactly the same as the
+---asserted type. But in some situations, ty has nonstandard extensions to the type system that allow
+---it to infer more precise types than can be expressed in user annotations. ty emits a different error
+---code to [`type-assertion-failure`](#type-assertion-failure) in these situations so that users can easily differentiate between
+---the two cases.
+---@field ["assert-type-unspellable-subtype"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Checks for `ty: ignore` comments that don't specify which rules to ignore.
+---
+---**Why is this bad?**
+---
+---A blanket `ty: ignore` comment suppresses every type-checking diagnostic on the applicable line or
+---file. Specifying rule codes documents which diagnostics are expected and prevents the comment from
+---silencing unrelated errors.
+---@field ["blanket-ignore-comment"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for calls to abstract `@classmethod`s or `@staticmethod`s with "trivial bodies" when accessed
+---on the class object itself.
+---
+---"Trivial bodies" are bodies that solely consist of `...`, `pass`, a docstring, and/or
+---`raise NotImplementedError`.
+---
+---**Why is this bad?**
+---
+---An abstract method with a trivial body has no concrete implementation to execute, so calling such a
+---method directly on the class will probably not have the desired effect.
+---
+---It is also unsound to call these methods directly on the class. Unlike other methods, ty permits
+---abstract methods with trivial bodies to have non-`None` return types even though they always return
+---`None` at runtime. This is because it is expected that these methods will always be overridden
+---rather than being called directly. As a result of this exception to the normal rule, ty may infer an
+---incorrect type if one of these methods is called directly, which may then mean that type errors
+---elsewhere in your code go undetected by ty.
+---
+---Calling abstract classmethods or staticmethods via `type[X]` is allowed, since the actual runtime
+---type could be a concrete subclass with an implementation.
+---@field ["call-abstract-method"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for calls to non-callable objects.
+---
+---This includes attempts to instantiate classes with unimplemented abstract methods, whether those
+---methods are explicitly decorated with `abstractmethod` or implicitly abstract protocol members.
+---
+---**Why is this bad?**
+---
+---Calling a non-callable object will raise a `TypeError` at runtime.
+---
+---Abstract methods describe behavior that a subclass must implement before it can be instantiated.
+---Classes using `ABCMeta` enforce this at runtime; the type checker also enforces it for classes
+---without `ABCMeta`.
+---@field ["call-non-callable"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for calls to objects typed as `Top[Callable[..., T]]` (the infinite union of all callable
+---types with return type `T`).
+---
+---**Why is this bad?**
+---
+---When `analysis.strict-generic-narrowing` is enabled, `callable(x)` and `isinstance(x, Callable)`
+---narrow an object to `Top[Callable[..., object]]`. We know the object is callable, but we don't know
+---its precise signature. This type represents the set of all possible callable types (including, e.g.,
+---functions that take no arguments and functions that require arguments), so no specific set of
+---arguments can be guaranteed to be valid.
+---@field ["call-top-callable"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks whether a variable has been declared as two conflicting types.
+---
+---**Why is this bad?**
+---
+---A variable with two conflicting declarations likely indicates a mistake. Moreover, it could lead to
+---incorrect or ill-defined type inference for other code that relies on these variables.
+---@field ["conflicting-declarations"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for class definitions where the metaclass of the class being created would not be a subclass
+---of the metaclasses of all the class's bases.
+---
+---**Why is this bad?**
+---
+---Such a class definition raises a `TypeError` at runtime.
+---@field ["conflicting-metaclass"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for class definitions in stub files that inherit (directly or indirectly) from themselves.
+---
+---**Why is this bad?**
+---
+---Although forward references are natively supported in stub files, inheritance cycles are still
+---disallowed, as it is impossible to resolve a consistent [method resolution order] for a class that
+---inherits from itself.
+---@field ["cyclic-class-definition"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for circular type alias definitions.
+---
+---**Why is this bad?**
+---
+---Recursive aliases are valid when recursive references occur inside another type, such as
+---`list[Tree]`. An alias cannot expand directly to itself or include itself as a union member. This
+---applies to implicit type aliases, aliases annotated with `TypeAlias`, `type` statements, and aliases
+---created with `TypeAliasType`.
+---@field ["cyclic-type-alias-definition"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for dataclass definitions where required fields are defined after fields with default values.
+---
+---**Why is this bad?**
+---
+---In dataclasses, all required fields (fields without default values) must be defined before fields
+---with default values. This is a Python requirement that will raise a `TypeError` at runtime if
+---violated.
+---@field ["dataclass-field-order"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for uses of deprecated items
+---
+---**Why is this bad?**
+---
+---Deprecated items should no longer be used.
+---@field ["deprecated"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Detects `cast` calls where the inferred type of the value is disjoint from the destination type.
+---
+---Two types are disjoint if they are entirely non-overlapping. For example, `str` and `int` are
+---disjoint types because it is impossible to create a Python object that is both a `str` and an `int`
+---at the same time: Python forbids multiple inheritance between these two classes:
+---
+---```pycon
+--->>> class StrAndInt(int, str): ...
+---Traceback (most recent call last):
+---  File "<python-input-0>", line 1, in <module>
+---    class StrAndInt(int, str): ...
+---TypeError: multiple bases have instance lay-out conflict
+---```
+---
+---This means that any object of type `int` can never also be of type `str`, and any object of type
+---`str` can never also inhabit the type `int`. The only common subtype of these two types is
+---[`Never`][never], the uninhabited type, which has no members.
+---
+---**Why is this bad?**
+---
+---`cast()` is deliberately designed as an "escape hatch" in the type system that is neither validated
+---at runtime nor, by default, by type checkers. While upcasting to a supertype is always sound, and
+---casting to a subtype can be sound in some situations if accompanied by careful validation checks,
+---`cast()` is also deliberately designed to allow unsound narrowing, and most useful applications of
+---`cast()` in real-world code cannot be fully validated by a type checker.
+---
+---Nonetheless, even while acknowledging the fact that `cast()` is intentionally designed to allow
+---unsoundness, casting a value to an entirely *disjoint* type is especially likely to indicate a
+---mistake in your code. A cast from an `int` to a `str`, for example, likely indicates a bug or
+---misunderstanding.
+---
+---This rule therefore provides a means for codebases to partially validate their uses of `cast()`
+---without banning the API -- or even banning all unsound uses of the API -- entirely.
+---@field ["disjoint-cast"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---It detects division by zero.
+---
+---**Why is this bad?**
+---
+---Dividing by zero raises a `ZeroDivisionError` at runtime.
+---@field ["division-by-zero"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for class definitions with duplicate bases.
+---
+---**Why is this bad?**
+---
+---Class definitions with duplicate bases raise `TypeError` at runtime.
+---@field ["duplicate-base"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for dataclass definitions with more than one field annotated with `KW_ONLY`.
+---
+---**Why is this bad?**
+---
+---`dataclasses.KW_ONLY` is a special marker used to emulate the `*` syntax in normal signatures. It
+---can only be used once per dataclass.
+---
+---Attempting to annotate two different fields with it will lead to a runtime error.
+---@field ["duplicate-kw-only"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Detects decorator applications that replace a function with `Any` or another [dynamic type].
+---
+---**Why is this bad?**
+---
+---A decorator can replace the function it receives with any object. Type checkers therefore use the
+---decorator's return type as the type of the decorated function. If the decorator returns `Any` or
+---`Unknown` (explicitly or implicitly), the original type is lost, along with the type checker's
+---ability to catch invalid calls and attribute accesses:
+---
+---```py
+---from collections.abc import Callable
+---
+---
+---def untyped_decorator(function: Callable[..., object]):
+---    return function
+---
+---
+---# error: "Decorator returns `Unknown`"
+---@untyped_decorator
+---def stringify(value: int) -> str:
+---    return str(value)
+---
+---
+---# No type error is reported, even though `stringify` expects an integer.
+---stringify("not an integer")
+---```
+---
+---This rule identifies the point where a decorator erases useful type information, before that
+---imprecision spreads to every use of the decorated function. It can be especially useful in cases
+---where the decorator is defined in a third-party library. Whereas linter rules such as
+---[`ANN201`][ann201] and [`ANN202`][ann202] can complain about missing annotations in your first-party
+---code, they cannot identify instances where unsound types leak into your code due to missing type
+---annotations in third-party code installed into `site-packages`.
+---@field ["dynamic-function-decorator-return"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects functions with empty bodies that have a non-`None` return type annotation.
+---
+---The errors reported by this rule have the same motivation as the [`invalid-return-type`](#invalid-return-type) rule. The
+---diagnostic exists as a separate error code to allow users to disable this rule while prototyping
+---code. While we strongly recommend enabling this rule if possible, users migrating from other type
+---checkers may also find it useful to temporarily disable this rule on some or all of their codebase
+---if they find it results in a large number of diagnostics.
+---
+---**Why is this bad?**
+---
+---A function with an empty body (containing only `...`, `pass`, or a docstring) will implicitly return
+---`None` at runtime. Returning `None` when the return type is non-`None` is unsound, and will lead to
+---ty inferring incorrect types elsewhere.
+---
+---Functions with empty bodies are permitted in certain contexts where they serve as declarations
+---rather than implementations:
+---
+---- Functions in stub files (`.pyi`)
+---- Methods in Protocol classes
+---- Abstract methods decorated with `@abstractmethod`
+---- Overload declarations decorated with `@overload`
+---- Functions in `if TYPE_CHECKING` blocks
+---@field ["empty-body"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for forward annotations that contain escape characters.
+---
+---**Why is this bad?**
+---
+---Static analysis tools like ty can't analyze type annotations that contain escape characters.
+---@field ["escape-character-in-forward-annotation"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for experimental syntax that is not part of the Python typing specification.
+---
+---**Why is this bad?**
+---
+---Experimental syntax is specific to ty. It may be rejected by other type checkers and may never be
+---standardized, or be subject to breaking changes. There are also tools and libraries that inspect
+---and/or evaluate type annotations at runtime, including stringized annotations (e.g. Pydantic,
+---typeguard or beartype). Using experimental syntax may lead to runtime errors in this context.
+---
+---Conversely, if you are only using ty as your type checker, and if you are not relying on runtime
+---inspection of type annotations, you can safely ignore this rule.
+---@field ["experimental-syntax"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for `@final` decorators applied to non-method functions.
+---
+---**Why is this bad?**
+---
+---The `@final` decorator is only meaningful on methods and classes. Applying it to a module-level
+---function or a nested function has no effect and is likely a mistake.
+---@field ["final-on-non-method"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for `Final` symbols that are declared without a value and are never assigned a value in their
+---scope.
+---
+---**Why is this bad?**
+---
+---A `Final` symbol must be initialized with a value at the time of declaration or in a subsequent
+---assignment. At module or function scope, the assignment must occur in the same scope. In a class
+---body, the assignment may occur in `__init__`. Protocol members are declarations of an interface and
+---do not require a value.
+---@field ["final-without-value"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for `ty: ignore[code]` or `type: ignore[ty:code]` comments where `code` isn't a known lint
+---rule.
+---
+---**Why is this bad?**
+---
+---A `ty: ignore[code]` or a `type: ignore[ty:code]` directive with a `code` that doesn't match any
+---known rule will not suppress any type errors, and is probably a mistake.
+---@field ["ignore-comment-unknown-rule"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for implicit concatenated strings in type annotation positions.
+---
+---**Why is this bad?**
+---
+---Static analysis tools like ty can't analyze type annotations that use implicit concatenated strings.
+---@field ["implicit-concatenated-string-type-annotation"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for classes with an inconsistent [method resolution order] (MRO).
+---
+---**Why is this bad?**
+---
+---Classes with an inconsistent MRO will raise a `TypeError` at runtime.
+---@field ["inconsistent-mro"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for attempts to use an out of bounds index to get an item from a container.
+---
+---**Why is this bad?**
+---
+---Using an out of bounds index will raise an `IndexError` at runtime.
+---@field ["index-out-of-bounds"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for calls to `final()` that type checkers cannot interpret.
+---
+---**Why is this bad?**
+---
+---The `final()` function is designed to be used as a decorator. When called directly as a function
+---(e.g., `final(type(...))`), type checkers will not understand the application of `final` and will
+---not prevent subclassing.
+---@field ["ineffective-final"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for classes definitions which will fail at runtime due to "instance memory layout conflicts".
+---
+---This error is usually caused by attempting to combine multiple classes that define non-empty
+---`__slots__` in a class's [Method Resolution Order][method-resolution-order] (MRO), or by attempting
+---to combine multiple builtin classes in a class's MRO.
+---
+---**Why is this bad?**
+---
+---Inheriting from bases with conflicting instance memory layouts will lead to a `TypeError` at
+---runtime.
+---
+---An instance memory layout conflict occurs when CPython cannot determine the memory layout instances
+---of a class should have, because the instance memory layout of one of its bases conflicts with the
+---instance memory layout of one or more of its other bases.
+---
+---For example, if a Python class defines non-empty `__slots__`, this will impact the memory layout of
+---instances of that class. Multiple inheritance from more than one different class defining non-empty
+---`__slots__` is not allowed:
+---
+---```python
+---class A:
+---    __slots__ = ("a", "b")
+---
+---
+---class B:
+---    __slots__ = ("a", "b")  # Even if the values are the same
+---
+---
+---# TypeError: multiple bases have instance lay-out conflict
+---class C(A, B): ...  # error
+---```
+---
+---An instance layout conflict can also be caused by attempting to use multiple inheritance with two
+---builtin classes, due to the way that these classes are implemented in a CPython C extension:
+---
+---```python
+---# TypeError: multiple bases have instance lay-out conflict
+---class A(int, float): ...  # error
+---```
+---
+---Note that pure-Python classes with no `__slots__`, or pure-Python classes with empty `__slots__`,
+---are always compatible:
+---
+---```python
+---class A: ...
+---
+---
+---class B:
+---    __slots__ = ()
+---
+---
+---class C:
+---    __slots__ = ("a", "b")
+---
+---
+---# fine
+---class D(A, B, C): ...
+---```
+---@field ["instance-layout-conflict"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects call arguments whose type is not assignable to the corresponding typed parameter.
+---
+---**Why is this bad?**
+---
+---Passing an argument of a type the function (or callable object) does not accept violates the
+---expectations of the function author and may cause unexpected runtime errors within the body of the
+---function.
+---@field ["invalid-argument-type"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for assignments where the type of the value is not [assignable to] the type of the assignee.
+---
+---**Why is this bad?**
+---
+---Such assignments break the rules of the type system and weaken a type checker's ability to
+---accurately reason about your code.
+---@field ["invalid-assignment"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for assignments to class variables from instances and assignments to instance-only attributes
+---from their class. Also checks for reads and writes of generic instance attributes through a generic
+---class or a specialized generic alias.
+---
+---An "instance-only" variable is one which is only ever assigned to or declared when accessed via
+---`self` in an instance method.
+---
+---A generic instance attribute has a type that depends on the class's type parameters. Specializing a
+---generic class does not create separate class attribute storage, so these attributes cannot be
+---accessed through the generic class or a specialized alias. Access through a `type[...]` receiver is
+---allowed because it can refer to a concrete subclass with its own class attributes.
+---
+---**Why is this bad?**
+---
+---Incorrect assignments break the rules of the type system and weaken a type checker's ability to
+---accurately reason about your code.
+---@field ["invalid-attribute-access"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects attribute overrides that change whether an inherited attribute is a class variable or an
+---instance variable.
+---
+---This rule currently only covers class-variable and instance-variable category changes.
+---
+---**Why is this bad?**
+---
+---Pure class variables and instance variables have different access and assignment behavior.
+---Overriding one with the other violates the
+---[Liskov Substitution Principle][liskov-substitution-principle] ("LSP"), because code that is valid
+---for the superclass may no longer be valid for the subclass.
+---@field ["invalid-attribute-override"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for `await` being used with types that are not [Awaitable][awaitable-abc].
+---
+---**Why is this bad?**
+---
+---Such expressions will lead to `TypeError` being raised at runtime.
+---@field ["invalid-await"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for class definitions that have bases which are not instances of `type`.
+---
+---**Why is this bad?**
+---
+---Class definitions with bases like this will lead to `TypeError` being raised at runtime.
+---@field ["invalid-base"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for expressions used in `with` statements that do not implement the context manager protocol.
+---
+---**Why is this bad?**
+---
+---Such a statement will raise `TypeError` at runtime.
+---@field ["invalid-context-manager"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for invalid applications of the `@dataclass` decorator.
+---
+---**Why is this bad?**
+---
+---Applying `@dataclass` with incompatible arguments raises an exception while creating the class:
+---
+---- `order=True` with `eq=False`
+---- `weakref_slot=True` with `slots=False`
+---- `slots=True` when the class already defines `__slots__`
+---
+---Applying `@dataclass` to a class that inherits from `NamedTuple`, `TypedDict`, `Enum`, or `Protocol`
+---is also invalid:
+---
+---- `NamedTuple` and `TypedDict` classes will raise an exception at runtime when instantiating the
+---    class.
+---- `Enum` classes with `@dataclass` are [explicitly not supported].
+---- `Protocol` classes define interfaces and cannot be instantiated.
+---@field ["invalid-dataclass"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for dataclass definitions that have both `frozen=True` and a custom `__setattr__` or
+---`__delattr__` method defined.
+---
+---**Why is this bad?**
+---
+---Frozen dataclasses synthesize `__setattr__` and `__delattr__` methods which raise a
+---`FrozenInstanceError` to emulate immutability.
+---
+---Overriding either of these methods raises a runtime error.
+---@field ["invalid-dataclass-override"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for declarations where the inferred type of an existing symbol is not [assignable to] its
+---post-hoc declared type.
+---
+---**Why is this bad?**
+---
+---Such declarations break the rules of the type system and weaken a type checker's ability to
+---accurately reason about your code.
+---@field ["invalid-declaration"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for enum members that have explicit type annotations.
+---
+---**Why is this bad?**
+---
+---The [typing spec] states that type checkers should infer a literal type for all enum members. An
+---explicit type annotation on an enum member is misleading because the annotated type will be
+---incorrect — the actual runtime type is the enum class itself, not the annotated type.
+---
+---In CPython's `enum` module, annotated assignments with values are still treated as members at
+---runtime, but the annotation will confuse readers of the code.
+---@field ["invalid-enum-member-annotation"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for exception handlers that catch non-exception classes.
+---
+---**Why is this bad?**
+---
+---Catching classes that do not inherit from `BaseException` will raise a `TypeError` at runtime.
+---@field ["invalid-exception-caught"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for methods that are decorated with `@override` but do not override any method in a
+---superclass.
+---
+---**Why is this bad?**
+---
+---Decorating a method with `@override` declares to the type checker that the intention is that it
+---should override a method from a superclass.
+---@field ["invalid-explicit-override"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for dataclasses with invalid frozen inheritance:
+---
+---- A frozen dataclass cannot inherit from a non-frozen dataclass.
+---- A non-frozen dataclass cannot inherit from a frozen dataclass.
+---
+---**Why is this bad?**
+---
+---Python raises a `TypeError` at runtime when either of these inheritance patterns occurs.
+---@field ["invalid-frozen-dataclass-subclass"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for the creation of invalid generic classes
+---
+---**Why is this bad?**
+---
+---There are several requirements that you must follow when defining a generic class. Many of these
+---result in `TypeError` being raised at runtime if they are violated.
+---@field ["invalid-generic-class"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for enum classes that are also generic.
+---
+---**Why is this bad?**
+---
+---Enum classes cannot be generic. Python does not support generic enums: attempting to create one will
+---either result in an immediate `TypeError` at runtime, or will create a class that cannot be
+---specialized in the way that a normal generic class can.
+---@field ["invalid-generic-enum"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for `type: ignore` and `ty: ignore` comments that are syntactically incorrect.
+---
+---**Why is this bad?**
+---
+---A syntactically incorrect ignore comment is probably a mistake and is useless.
+---@field ["invalid-ignore-comment"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for type variables from outer scopes in an explicit annotation of the `self` parameter of
+---`__init__`.
+---
+---**Why is this bad?**
+---
+---An explicit `self` annotation on `__init__` can determine the type arguments of the constructed
+---class. Referring to type variables bound to the class or an enclosing scope in this annotation can
+---make their meaning ambiguous. The
+---[typing specification](https://typing.python.org/en/latest/spec/constructors.html#init-method)
+---allows type variables scoped to `__init__` instead.
+---@field ["invalid-init-type-variable"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for subscript accesses with invalid keys and `TypedDict` construction with an unknown key.
+---
+---**Why is this bad?**
+---
+---Subscripting with an invalid key will raise a `KeyError` at runtime.
+---
+---Creating a `TypedDict` with an unknown key is likely a mistake; if the `TypedDict` is `closed=true`
+---it also violates the expectations of the type.
+---@field ["invalid-key"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Checks for parameters that appear to be attempting to use the legacy convention to specify that a
+---parameter is positional-only, but do so incorrectly.
+---
+---The "legacy convention" for specifying positional-only parameters was specified in
+---[PEP 484][pep-484]. It states that parameters with names starting with `__` should be considered
+---positional-only by type checkers. [PEP 570][pep-570], introduced in Python 3.8, added dedicated
+---syntax for specifying positional-only parameters, rendering the legacy convention obsolete. However,
+---some codebases may still use the legacy convention for compatibility with older Python versions.
+---
+---This rule is disabled by default because modern code may use `__`-prefixed parameter names for other
+---purposes. Enable it if your codebase uses the legacy convention and you want to check that it is
+---applied consistently.
+---
+---**Why is this bad?**
+---
+---In most cases, a type checker will not consider a parameter to be positional-only if it comes after
+---a positional-or-keyword parameter, even if its name starts with `__`. This may be unexpected if the
+---author intended to use the legacy convention.
+---@field ["invalid-legacy-positional-parameter"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for the creation of invalid legacy `TypeVar`s
+---
+---**Why is this bad?**
+---
+---There are several requirements that you must follow when creating a legacy `TypeVar`.
+---@field ["invalid-legacy-type-variable"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for invalid match patterns.
+---
+---**Why is this bad?**
+---
+---Invalid match patterns can cause a `TypeError` at runtime. This includes:
+---
+---- Using a non-type object in a class pattern.
+---- Providing positional subpatterns when `__match_args__` is missing or has an invalid static type.
+---- Matching against `collections.abc.Callable` with positional subpatterns.
+---- Matching against a non-runtime-checkable protocol.
+---- Matching against a `TypedDict`.
+---@field ["invalid-match-pattern"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for arguments to `metaclass=` that are invalid.
+---
+---**Why is this bad?**
+---
+---Python allows arbitrary expressions to be used as the argument to `metaclass=`. These expressions,
+---however, need to be callable and accept the same arguments as `type.__new__`.
+---@field ["invalid-metaclass"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects method overrides that violate the
+---[Liskov Substitution Principle][liskov-substitution-principle] ("LSP").
+---
+---The LSP states that an instance of a subtype should be substitutable for an instance of its
+---supertype. Applied to Python, this means:
+---
+---1. All argument combinations a superclass method accepts must also be accepted by an overriding
+---    subclass method.
+---1. The return type of an overriding subclass method must be a subtype of the return type of the
+---    superclass method.
+---
+---**Why is this bad?**
+---
+---Violating the Liskov Substitution Principle will lead to many of ty's assumptions and inferences
+---being incorrect, which will mean that it will fail to catch many possible type errors in your code.
+---@field ["invalid-method-override"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for imports that fail when calling a module-level `__getattr__` function.
+---
+---**Why is this bad?**
+---
+---If a module defines `__getattr__`, Python calls it when a `from` import requests a name that is not
+---otherwise defined. The import raises an exception if `__getattr__` cannot accept the requested name.
+---@field ["invalid-module-getattr-call"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for invalidly defined `NamedTuple` classes.
+---
+---**Why is this bad?**
+---
+---An invalidly defined `NamedTuple` class may lead to the type checker drawing incorrect conclusions.
+---It may also lead to `TypeError`s or `AttributeError`s at runtime.
+---@field ["invalid-named-tuple"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for subclass members that override inherited `NamedTuple` fields.
+---
+---**Why is this bad?**
+---
+---Reusing an inherited `NamedTuple` field name in a subclass creates a class where tuple indexing and
+---`repr()` still reflect the original field, while attribute access follows the subclass member.
+---@field ["invalid-named-tuple-override"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for the creation of invalid `NewType`s
+---
+---**Why is this bad?**
+---
+---There are several requirements that you must follow when creating a `NewType`.
+---@field ["invalid-newtype"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for various invalid `@overload` usages.
+---
+---**Why is this bad?**
+---
+---The `@overload` decorator is used to define functions and methods that accepts different
+---combinations of arguments and return different types based on the arguments passed. This is mainly
+---beneficial for type checkers. But, if the `@overload` usage is invalid, the type checker may not be
+---able to provide correct type information.
+---@field ["invalid-overload"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for default values that can't be assigned to the parameter's annotated type.
+---
+---**Why is this bad?**
+---
+---This breaks the rules of the type system and weakens a type checker's ability to accurately reason
+---about your code.
+---@field ["invalid-parameter-default"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for the creation of invalid `ParamSpec`s
+---
+---**Why is this bad?**
+---
+---There are several requirements that you must follow when creating a `ParamSpec`.
+---@field ["invalid-paramspec"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for protocol classes that are invalid at runtime or do not satisfy the typing specification.
+---
+---**Why is this bad?**
+---
+---An invalidly defined protocol class may lead to the type checker inferring unexpected things or
+---accepting unsafe operations. Some invalid protocol definitions also raise `TypeError` at runtime.
+---@field ["invalid-protocol"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for `raise` statements that raise non-exceptions or use invalid causes for their raised
+---exceptions.
+---
+---**Why is this bad?**
+---
+---Only subclasses or instances of `BaseException` can be raised. For an exception's cause, the same
+---rules apply, except that `None` is also permitted. Violating these rules results in a `TypeError` at
+---runtime.
+---@field ["invalid-raise"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects returned values that can't be assigned to the function's annotated return type.
+---
+---Note that the special case of a function with a non-`None` return type and an empty body is handled
+---by the separate [`empty-body`](#empty-body) error code.
+---
+---**Why is this bad?**
+---
+---Returning an object of a type incompatible with the annotated return type is unsound, and will lead
+---to ty inferring incorrect types elsewhere.
+---@field ["invalid-return-type"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects `super()` calls where:
+---
+---- the first argument is not a valid class literal, or
+---- the second argument is not an instance or subclass of the first argument.
+---
+---**Why is this bad?**
+---
+---`super(type, obj)` expects:
+---
+---- the first argument to be a class,
+---- and the second argument to satisfy one of the following:
+---    - `isinstance(obj, type)` is `True`
+---    - `issubclass(obj, type)` is `True`
+---
+---Violating this relationship will raise a `TypeError` at runtime.
+---@field ["invalid-super-argument"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for string-literal annotations where the string cannot be parsed as a Python expression.
+---
+---**Why is this bad?**
+---
+---Type annotations are expected to be Python expressions that describe the expected type of a
+---variable, parameter, attribute or `return` statement.
+---
+---Type annotations are permitted to be string-literal expressions, in order to enable forward
+---references to names not yet defined. However, it must be possible to parse the contents of that
+---string literal as a normal Python expression.
+---@field ["invalid-syntax-in-forward-annotation"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for classes decorated with `@functools.total_ordering` that don't define any ordering method
+---(`__lt__`, `__le__`, `__gt__`, or `__ge__`).
+---
+---**Why is this bad?**
+---
+---The `@total_ordering` decorator requires the class to define at least one ordering method. If none
+---is defined, Python raises a `ValueError` at runtime.
+---@field ["invalid-total-ordering"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for the creation of invalid `TypeAliasType`s
+---
+---**Why is this bad?**
+---
+---There are several requirements that you must follow when creating a `TypeAliasType`.
+---@field ["invalid-type-alias-type"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for invalid type arguments in explicit type specialization.
+---
+---**Why is this bad?**
+---
+---Providing the wrong number of type arguments or type arguments that don't satisfy the type
+---variable's bounds or constraints will lead to incorrect type inference and may indicate a
+---misunderstanding of the generic type's interface.
+---@field ["invalid-type-arguments"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for a value other than `False` assigned to the `TYPE_CHECKING` variable, or an annotation not
+---assignable from `bool`.
+---
+---**Why is this bad?**
+---
+---The name `TYPE_CHECKING` is reserved for a flag that can be used to provide conditional code seen
+---only by the type checker, and not at runtime. Normally this flag is imported from `typing` or
+---`typing_extensions`, but it can also be defined locally. If defined locally, it must be assigned the
+---value `False` at runtime; the type checker will consider its value to be `True`. If annotated, it
+---must be annotated as a type that can accept `bool` values.
+---@field ["invalid-type-checking-constant"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for expressions that are used as [type expressions] but cannot validly be interpreted as
+---such.
+---
+---**Why is this bad?**
+---
+---Such expressions cannot be understood by ty. In some cases, they might raise errors at runtime.
+---@field ["invalid-type-form"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for type guard functions without a first non-self-like non-keyword-only non-variadic
+---parameter.
+---
+---**Why is this bad?**
+---
+---Type narrowing functions must accept at least one positional argument (non-static methods must
+---accept another in addition to `self`/`cls`).
+---
+---Extra parameters/arguments are allowed but do not affect narrowing.
+---@field ["invalid-type-guard-definition"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for [type variables][type variable] whose bounds reference type variables.
+---
+---**Why is this bad?**
+---
+---The bound of a type variable must be a concrete type.
+---@field ["invalid-type-variable-bound"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for constrained [type variables] with only one constraint, or that those constraints
+---reference type variables.
+---
+---**Why is this bad?**
+---
+---A constrained type variable must have at least two constraints.
+---@field ["invalid-type-variable-constraints"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for [type variables] whose default type is not compatible with the type variable's bound or
+---constraints.
+---
+---**Why is this bad?**
+---
+---If a type variable has a bound, the default must be assignable to that bound (see: [bound rules]).
+---If a type variable has constraints, the default must be one of the constraints (see:
+---[constraint rules]).
+---@field ["invalid-type-variable-default"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects invalid `TypedDict` field declarations.
+---
+---**Why is this bad?**
+---
+---`TypedDict` subclasses cannot redefine inherited fields incompatibly. Doing so breaks the subtype
+---guarantees that `TypedDict` inheritance is meant to preserve.
+---@field ["invalid-typed-dict-field"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects errors in `TypedDict` class headers, such as unexpected arguments or invalid base classes.
+---
+---**Why is this bad?**
+---
+---The typing spec states that `TypedDict`s are not permitted to have custom metaclasses. Using `**`
+---unpacking in a `TypedDict` header is also prohibited by ty, as it means that ty cannot statically
+---determine whether keys in the `TypedDict` are intended to be required or optional.
+---@field ["invalid-typed-dict-header"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects statements other than annotated declarations in `TypedDict` class bodies.
+---
+---**Why is this bad?**
+---
+---`TypedDict` class bodies aren't allowed to contain any other types of statements. For example,
+---method definitions and field values aren't allowed. None of these will be available on "instances of
+---the `TypedDict`" at runtime (as `dict` is the runtime class of all "`TypedDict` instances").
+---@field ["invalid-typed-dict-statement"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects `yield` and `yield from` expressions where the "yield" or "send" type is incompatible with
+---the generator function's annotated return type.
+---
+---**Why is this bad?**
+---
+---Yielding a value of a type that doesn't match the generator's declared yield type, or using
+---`yield from` with a sub-iterator whose yield or send type is incompatible, is a type error that may
+---cause downstream consumers of the generator to receive values of an unexpected type.
+---@field ["invalid-yield"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Reports invalid runtime checks against `Protocol` classes. This includes explicit calls
+---`isinstance()`/`issubclass()` against non-runtime-checkable protocols, `issubclass()` calls against
+---protocols that have non-method members, and implicit `isinstance()` checks against
+---non-runtime-checkable protocols via pattern matching.
+---
+---**Why is this bad?**
+---
+---These calls (implicit or explicit) raise `TypeError` at runtime.
+---@field ["isinstance-against-protocol"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Reports runtime checks against `TypedDict` classes. This includes explicit calls to
+---`isinstance()`/`issubclass()` and implicit checks performed by `match` class patterns.
+---
+---**Why is this bad?**
+---
+---Using a `TypedDict` class in these contexts raises `TypeError` at runtime.
+---@field ["isinstance-against-typed-dict"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for functional typing definitions whose declared name does not match the variable they are
+---assigned to.
+---
+---**Why is this bad?**
+---
+---Constructors like `TypeVar`, `ParamSpec`, `NewType`, `NamedTuple`, `TypedDict`, and `TypeAliasType`
+---all take a name argument that is normally expected to match the assigned variable. A mismatch is
+---usually a typo and makes later diagnostics harder to understand.
+---@field ["mismatched-type-name"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for missing required arguments in a call.
+---
+---**Why is this bad?**
+---
+---Failing to provide a required argument will raise a `TypeError` at runtime.
+---@field ["missing-argument"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Checks for imports from installable packages that the current project or PEP 723 script does not
+---declare as direct dependencies.
+---
+---The name used in dependency declarations can differ from the import name: for example, the `pillow`
+---package is imported as `PIL`.
+---
+---**Why is this bad?**
+---
+---A dependency can be installed because another package requires it. Importing that dependency without
+---declaring it makes your code rely on another package's dependency list. If that package removes the
+---dependency, your imports can fail.
+---
+---Declare the packages that provide your imports in `project.dependencies` or
+---`project.optional-dependencies` in `pyproject.toml`. Non-package files, such as tests and
+---development scripts, can also use dependencies declared in dependency groups.
+---
+---See uv's [guide to managing dependencies](https://docs.astral.sh/uv/concepts/projects/dependencies/)
+---for how to add these declarations.
+---@field ["missing-direct-dependency"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Checks for methods that override a method or attribute in a superclass but are not decorated with
+---`@override`.
+---
+---This rule is disabled by default. Enable it to opt in to strict `@override` enforcement for a
+---project.
+---
+---**Why is this bad?**
+---
+---Without an `@override` annotation, refactors can silently change whether a method is an override.
+---Requiring `@override` on every override lets ty report when an intended override stops overriding
+---anything, and when a method unexpectedly starts overriding a superclass member.
+---@field ["missing-override-decorator"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for assignments to declared attributes that have no matching `__slots__` entry on the class
+---or its bases, and no instance dictionary to store their values.
+---
+---**Why is this bad?**
+---
+---Most Python objects store their attributes in an "instance dictionary". Assigning to a new attribute
+---adds an entry to this dictionary; deleting that attribute removes it again. Accordingly, most Python
+---objects allow for **arbitrary attributes to be set and read**. The advantage of this is that it
+---allows for many dynamic features; the disadvantage is that it can be costly in terms of memory, and
+---can easily allow for typos to slip in accidentally, e.g.:
+---
+---```py
+---class Foo:
+---    def __init__(self, x):
+---        self.x = x
+---
+---    def update_x(self, x):
+---        self.xx = x  # oops, this was meant to be the same attribute set in `__init__`,
+---        # but ended up being an entirely separate one!
+---```
+---
+---Defining `__slots__` lets a class reserve space for a fixed set of instance attributes instead.
+---Unless an instance dictionary is inherited from a base class or requested by including `"__dict__"`
+---in `__slots__`, instances of the class have no dictionary in which to store additional attributes.
+---Attempting to assign to an attribute not declared in `__slots__` will often raise `AttributeError`
+---at runtime if the instance has no instance dictionary.
+---@field ["missing-slot"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Checks for generic types used without type parameters in type expressions.
+---
+---**Why is this bad?**
+---
+---Using a generic type without specifying its type parameters results in the type parameters being
+---implicitly filled with `Unknown`, reducing the precision of type checking. Explicit type parameters
+---make the intended types clear and enable the type checker to catch more errors.
+---@field ["missing-type-argument"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects missing required keys in `TypedDict` constructor calls.
+---
+---**Why is this bad?**
+---
+---`TypedDict` requires all non-optional keys to be provided during construction. Missing items can
+---lead to a `KeyError` at runtime.
+---@field ["missing-typed-dict-key"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for calls to an overloaded function that do not match any of the overloads.
+---
+---**Why is this bad?**
+---
+---Failing to provide the correct arguments to one of the overloads will raise a `TypeError` at
+---runtime.
+---@field ["no-matching-overload"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for class definitions that will fail due to non-callable `__init_subclass__` methods.
+---
+---**Why is this bad?**
+---
+---If a class defines a non-callable `__init_subclass__` method/attribute, any attempt to subclass that
+---class will raise a `TypeError` at runtime.
+---@field ["non-callable-init-subclass"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for objects that are not iterable but are used in a context that requires them to be.
+---
+---**Why is this bad?**
+---
+---Iterating over an object that is not iterable will raise a `TypeError` at runtime.
+---@field ["not-iterable"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for subscripting objects that do not support subscripting.
+---
+---**Why is this bad?**
+---
+---Subscripting an object that does not support it will raise a `TypeError` at runtime.
+---@field ["not-subscriptable"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for methods on subclasses that override superclass methods decorated with `@final`.
+---
+---**Why is this bad?**
+---
+---Decorating a method with `@final` declares to the type checker that it should not be overridden on
+---any subclass.
+---@field ["override-of-final-method"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for class variables on subclasses that override a superclass variable that has been declared
+---as `Final`.
+---
+---**Why is this bad?**
+---
+---Declaring a variable as `Final` indicates to the type checker that it should not be overridden on
+---any subclass.
+---@field ["override-of-final-variable"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for calls which provide more than one argument for a single parameter.
+---
+---**Why is this bad?**
+---
+---Providing multiple values for a single parameter will raise a `TypeError` at runtime.
+---@field ["parameter-already-assigned"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for keyword arguments in calls that match positional-only parameters of the callable.
+---
+---**Why is this bad?**
+---
+---Providing a positional-only parameter as a keyword argument will raise `TypeError` at runtime.
+---@field ["positional-only-parameter-as-kwarg"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Checks for possibly missing attributes.
+---
+---**Why is this bad?**
+---
+---Attempting to access a missing attribute will raise an `AttributeError` at runtime.
+---@field ["possibly-missing-attribute"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for implicit calls to possibly missing methods.
+---
+---**Why is this bad?**
+---
+---Expressions such as `x[y]` and `x * y` call methods under the hood (`__getitem__` and `__mul__`
+---respectively). Calling a missing method will raise an `AttributeError` at runtime.
+---@field ["possibly-missing-implicit-call"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Checks for imports of symbols that may be missing.
+---
+---**Why is this bad?**
+---
+---Importing a missing module or name will raise a `ModuleNotFoundError` or `ImportError` at runtime.
+---@field ["possibly-missing-import"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for accesses of submodules that might not've been imported.
+---
+---**Why is this bad?**
+---
+---When module `a` has a submodule `b`, `import a` isn't generally enough to let you access `a.b.` You
+---either need to explicitly `import a.b`, or else you need the `__init__.py` file of `a` to include
+---`from . import b`. Without one of those, `a.b` is an `AttributeError`.
+---@field ["possibly-missing-submodule"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Checks for references to names that are possibly not defined.
+---
+---**Why is this bad?**
+---
+---Using an undefined variable will raise a `NameError` at runtime.
+---@field ["possibly-unresolved-reference"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for extra keyword arguments that Pydantic silently discards when a model uses
+---`extra="ignore"`, either implicitly or explicitly.
+---
+---**Why is this bad?**
+---
+---A discarded argument has no effect on the constructed model, but it may indicate a misspelled field
+---name or an incorrect assumption about the model's schema.
+---@field ["pydantic-discarded-extra-argument"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for raw-strings in type annotation positions.
+---
+---**Why is this bad?**
+---
+---Static analysis tools like ty can't analyze type annotations that use raw-string notation.
+---@field ["raw-string-type-annotation"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Detects redundant `cast` calls where the value already has the target type.
+---
+---**Why is this bad?**
+---
+---These casts have no effect and can be removed.
+---@field ["redundant-cast"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Detects boolean conditions where the condition can be statically inferred to be always true or
+---always false due to the inferred type of the condition.
+---
+---This rule is enabled by default, and is deliberately not comprehensive. In order to avoid false
+---positives, it excludes conditions that meet any of these criteria:
+---
+---- The boolean test is inferred as evaluating to `True` itself, `False` itself, or an exact integer
+---    such as `1` or `0`.
+---- The boolean test can be inferred as always evaluating to `True` and `False`, but this inference is
+---    due to boolean-test short-circuiting in `if` conditions, `while` conditions or `assert` tests
+---    rather than the inferred type of the boolean test.
+---- The condition uses a walrus operator (`:=`). The assignment's side effect may be intentional, even
+---    when its result has fixed truthiness.
+---
+---**Why is this bad?**
+---
+---A boolean condition that is always true or always false usually indicates a mistake in your code,
+---and can often lead to incorrect behavior. If an `if` condition is inferred as always false,
+---moreover, ty will infer all code within that `if` branch as being unreachable, and will not report
+---any diagnostics on code in that region.
+---@field ["redundant-condition"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Detects boolean conditions where the condition can be statically inferred to be always true or
+---always false.
+---
+---This rule is disabled by default. It exclusively covers cases that its sibling (enabled-by-default)
+---rule [`redundant-condition`](#redundant-condition) does not cover. These cases often flag real bugs in user code, but also
+---have a significantly higher rate of unavoidable false positives than other cases.
+---
+---This rule reports redundant conditions that meet any of these criteria:
+---
+---- The boolean test is inferred as evaluating to `True` itself, `False` itself, or an exact integer
+---    such as `1` or `0`.
+---- Short-circuit evaluation means the condition can be guaranteed to be always truthy or always falsy
+---    despite fixed truthiness not being guaranteed by the inferred type of the expression's value
+---    (see "Short-circuiting boolean conditions" below for an example).
+---- The condition uses a walrus operator (`:=`). The assignment's side effect may be intentional, even
+---    when its result has fixed truthiness.
+---
+---**Why is this bad?**
+---
+---A boolean condition that is always true or always false usually indicates a mistake in your code,
+---and can often lead to incorrect behavior. If an `if` condition is inferred as always false,
+---moreover, ty will infer all code within that `if` branch as being unreachable, and will not report
+---any diagnostics on code in that region.
+---@field ["redundant-condition-strict"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for redundant combinations of the `ClassVar` and `Final` type qualifiers.
+---
+---**Why is this bad?**
+---
+---An attribute that is marked `Final` in a class body is implicitly a class variable. Marking it as
+---`ClassVar` is therefore redundant.
+---
+---Note that this diagnostic is not emitted for dataclass fields or protocol members, where
+---`ClassVar[Final[int]]` has a distinct meaning from `Final[int]`.
+---@field ["redundant-final-classvar"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for type variables in nested generic classes or functions that shadow type variables from an
+---enclosing scope.
+---
+---**Why is this bad?**
+---
+---Shadowing type variables makes the code confusing and is disallowed by the typing spec.
+---@field ["shadowed-type-variable"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Makes sure that the argument of `static_assert` is statically known to be true.
+---
+---**Why is this bad?**
+---
+---A `static_assert` call represents an explicit request from the user for the type checker to emit an
+---error if the argument cannot be verified to evaluate to `True` in a boolean context.
+---@field ["static-assert-error"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for classes that inherit from a dataclass with `order=True`.
+---
+---**Why is this bad?**
+---
+---When a dataclass has `order=True`, comparison methods (`__lt__`, `__le__`, `__gt__`, `__ge__`) are
+---generated that compare instances as tuples of their fields. These methods raise a `TypeError` at
+---runtime when comparing instances of different classes in the inheritance hierarchy, even if one is a
+---subclass of the other.
+---
+---This violates the [Liskov Substitution Principle][liskov-substitution-principle] because child class
+---instances cannot be used in all contexts where parent class instances are expected.
+---@field ["subclass-of-dataclass-with-order"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for classes that subclass final classes.
+---
+---**Why is this bad?**
+---
+---Decorating a class with `@final` declares to the type checker that it should not be subclassed.
+---@field ["subclass-of-final-class"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for calls to `super()` inside methods of `NamedTuple` classes.
+---
+---**Why is this bad?**
+---
+---Using `super()` in a method of a `NamedTuple` class will raise an exception at runtime.
+---@field ["super-call-in-named-tuple-method"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for calls that pass more positional arguments than the callable can accept.
+---
+---**Why is this bad?**
+---
+---Passing too many positional arguments will raise `TypeError` at runtime.
+---@field ["too-many-positional-arguments"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Detects suspicious truthiness tests of `Callable`-typed values and unions of callable types.
+---
+---**Why is this bad?**
+---
+---`Callable`-typed variables are nearly always functions in practice, and functions are always truthy.
+---If `predicate` is a variable inferred as having a `Callable` type, therefore, a boolean test such as
+---`if predicate:` is usually not what you want; `if predicate()` (or similar) is usually what was
+---intended.
+---@field ["truthiness-test-of-callable"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Detects boolean conditions where variables typed as `Iterable`, `Iterator`, `Generator` or similar
+---are tested for their truthiness.
+---
+---**Why is this bad?**
+---
+---Testing an `Iterable` object for truthiness strongly suggests that the code expects the object to
+---evaluate as falsy in a boolean context if it is empty. However, even empty `Iterable` objects can be
+---truthy if they do not define `__len__` or `__bool__`. The classic example of this is a generator:
+---unevaluated generators in Python are always truthy, even if they do not yield any elements at
+---runtime.
+---@field ["truthiness-test-of-iterable"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Detects truthiness checks of unions with `None` whose non-`None` part can also be falsy, like an
+---`if value: ...` check on a value of type `int | None`.
+---
+---This rule is disabled by default. It can catch mistakes where a valid value is confused with missing
+---data, but may also flag code that deliberately treats `None` and other falsy values alike.
+---
+---**Why is this bad?**
+---
+---`None` is a sentinel often used to indicate the absence of a meaningful value. A variable annotated
+---as `int | None` can hold an integer or `None`. Since `None` is falsy, testing an object's truthiness
+---is a common way to check whether a value is present, but this can lead to incorrect behavior. An
+---object of type `int | None` can still be falsy even if it is an integer, since `0` is falsy. Boolean
+---tests on objects of type `str | None`, `bytes | None`, or `list | None` have similar pitfalls: an
+---empty string, bytestring, or list is also falsy in Python.
+---@field ["truthiness-test-of-none-union"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for `assert_type()` and `assert_never()` calls where the actual type is not the same as the
+---asserted type.
+---
+---**Why is this bad?**
+---
+---`assert_type()` allows confirming the inferred type of a certain value.
+---@field ["type-assertion-failure"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects invalid `super()` calls where implicit arguments like the enclosing class or first method
+---argument are unavailable.
+---
+---**Why is this bad?**
+---
+---When `super()` is used without arguments, Python tries to find two things: the nearest enclosing
+---class and the first argument of the immediately enclosing function (typically self or cls). If
+---either of these is missing, the call will fail at runtime with a `RuntimeError`.
+---@field ["unavailable-implicit-super-arguments"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for type variables that are used in a scope where they are not bound to any enclosing generic
+---context.
+---
+---**Why is this bad?**
+---
+---Using a type variable outside of a scope that binds it has no well-defined meaning.
+---@field ["unbound-type-variable"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for calls to `reveal_type` without importing it.
+---
+---**Why is this bad?**
+---
+---Using `reveal_type` without importing it will raise a `NameError` at runtime.
+---@field ["undefined-reveal"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for keyword arguments in calls that don't match any parameter of the callable.
+---
+---**Why is this bad?**
+---
+---Providing an unknown keyword argument will raise `TypeError` at runtime.
+---@field ["unknown-argument"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for unresolved attributes.
+---
+---**Why is this bad?**
+---
+---Accessing an unbound attribute will raise an `AttributeError` at runtime. An unresolved attribute is
+---not guaranteed to exist from the type alone, so this could also indicate that the object is not of
+---the type that the user expects.
+---@field ["unresolved-attribute"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Detects variables declared as `global` in an inner scope that have no explicit bindings or
+---declarations in the global scope.
+---
+---**Why is this bad?**
+---
+---Function bodies with `global` statements can run in any order (or not at all), which makes it hard
+---for static analysis tools to infer the types of globals without explicit definitions or
+---declarations.
+---@field ["unresolved-global"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for import statements for which the module cannot be resolved.
+---
+---**Why is this bad?**
+---
+---Importing a module that cannot be resolved will raise a `ModuleNotFoundError` at runtime.
+---
+---These diagnostics can often be caused due to ty's Python environment or search paths being
+---configured incorrectly. See the
+---[import troubleshooting FAQ](https://docs.astral.sh/ty/reference/typing-faq/#why-cant-ty-resolve-my-imports)
+---for more details.
+---@field ["unresolved-import"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for references to names that are not defined.
+---
+---**Why is this bad?**
+---
+---Using an undefined variable will raise a `NameError` at runtime.
+---@field ["unresolved-reference"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Detects variable assignments that unsoundly assign a type that is not a [subtype] of a variable's
+---declared type.
+---
+---This rule is a stricter version of [`invalid-assignment`](#invalid-assignment). Whereas that rule also flags assignments to
+---attributes and subscripts, however, this rule is only applied to variable assignments.
+---
+---This rule has no effect on stub files.
+---
+---**Why is this bad?**
+---
+---By default, type checkers consider an assignment valid if the inferred type of the assigned value is
+---[assignable] to the target's declared type. However, this makes it easy for incorrect types to
+---percolate through your code unexpectedly due to a single expression being inferred as `Any`. This
+---can easily lead to runtime errors that are not caught by the type checker:
+---
+---```py
+---from typing import Any
+---
+---
+---def returns_any() -> Any:
+---    return "not an integer"
+---
+---
+---# error: "Unsound assignment: `Any` is not a subtype of `int`"
+---my_integer: int = returns_any()
+---
+---# Fails at runtime, even though the type checker infers both operands as being of type `int`!
+---my_integer + 42
+---```
+---
+---This rule treats ["fully static"][fully-static] declared types as "typed boundaries" for your code.
+---With this rule enabled, ty would emit an error on the `my_integer: int = returns_any()` assignment,
+---since the `returns_any()` call is inferred as having type `Any`, and `Any` is not a subtype of
+---`int`. This helps prevent the unsoundness from spreading far from its original source (in this case,
+---the return type of the `returns_any` function).
+---
+---Note that this rule is only applied to assignments where the declared type is
+---[fully static][fully-static]. It will not trigger if `Any` or `Unknown` appear anywhere in the
+---declared type, either implicitly or explicitly:
+---
+---```py
+---from typing import Any
+---
+---
+---def returns_any() -> Any:
+---    return "not an integer"
+---
+---
+---explicitly_dynamic: Any = returns_any()  # no error
+---also_dynamic: list[Any] = returns_any()  # no error
+---
+---# no `unsound-assignment` error, since `list` is implicitly the same as `list[Unknown]`
+---# (which is what the `missing-type-argument` error is complaining about)
+---#
+---# error: [missing-type-argument]
+---implicitly_dynamic: list = returns_any()
+---```
+---
+---This rule works especially well when combined with ty's [`missing-type-argument`](#missing-type-argument) rule.
+---@field ["unsound-assignment"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Detects `return` statements that unsoundly return a type that is not a [subtype] of the function's
+---annotated return type.
+---
+---This lint is a stricter version of [`invalid-return-type`](#invalid-return-type).
+---
+---**Why is this bad?**
+---
+---By default, type checkers consider a `return` statement valid if the inferred type of the object
+---being returned is [assignable] to the annotated return type of the function it's in. However, this
+---makes it easy for incorrect types to percolate through your code unexpectedly due to a single
+---expression being inferred as `Any`. This can easily lead to runtime errors that are not caught by
+---the type checker:
+---
+---```py
+---from typing import Any
+---
+---
+---def returns_any() -> Any:
+---    return "foo"
+---
+---
+---def returns_int() -> int:
+---    # error: "Unsound return statement: `Any` is not a subtype of `int`"
+---    return returns_any()
+---
+---
+---# fails at runtime, even though the type checker infers both operands as being of type `int`!
+---returns_int() + 42
+---```
+---
+---This rule allows you to use ["fully static"][fully-static] return types as "typed boundaries" for
+---your code. With this rule enabled, ty would emit an error on the `return returns_any()` statement in
+---`returns_int`, since the `returns_any()` call is inferred as having type `Any`, and `Any` is not a
+---subtype of `int`. This helps prevent the unsoundness from spreading far from its original source (in
+---this case, the return type of the `returns_any` function).
+---
+---Note that this rule is only applied to functions annotated as returning [fully static][fully-static]
+---types. It will not trigger if `Any` or `Unknown` appear anywhere in your return type, either
+---implicitly or explicitly:
+---
+---```py
+---from typing import Any
+---
+---
+---def returns_any() -> Any:
+---    return "foo"
+---
+---
+---# error: [missing-type-argument]
+---def returns_unparameterized_tuple() -> tuple:
+---    # no error, since the return type is implicitly `tuple[Unknown, ...]`
+---    # (which is what the `missing-type-argument` error is complaining about on the line above!)
+---    return returns_any()
+---
+---
+---def returns_list_of_any() -> list[Any]:
+---    # no error, since the return type is explicitly `list[Any]`
+---    return returns_any()
+---```
+---
+---This rule works especially well when combined with ty's [`missing-type-argument`](#missing-type-argument) and
+---[`unsound-assignment`](#unsound-assignment) rules, as well as the Ruff rules [`ANN201`][ann201], [`ANN202`][ann202],
+---[`ANN204`][ann204], [`ANN205`][ann205], and [`ANN206`][ann206]. Enabling all these rules at once
+---effectively makes it much less likely that a `return` statement can lead to unsoundness "leaking"
+---out of a function unless that function has been *explicitly* annotated with a dynamic type in some
+---way (`-> Any` or `-> tuple[Any]`, for example).
+---
+---This rule is analogous to mypy's [`no-any-return`][no-any-return] error code, which is enabled by
+---mypy’s [`--strict`][mypy-strict] mode and can also be enabled on its own using mypy’s
+---[`--warn-return-any`][warn-return-any] option.
+---@field ["unsound-return-statement"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Detects `yield` and `yield from` expressions that unsoundly yield a type that is not a [subtype] of
+---the generator function's annotated yield type.
+---
+---This lint is a stricter version of [`invalid-yield`](#invalid-yield).
+---
+---**Why is this bad?**
+---
+---By default, type checkers consider a yielded value valid if its inferred type is [assignable] to the
+---generator's annotated yield type. However, this makes it easy for incorrect types to percolate
+---through your code unexpectedly due to a single expression being inferred as `Any`. This can easily
+---lead to runtime errors that are not caught by the type checker:
+---
+---```py
+---from typing import Any, Generator
+---
+---
+---def returns_any() -> Any:
+---    return "not an integer"
+---
+---
+---def integers() -> Generator[int]:
+---    # error: "Unsound `yield`: `Any` is not a subtype of `int`"
+---    yield returns_any()
+---
+---
+---# Fails at runtime, even though the type checker infers `integers` as yielding only `int`s!
+---sum(integers())
+---```
+---
+---This rule treats ["fully static"][fully-static] yield types as "typed boundaries" for your code.
+---With this rule enabled, ty would emit an error on the `yield returns_any()` statement in `integers`,
+---since the `returns_any()` call is inferred as having type `Any`, and `Any` is not a subtype of
+---`int`. This helps prevent the unsoundness from spreading far from its original source (in this case,
+---the return type of the `returns_any` function).
+---
+---Note that this rule is only applied to functions annotated as yielding [fully static][fully-static]
+---types. It will not trigger if `Any` or `Unknown` appear anywhere in your function's yield type,
+---either implicitly or explicitly. It will still trigger on functions that have non-fully-static send
+---and/or return types, however:
+---
+---```py
+---from typing import Any, Generator
+---
+---
+---def returns_any() -> Any:
+---    return "not an integer"
+---
+---
+---def dynamic_yield_type() -> Generator[Any]:
+---    # no error
+---    yield returns_any()
+---
+---
+---def static_yield_type() -> Generator[int, Any, Any]:
+---    # error: "Unsound `yield`: `Any` is not a subtype of `int`"
+---    yield returns_any()
+---```
+---
+---This rule works especially well when combined with ty's [`missing-type-argument`](#missing-type-argument) and
+---[`unsound-assignment`](#unsound-assignment) rules, as well as the Ruff rules [`ANN201`][ann201], [`ANN202`][ann202],
+---[`ANN204`][ann204], [`ANN205`][ann205], and [`ANN206`][ann206]. Enabling all these rules at once
+---effectively makes it much less likely that a `yield` expression can lead to unsoundness "leaking"
+---out of a function unless that function has been *explicitly* annotated with a dynamic type in some
+---way (`-> Generator[Any]` or `-> Generator[tuple[Any]]`, for example).
+---@field ["unsound-yield"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for class definitions that have bases which are unsupported by ty.
+---
+---**Why is this bad?**
+---
+---If a class has a base that is an instance of a complex type such as a union type, ty will not be
+---able to resolve the [method resolution order] (MRO) for the class. This will lead to an inferior
+---understanding of your codebase and unpredictable type-checking behavior.
+---@field ["unsupported-base"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for bool conversions where the object doesn't correctly implement `__bool__`.
+---
+---**Why is this bad?**
+---
+---If an exception is raised when you attempt to evaluate the truthiness of an object, using the object
+---in a boolean context will fail at runtime.
+---@field ["unsupported-bool-conversion"]? "ignore"|"warn"|"error"
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Checks for dynamic class definitions (using `type()`) that have bases which are unsupported by ty.
+---
+---This is equivalent to [`unsupported-base`](#unsupported-base) but applies to classes created via `type()` rather than
+---`class` statements.
+---
+---**Why is this bad?**
+---
+---If a dynamically created class has a base that is an unsupported type such as `type[T]`, ty will not
+---be able to resolve the [method resolution order] (MRO) for the class. This may lead to an inferior
+---understanding of your codebase and unpredictable type-checking behavior.
+---@field ["unsupported-dynamic-base"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for binary expressions, comparisons, and unary expressions where the operands don't support
+---the operator.
+---
+---**Why is this bad?**
+---
+---Attempting to use an unsupported operator will raise a `TypeError` at runtime.
+---@field ["unsupported-operator"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for awaitable objects (such as coroutines) used as expression statements without being
+---awaited.
+---
+---**Why is this bad?**
+---
+---Calling an `async def` function returns a coroutine object. If the coroutine is never awaited, the
+---body of the async function will never execute, which is almost always a bug. Python emits a
+---`RuntimeWarning: coroutine was never awaited` at runtime in this case.
+---@field ["unused-awaitable"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for `ty: ignore` directives that are no longer applicable.
+---
+---**Why is this bad?**
+---
+---A `ty: ignore` directive that no longer matches any diagnostic violations is likely included by
+---mistake, and should be removed to avoid confusion.
+---@field ["unused-ignore-comment"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for `type: ignore` directives that are no longer applicable.
+---
+---**Why is this bad?**
+---
+---A `type: ignore` directive that no longer matches any diagnostic violations is likely included by
+---mistake, and should be removed to avoid confusion.
+---@field ["unused-type-ignore-comment"]? "ignore"|"warn"|"error"
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for various `@overload`-decorated functions that have non-stub bodies.
+---
+---**Why is this bad?**
+---
+---Functions decorated with `@overload` are ignored at runtime; they are overridden by the
+---implementation function that follows the series of overloads. While it is not illegal to provide a
+---body for an `@overload`-decorated function, it may indicate a misunderstanding of how the
+---`@overload` decorator works.
+---@field ["useless-overload-body"]? "ignore"|"warn"|"error"
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for a step size of zero in slices when the operation is known to fail.
+---
+---**Why is this bad?**
+---
+---Python's built-in sequence types raise a `ValueError` when sliced with a step size of zero.
+---@field ["zero-stepsize-in-slice"]? "ignore"|"warn"|"error"
 
 ---@class settings.ty.ty.configuration.analysis
 ---A list of module glob patterns for which unresolved-import diagnostics should be suppressed.

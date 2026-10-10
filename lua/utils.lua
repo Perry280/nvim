@@ -19,7 +19,8 @@ local M = {
 ---@param opts? vim.keymap.set.Opts
 function M.keys.set(mode, lhs, rhs, opts)
     local kopts = { noremap = true, silent = true, }
-    vim.keymap.set(mode,
+    vim.keymap.set(
+        mode,
         lhs,
         rhs,
         opts and vim.tbl_deep_extend('force', kopts, opts) or kopts
