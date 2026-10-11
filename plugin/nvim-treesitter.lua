@@ -1,6 +1,11 @@
 vim.opt.foldenable = false
 vim.g.no_plugin_maps = true
 
+local set = require('utils').keys.set
+local repeat_move = require('nvim-treesitter-textobjects.repeatable_move')
+local select_textobject = require('nvim-treesitter-textobjects.select').select_textobject
+local move = require('nvim-treesitter-textobjects.move')
+
 local languages = {
     'bash',
     'c',
@@ -31,9 +36,6 @@ require('nvim-treesitter-textobjects').setup({
     },
 })
 
-local set = require('utils').keys.set
-local repeat_move = require('nvim-treesitter-textobjects.repeatable_move')
-
 -- Repeat movement with ; and ,
 -- ensure ; goes forward and , goes backward regardless of the last direction
 set({ 'n', 'x', 'o' }, ';', repeat_move.repeat_last_move_next)
@@ -48,9 +50,6 @@ set({ 'n', 'x', 'o' }, 'f', repeat_move.builtin_f_expr, { expr = true })
 set({ 'n', 'x', 'o' }, 'F', repeat_move.builtin_F_expr, { expr = true })
 set({ 'n', 'x', 'o' }, 't', repeat_move.builtin_t_expr, { expr = true })
 set({ 'n', 'x', 'o' }, 'T', repeat_move.builtin_T_expr, { expr = true })
-
-local select_textobject = require('nvim-treesitter-textobjects.select').select_textobject
-local move = require('nvim-treesitter-textobjects.move')
 
 vim.api.nvim_create_autocmd('FileType', {
     pattern = languages,

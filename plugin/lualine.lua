@@ -1,7 +1,4 @@
--- if true then
---     require('config.statusline').setup()
---     return
--- end
+vim.opt.showmode = false
 
 local function get_distro()
     local linux = ''
@@ -42,5 +39,3 @@ require('lualine').setup({
         },
     },
 })
-
-vim.opt.showmode = false

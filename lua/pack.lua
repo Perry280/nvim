@@ -16,22 +16,19 @@ vim.pack.add({
     -- { src = gh 'folke/tokyonight.nvim',                       name = 'tokyonight', },
     -- { src = gh '',                                            name = '', },
 
+    { src = gh 'ThePrimeagen/harpoon',                        version = 'harpoon2' },
+    { src = gh 'folke/snacks.nvim',                           name = 'snacks', },
+    { src = gh 'folke/trouble.nvim',                          name = 'trouble', },
+    { src = gh 'nvim-lualine/lualine.nvim',                   name = 'lualine', },
+    { src = gh 'nvim-mini/mini.nvim',                         name = 'mini', },
+    { src = gh 'nvim-neo-tree/neo-tree.nvim',                 name = 'neo-tree',   version = vim.version.range('3'), },
     { src = gh 'nvim-treesitter/nvim-treesitter', },
     { src = gh 'nvim-treesitter/nvim-treesitter-textobjects', },
-    { src = gh 'nvim-mini/mini.nvim',                         name = 'mini', },
-    { src = gh 'folke/snacks.nvim',                           name = 'snacks', },
-    { src = gh 'nvim-neo-tree/neo-tree.nvim',                 name = 'neo-tree',  version = vim.version.range('3'), },
-    { src = gh 'nvim-lualine/lualine.nvim',                   name = 'lualine', },
+    { src = gh 'saghen/blink.cmp', },
+    { src = gh 'saghen/blink.lib', },
 
     -- dependencies
     { src = gh 'nvim-lua/plenary.nvim',                       name = 'plenary', },
     { src = gh 'MunifTanjim/nui.nvim',                        name = 'nui' },
     { src = gh 'nvim-tree/nvim-web-devicons', },
 })
-
-vim.pack.add({
-    { src = gh 'ThePrimeagen/harpoon', version = 'harpoon2' },
-    { src = gh 'saghen/blink.lib', },
-    { src = gh 'saghen/blink.cmp', },
-    { src = gh 'folke/trouble.nvim',   name = 'trouble', },
-}, { load = function() end, })

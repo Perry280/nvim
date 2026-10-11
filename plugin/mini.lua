@@ -93,7 +93,7 @@ g.minivisits_disable      = true -- visits
 
 ---@type table<MiniPlugins, table | nil>
 local active_plugins      = {
-    ai = { silent = true, },
+    -- ai = { silent = true, },
     comment = { options = { ignore_blank_line = true, }, },
     cursorword = { delay = 80, },
     diff = { -- │
@@ -117,18 +117,8 @@ local active_plugins      = {
             ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '^[^\\][^%w`]$', register = { cr = false } },
         },
     },
-    -- statusline = {
-    --     content = {
-    --         active = nil,
-    --         inactive = nil,
-    --     },
-    --     use_icons = true,
-    -- },
     surround = { respect_selection_type = true, },
 }
-
--- ---@type table<MiniPlugins, table>
--- local mini = {}
 
 for plugin, opts in pairs(active_plugins) do
     g['mini' .. plugin .. '_disable'] = false
@@ -139,6 +129,4 @@ for plugin, opts in pairs(active_plugins) do
     else
         m.setup()
     end
-    -- mini[plugin] = require('mini.' .. plugin)
-    -- mini[plugin].setup(opts)
 end

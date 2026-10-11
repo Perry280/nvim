@@ -1,56 +1,22 @@
-require('lazyloading').lazy_load({
-    setup = function()
-        vim.cmd.packadd('harpoon')
+local set = require('utils').keys.set
 
-        require('harpoon'):setup({
-            settings = {
-                key = vim.uv.cwd,
-            },
-            default = {
-                get_root_dir = vim.uv.cwd,
-            }
-        })
-    end,
-    keys = {
-        {
-            modes = 'n',
-            lhs = '<leader>h',
-            rhs = function() require('harpoon'):list():add() end,
-        },
-        {
-            modes = 'n',
-            lhs = '<leader>e',
-            rhs = function() require('harpoon').ui:toggle_quick_menu(require('harpoon'):list()) end,
-        },
-        {
-            modes = 'n',
-            lhs = '<C-h>',
-            rhs = function() require('harpoon'):list():select(1) end,
-        },
-        {
-            modes = 'n',
-            lhs = '<C-j>',
-            rhs = function() require('harpoon'):list():select(2) end,
-        },
-        {
-            modes = 'n',
-            lhs = '<C-k>',
-            rhs = function() require('harpoon'):list():select(3) end,
-        },
-        {
-            modes = 'n',
-            lhs = '<C-l>',
-            rhs = function() require('harpoon'):list():select(4) end,
-        },
-        {
-            modes = 'n',
-            lhs = '<C-n>',
-            rhs = function() require('harpoon'):list():next() end,
-        },
-        {
-            modes = 'n',
-            lhs = '<C-p>',
-            rhs = function() require('harpoon'):list():prev() end,
-        },
+local harpoon = require('harpoon')
+local harpoon_list = harpoon:list()
+
+harpoon:setup({
+    settings = {
+        key = vim.uv.cwd,
     },
+    default = {
+        get_root_dir = vim.uv.cwd,
+    }
 })
+
+set('n', '<leader>h', function() harpoon_list:add() end)
+set('n', '<leader>e', function() harpoon.ui:toggle_quick_menu(harpoon_list) end)
+set('n', '<C-h>', function() harpoon_list:select(1) end)
+set('n', '<C-j>', function() harpoon_list:select(2) end)
+set('n', '<C-k>', function() harpoon_list:select(3) end)
+set('n', '<C-l>', function() harpoon_list:select(4) end)
+set('n', '<C-n>', function() harpoon_list:next() end)
+set('n', '<C-p>', function() harpoon_list:prev() end)
