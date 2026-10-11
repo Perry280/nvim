@@ -13,7 +13,7 @@ vim.lsp.enable({
 
 local user = vim.uv.os_getenv("USER")
 if user and user == "root" then
-    vim.opt.loadplugin = false
+    vim.opt.loadplugins = false
     vim.api.nvim_create_autocmd('FileType', {
         pattern = {
             'c',

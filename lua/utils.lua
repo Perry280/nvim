@@ -112,19 +112,19 @@ function M.terminal.open_term(direction, size)
     elseif direction == 'floating' then
         win_config = floating_window_config(size)
     else
-        error('ERROR: Invalid direction.', vim.log.levels.ERROR)
+        error('ERROR: Invalid direction.')
     end
 
     local bufnr = vim.api.nvim_create_buf(false, false)
     if bufnr == 0 then
-        error('ERROR: could not create terminal buffer', vim.log.level.ERROR)
+        error('ERROR: could not create terminal buffer')
     end
 
     win_config.win = vim.api.nvim_get_current_win()
     local winnr = vim.api.nvim_open_win(bufnr, true, win_config)
     if winnr == 0 then
         vim.api.nvim_buf_delete(bufnr, { force = true, unload = false })
-        error('ERROR: could not open terminal windows', vim.log.level.ERROR)
+        error('ERROR: could not open terminal windows')
     end
     vim.api.nvim_set_current_buf(bufnr)
 
@@ -133,12 +133,9 @@ function M.terminal.open_term(direction, size)
         vim.api.nvim_win_close(winnr, true)
         vim.api.nvim_buf_delete(bufnr, { force = true, unload = false })
         if jobnr == 0 then
-            error('Error: could not open terminal: jobstart() arguments are invalid', vim.log.level.ERROR)
+            error('Error: could not open terminal: jobstart() arguments are invalid')
         elseif jobnr == -1 then
-            error(
-                'Error: could not open terminal: jobstart() argument {cmd} cannot be executed',
-                vim.log.level.ERROR
-            )
+            error('Error: could not open terminal: jobstart() argument {cmd} cannot be executed')
         end
     end
     -- print('bufnr: ' .. bufnr .. '\nwinnr: ' .. winnr .. '\njobnr: ' .. jobnr)

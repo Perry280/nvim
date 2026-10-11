@@ -1,6 +1,6 @@
 require('utils').keys.set("t", "<ESC><ESC>", "<C-\\><C-N>:bd!<CR>", { desc = "Close terminal buffer" })
 
-vim.opt.shell        = vim.fn.executable('pwsh.exe') and 'pwsh.exe' or 'powershell.exe'
+vim.opt.shell        = vim.fn.executable('pwsh.exe') == 1 and 'pwsh.exe' or 'powershell.exe'
 
 vim.opt.shellcmdflag =
 "-NoLogo -NonInteractive -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new(); \z

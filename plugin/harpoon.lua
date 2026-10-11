@@ -45,12 +45,12 @@ require('lazyloading').lazy_load({
         {
             modes = 'n',
             lhs = '<C-n>',
-            rhs = function() require('harpoon'):list():prev() end,
+            rhs = function() require('harpoon'):list():next() end,
         },
         {
             modes = 'n',
             lhs = '<C-p>',
-            rhs = function() require('harpoon'):list():next() end,
+            rhs = function() require('harpoon'):list():prev() end,
         },
     },
 })

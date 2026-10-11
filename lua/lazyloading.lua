@@ -68,7 +68,7 @@ function M.lazy_load(spec)
 
                 local cmd_to_run = args.args and args.name .. ' ' .. args.args or args.name
                 vim.cmd(cmd_to_run)
-            end, {})
+            end, { nargs = "*", })
         end
     end
 

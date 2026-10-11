@@ -20,8 +20,8 @@ g.loaded_python3_provider  = 0
 g.loaded_ruby_provider     = 0
 
 g.editorconfig             = false
-g.loaded_netrw             = is_root and nil or 1
-g.loaded_netrwPlugin       = is_root and nil or 1
+g.loaded_netrw             = not is_root and 1 or nil
+g.loaded_netrwPlugin       = not is_root and 1 or nil
 g.loaded_shada_plugin      = 1
 g.loaded_gzip              = 1
 g.loaded_spec              = 1
@@ -76,6 +76,7 @@ opt.tabstop                = 4
 opt.softtabstop            = 4
 opt.shiftwidth             = 4
 
+opt.breakindent            = true
 opt.autoindent             = true
 opt.smartindent            = true
 opt.cindent                = true

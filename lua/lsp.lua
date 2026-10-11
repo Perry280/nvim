@@ -93,6 +93,7 @@ local method_config = {
                 })
             end
             vim.api.nvim_create_autocmd('BufWritePre', { buffer = bufnr, callback = format })
+
             set({ 'n', 'x' }, 'gq', format, { buf = bufnr })
         end,
     },
@@ -109,7 +110,7 @@ local method_config = {
         config = function(client, bufnr)
             client:request(
                 'textDocument/inlineValue',
-                vim.lsp.utils.make_text_document_params(bufnr),
+                vim.lsp.util.make_text_document_params(bufnr),
                 function(err)
                     if err then error(tostring(err)) end
                 end,
@@ -128,7 +129,7 @@ local method_config = {
         method = 'textDocument/moniker',
         enabled = true,
         config = function(client, bufnr)
-            local function show_monikers()
+            local show_monikers = function()
                 local win = vim.api.nvim_get_current_win()
                 client:request(
                     'textDocument/moniker',
@@ -162,7 +163,7 @@ local method_config = {
 
             vim.api.nvim_create_user_command('LspMoniker', show_monikers, {})
 
-            vim.keymap.set('n', '<leader>lm', show_monikers, { bufnr = bufnr, desc = 'LSP: Show monikers' })
+            set('n', '<leader>lm', show_monikers, { buf = bufnr, desc = 'LSP: Show monikers', })
         end
     },
     {
