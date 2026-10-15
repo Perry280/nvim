@@ -27,7 +27,7 @@ local method_config = {
                 if not cl_enabled then
                     cl.run({ client_id = client_id })
                 end
-            end, { buffer = bufnr, })
+            end, { buf = bufnr, })
         end,
     },
     {
@@ -56,12 +56,12 @@ local method_config = {
         enabled = false,
         config = function(_, bufnr)
             vim.api.nvim_create_autocmd({ "CursorHold" }, {
-                buffer = bufnr,
+                buf = bufnr,
                 callback = buf.document_highlight,
             })
 
             vim.api.nvim_create_autocmd({ "CursorMoved" }, {
-                buffer = bufnr,
+                buf = bufnr,
                 callback = buf.clear_references,
             })
         end,
@@ -98,11 +98,11 @@ local method_config = {
                 { clear = true }
             )
 
-            vim.api.nvim_create_autocmd('BufWritePre', { group = group, buffer = bufnr, callback = format })
+            vim.api.nvim_create_autocmd('BufWritePre', { group = group, buf = bufnr, callback = format })
 
             vim.api.nvim_create_autocmd('LspDetach', {
                 group = group,
-                buffer = bufnr,
+                buf = bufnr,
                 callback = function(args)
                     if args.data.client_id == client.id then
                         vim.schedule(function()
@@ -202,12 +202,12 @@ local method_config = {
 
 vim.diagnostic.config({
     signs = {
-        text = {
+        text = _G.is_terminal_emulator and {
             [vim.diagnostic.severity.ERROR] = '󰅚',
             [vim.diagnostic.severity.WARN]  = '󰀪',
             [vim.diagnostic.severity.INFO]  = '󰋽',
             [vim.diagnostic.severity.HINT]  = '󰌶',
-        },
+        } or nil,
         numhl = {
             [vim.diagnostic.severity.ERROR] = 'DiagnosticError',
             [vim.diagnostic.severity.WARN]  = 'DiagnosticWarn',

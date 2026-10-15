@@ -1,3 +1,5 @@
+if not _G.is_terminal_emulator then return end
+
 ---@alias Colorscheme { [1]: string, name: string, opts: table}
 
 ---@type Colorscheme[]

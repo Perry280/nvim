@@ -1,3 +1,5 @@
+---@diagnostic disable: undefined-global
+
 ---@alias MiniPlugins
 ---| 'ai'
 ---| 'align'
@@ -23,6 +25,7 @@
 ---| 'hues'
 ---| 'icons'
 ---| 'indentscope'
+---| 'input'
 ---| 'jump'
 ---| 'jump2d'
 ---| 'keymap'
@@ -37,6 +40,7 @@
 ---| 'snippets'
 ---| 'splitjoin'
 ---| 'starter'
+---| 'statuscolumn'
 ---| 'statusline'
 ---| 'surround'
 ---| 'tabline'
@@ -44,55 +48,8 @@
 ---| 'trailspace'
 ---| 'visits'
 
-local g                   = vim.g
-
-g.miniai_disable          = true -- ai
-g.minialign_disable       = true -- align
-g.minianimate_disable     = true -- animate
-g.minibase16_disable      = true -- base16
-g.minibasics_disable      = true -- basics
-g.minibracketed_disable   = true -- bracketed
-g.minibufremove_disable   = true -- bufremove
-g.miniclue_disable        = true -- clue
-g.minicmdline_disable     = true -- cmdline
-g.minicolors_disable      = true -- colors
-g.minicomment_disable     = true -- comment
-g.minicompletion_disable  = true -- completion
-g.minicursorword_disable  = true -- cursorword
-g.minideps_disable        = true -- deps
-g.minidiff_disable        = true -- diff
-g.minidoc_disable         = true -- doc
-g.miniextra_disable       = true -- extra
-g.minifiles_disable       = true -- files
-g.minifuzzy_disable       = true -- fuzzy
-g.minigit_disable         = true -- git
-g.minihipatterns_disable  = true -- hipatterns
-g.minihues_disable        = true -- hues
-g.miniicons_disable       = true -- icons
-g.miniindentscope_disable = true -- indentscope
-g.minijump_disable        = true -- jump
-g.minijump2d_disable      = true -- jump2d
-g.minikeymap_disable      = true -- keymap
-g.minimap_disable         = true -- map
-g.minimisc_disable        = true -- misc
-g.minimove_disable        = true -- move
-g.mininotify_disable      = true -- notify
-g.minioperators_disable   = true -- operators
-g.minipairs_disable       = true -- pairs
-g.minipick_disable        = true -- pick
-g.minisessions_disable    = true -- sessions
-g.minisnippets_disable    = true -- snippets
-g.minisplitjoin_disable   = true -- splitjoin
-g.ministarter_disable     = true -- starter
-g.ministatusline_disable  = true -- statusline
-g.minisurround_disable    = true -- surround
-g.minitabline_disable     = true -- tabline
-g.minitest_disable        = true -- test
-g.minitrailspace_disable  = true -- trailspace
-g.minivisits_disable      = true -- visits
-
----@type table<MiniPlugins, table | nil>
-local active_plugins      = {
+---@type table<MiniPlugins, table>
+local active_plugins = {
     -- ai = { silent = true, },
     comment = { options = { ignore_blank_line = true, }, },
     cursorword = { delay = 80, },
@@ -118,11 +75,27 @@ local active_plugins      = {
         },
     },
     surround = { respect_selection_type = true, },
+    visits = {},
 }
 
 for plugin, opts in pairs(active_plugins) do
-    g['mini' .. plugin .. '_disable'] = false
+    require('mini.' .. plugin).setup(opts)
+end
 
-    local m = require('mini.' .. plugin)
-    m.setup(opts)
+local set = require('utils').keys.set
+
+if active_plugins.visits ~= nil then
+    local label = 'main'
+    set('n', '<leader>a', function() MiniVisits.add_label(label) end, { desc = 'MiniVisits: add label', })
+    set('n', '<leader>r', function() MiniVisits.remove_label(label) end, { desc = 'MiniVisits: remove label', })
+    set('n', '<leader>p', function()
+        MiniVisits.select_path(nil, { filter = label, })
+    end, { desc = 'MiniVisits: labeled buffers', })
+
+    set('n', '<C-n>', function()
+        MiniVisits.iterate_paths('forward', nil, { filter = label, warp = true, })
+    end, { desc = 'MiniVisits: next labeled buffer', })
+    set('n', '<C-p>', function()
+        MiniVisits.iterate_paths('backward', nil, { filter = label, warp = true, })
+    end, { desc = 'MiniVisits: previous labeled buffer', })
 end

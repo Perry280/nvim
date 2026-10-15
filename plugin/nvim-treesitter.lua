@@ -59,58 +59,36 @@ vim.api.nvim_create_autocmd('FileType', {
         vim.wo[0][0].foldmethod = 'expr'
         vim.bo.indentexpr = 'v:lua.require("nvim-treesitter").indentexpr()'
 
-        local bufnr = args.buf
+        ---@type vim.keymap.set.Opts
+        local opts = { buf = args.buf, }
+        local to = 'textobjects'
 
-        set({ 'x', 'o' }, 'am', function() select_textobject('@function.outer', 'textobjects') end, { buf = bufnr, })
-        set({ 'x', 'o' }, 'im', function() select_textobject('@function.inner', 'textobjects') end, { buf = bufnr, })
-        set({ 'x', 'o' }, 'ac', function() select_textobject('@class.outer', 'textobjects') end, { buf = bufnr, })
-        set({ 'x', 'o' }, 'ic', function() select_textobject('@class.inner', 'textobjects') end, { buf = bufnr, })
-        -- set({ 'x', 'o' }, 'aa', function() select_textobject('@parameter.outer', 'textobjects') end, { buf = bufnr, })
-        -- set({ 'x', 'o' }, 'ia', function() select_textobject('@parameter.inner', 'textobjects') end, { buf = bufnr, })
-        set({ 'x', 'o' }, 'as', function() select_textobject('@local.scope', 'locals') end, { buf = bufnr, })
+        set({ 'x', 'o' }, 'am', function() select_textobject('@function.outer', to) end, opts)
+        set({ 'x', 'o' }, 'im', function() select_textobject('@function.inner', to) end, opts)
+        set({ 'x', 'o' }, 'ac', function() select_textobject('@class.outer', to) end, opts)
+        set({ 'x', 'o' }, 'ic', function() select_textobject('@class.inner', to) end, opts)
+        -- set({ 'x', 'o' }, 'aa', function() select_textobject('@parameter.outer', to) end, opts)
+        -- set({ 'x', 'o' }, 'ia', function() select_textobject('@parameter.inner', to) end, opts)
+        set({ 'x', 'o' }, 'as', function() select_textobject('@local.scope', 'locals') end, opts)
 
-        set({ 'n', 'x', 'o' }, ']m',
-            function() move.goto_next_start('@function.outer', 'textobjects') end,
-            { buf = bufnr, }
-        )
-        set({ 'n', 'x', 'o' }, ']]', function() move.goto_next_start('@class.outer', 'textobjects') end, { buf = bufnr, })
-        set({ 'n', 'x', 'o' }, ']o',
-            function() move.goto_next_start({ '@loop.inner', '@loop.outer' }, 'textobjects') end,
-            { buf = bufnr, }
-        )
-        set({ 'n', 'x', 'o' }, ']s', function() move.goto_next_start('@local.scope', 'locals') end, { buf = bufnr, })
-        set({ 'n', 'x', 'o' }, ']z', function() move.goto_next_start('@fold', 'folds') end, { buf = bufnr, })
+        set({ 'n', 'x', 'o' }, ']m', function() move.goto_next_start('@function.outer', to) end, opts)
+        set({ 'n', 'x', 'o' }, ']]', function() move.goto_next_start('@class.outer', to) end, opts)
+        set({ 'n', 'x', 'o' }, ']o', function() move.goto_next_start({ '@loop.inner', '@loop.outer' }, to) end, opts)
+        set({ 'n', 'x', 'o' }, ']s', function() move.goto_next_start('@local.scope', 'locals') end, opts)
+        set({ 'n', 'x', 'o' }, ']z', function() move.goto_next_start('@fold', 'folds') end, opts)
 
-        set({ 'n', 'x', 'o' }, ']M',
-            function() move.goto_next_end('@function.outer', 'textobjects') end,
-            { buf = bufnr, }
-        )
-        set({ 'n', 'x', 'o' }, '][', function() move.goto_next_end('@class.outer', 'textobjects') end, { buf = bufnr, })
+        set({ 'n', 'x', 'o' }, ']M', function() move.goto_next_end('@function.outer', to) end, opts)
+        set({ 'n', 'x', 'o' }, '][', function() move.goto_next_end('@class.outer', to) end, opts)
 
-        set({ 'n', 'x', 'o' }, '[m',
-            function() move.goto_previous_start('@function.outer', 'textobjects') end,
-            { buf = bufnr, }
-        )
-        set({ 'n', 'x', 'o' }, '[[',
-            function() move.goto_previous_start('@class.outer', 'textobjects') end,
-            { buf = bufnr, }
-        )
+        set({ 'n', 'x', 'o' }, '[m', function() move.goto_previous_start('@function.outer', to) end, opts)
+        set({ 'n', 'x', 'o' }, '[[', function() move.goto_previous_start('@class.outer', to) end, opts)
 
-        set({ 'n', 'x', 'o' }, '[M',
-            function() move.goto_previous_end('@function.outer', 'textobjects') end,
-            { buf = bufnr, }
-        )
-        set({ 'n', 'x', 'o' }, '[]',
-            function() move.goto_previous_end('@class.outer', 'textobjects') end,
-            { buf = bufnr, }
-        )
+        set({ 'n', 'x', 'o' }, '[M', function() move.goto_previous_end('@function.outer', to) end, opts)
+        set({ 'n', 'x', 'o' }, '[]', function() move.goto_previous_end('@class.outer', to) end, opts)
 
         -- Go to either the start or the end, whichever is closer.
         -- Use if you want more granular movements
-        set({ 'n', 'x', 'o' }, ']f', function() move.goto_next('@conditional.outer', 'textobjects') end, { buf = bufnr, })
-        set({ 'n', 'x', 'o' }, '[f',
-            function() move.goto_previous('@conditional.outer', 'textobjects') end,
-            { buf = bufnr, }
-        )
+        set({ 'n', 'x', 'o' }, ']f', function() move.goto_next('@conditional.outer', to) end, opts)
+        set({ 'n', 'x', 'o' }, '[f', function() move.goto_previous('@conditional.outer', to) end, opts)
     end,
 })

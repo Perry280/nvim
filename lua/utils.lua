@@ -1,6 +1,5 @@
 local M = {
     keys = {},
-    lua = {},
     terminal = {},
     treesitter = {},
     windows = {},
@@ -35,59 +34,7 @@ function M.keys.set_keymaps(keymaps)
     end
 end
 
--- TREESITTER
-
---- Parser names are not filetypes (`vimdoc` -> `help`, `bash` -> `sh`, ...), so a FileType pattern
---- built from parser names silently misses those buffers. Resolve at event time instead, when every
---- plugin has registered its filetype -> parser aliases.
----@param langs string[]
----@param ft string
----@return string | nil lang the parser for `ft`, if it is one of `langs`
-function M.treesitter.lang_for(langs, ft)
-    local lang = vim.treesitter.language.get_lang(ft)
-    return (lang and vim.list_contains(langs, lang)) and lang or nil
-end
-
--- WINDOWS
-
----@type number
-M.windows.fallback_window_size = 1 / 3
-
----@param size? number
----@param direction 'horizontal' | 'vertical'
----@return integer
-local function compute_size(size, direction)
-    size = size or M.windows.fallback_window_size
-    assert(size > 0, 'Window size must be greater than 0.')
-
-    local available_space = vim.o.columns
-    if direction == 'horizontal' then
-        available_space = vim.o.lines
-    end
-
-    if size < 1 then
-        return math.floor(available_space * size)
-    else
-        assert(size <= available_space, 'Required window size is too large.')
-        return math.floor(size)
-    end
-end
-
----@param size? number
----@return integer
-function M.windows.height(size)
-    return compute_size(size, 'horizontal')
-end
-
----@param size? number
----@return integer
-function M.windows.width(size)
-    return compute_size(size, 'vertical')
-end
-
 -- TERMINAL
-
----@alias direction 'horizontal' | 'vertical' | 'floating'
 
 ---@param size? number
 ---@return vim.api.keyset.win_config
@@ -115,9 +62,10 @@ local function floating_window_config(size)
     }
 end
 
----@param direction direction
+---@param direction 'horizontal' | 'vertical' | 'floating'
 ---@param size? number
 function M.terminal.open_term(direction, size)
+    ---@type vim.api.keyset.win_config
     local win_config = nil
     if direction == 'horizontal' then
         win_config = horizontal_window_config(size)
@@ -155,6 +103,51 @@ function M.terminal.open_term(direction, size)
     -- print('bufnr: ' .. bufnr .. '\nwinnr: ' .. winnr .. '\njobnr: ' .. jobnr)
     -- vim.cmd.terminal()
     vim.cmd.startinsert()
+end
+
+-- TREESITTER
+
+---@param langs string[]
+---@param ft string
+---@return string | nil
+function M.treesitter.lang_for(langs, ft)
+    local lang = vim.treesitter.language.get_lang(ft)
+    return (lang and vim.list_contains(langs, lang)) and lang or nil
+end
+
+-- WINDOWS
+
+---@type number
+M.windows.fallback_window_size = 1 / 3
+
+---@param size? number
+---@param direction 'horizontal' | 'vertical'
+---@return integer
+local function compute_size(size, direction)
+    size = size or M.windows.fallback_window_size
+    assert(size > 0, 'Window size must be greater than 0.')
+    assert(direction == 'horizontal' or direction == 'vertical', 'Invalid direction.')
+
+    local available_space = direction == 'vertical' and vim.o.columns or vim.o.lines
+
+    if size < 1 then
+        return math.floor(available_space * size)
+    else
+        assert(size <= available_space, 'Required window size is too large.')
+        return math.floor(size)
+    end
+end
+
+---@param size? number
+---@return integer
+function M.windows.height(size)
+    return compute_size(size, 'horizontal')
+end
+
+---@param size? number
+---@return integer
+function M.windows.width(size)
+    return compute_size(size, 'vertical')
 end
 
 return M

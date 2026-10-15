@@ -1,13 +1,13 @@
 local g                    = vim.g
 local opt                  = vim.opt
 
-local is_terminal_emulator = vim.uv.os_uname().sysname ~= 'Linux' or (vim.env.TERM ~= nil and vim.env.TERM ~= 'linux')
+_G.is_terminal_emulator    = vim.uv.os_uname().sysname ~= 'Linux' or (vim.env.TERM ~= nil and vim.env.TERM ~= 'linux')
 
 g.c_syntax_for_h           = true
 g.c_functions              = true
 g.c_function_pointers      = true
 
-g.have_nerd_font           = is_terminal_emulator
+g.have_nerd_font           = _G.is_terminal_emulator
 g.mapleader                = ' '
 g.maplocalleader           = '\\'
 
@@ -49,10 +49,7 @@ opt.number                 = true
 opt.relativenumber         = true
 opt.signcolumn             = 'yes:1'
 
-opt.hlsearch               = true
-opt.incsearch              = true
-
-opt.termguicolors          = is_terminal_emulator
+opt.termguicolors          = _G.is_terminal_emulator
 
 opt.winborder              = 'none'
 opt.fillchars              = 'eob: '
@@ -65,7 +62,6 @@ opt.splitright             = true
 opt.clipboard              = 'unnamedplus'
 opt.swapfile               = false
 opt.undofile               = true
-opt.undolevels             = 1000
 opt.history                = 1000
 
 opt.expandtab              = true
@@ -74,7 +70,6 @@ opt.softtabstop            = 4
 opt.shiftwidth             = 4
 
 opt.breakindent            = true
-opt.autoindent             = true
 opt.smartindent            = true
 opt.cindent                = true
 -- opt.cinoptions             =
@@ -84,3 +79,9 @@ opt.wrap                   = false
 opt.syntax                 = 'ON'
 
 opt.mouse                  = 'a'
+opt.ignorecase             = true
+opt.smartcase              = true
+opt.inccommand             = 'split'
+-- opt.confirm                = true
+-- opt.timeoutlen             = 400
+opt.splitkeep              = 'screen'

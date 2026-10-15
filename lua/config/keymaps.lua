@@ -6,8 +6,8 @@ vim.api.nvim_create_autocmd('FileType', {
     pattern = 'nvim-pack',
     callback = function(args)
         local bufnr = args.buf
-        set('n', 'Q', '<Cmd>q<CR>', { buffer = bufnr, })
-        set('n', 'U', '<Cmd>w<CR>', { buffer = bufnr, })
+        set('n', 'Q', '<Cmd>q<CR>', { buf = bufnr, })
+        set('n', 'U', '<Cmd>w<CR>', { buf = bufnr, })
     end
 })
 
@@ -26,8 +26,8 @@ set('n', '<C-d>', '<C-d>zz', { desc = 'Page down and center' })
 
 set('v', '<', '<gv', { desc = 'Remove a level of indentation to selected lines' })
 set('v', '>', '>gv', { desc = 'Add a level of indentation from selected lines' })
-set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move selected lines up' })
-set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move selected lines down' })
+set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move selected lines down' })
+set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move selected lines up' })
 
 set('n', '<M-h>', '<C-W>h', { desc = 'Jump to buffer to the left' })
 set('n', '<M-j>', '<C-W>j', { desc = 'Jump to buffer below' })
@@ -81,7 +81,7 @@ if _G.user_is_root then
             ---@param opts vim.keymap.set.Opts
             local function bind(lhs, rhs, opts)
                 ---@type vim.keymap.set.Opts
-                local kopts = { buffer = bufnr, remap = true, }
+                local kopts = { buf = bufnr, remap = true, }
                 set('n', lhs, rhs, opts and vim.tbl_deep_extend('force', opts, kopts) or kopts)
             end
 

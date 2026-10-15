@@ -9,6 +9,7 @@ return {
         '.git',
         '.venv',
     },
+    on_attach = function(client) client.server_capabilities.hoverProvider = false end,
     ---@type init_options.ruff
     init_options = {
         settings = {
