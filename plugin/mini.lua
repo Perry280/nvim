@@ -124,9 +124,5 @@ for plugin, opts in pairs(active_plugins) do
     g['mini' .. plugin .. '_disable'] = false
 
     local m = require('mini.' .. plugin)
-    if opts then
-        m.setup(opts)
-    else
-        m.setup()
-    end
+    m.setup(opts)
 end

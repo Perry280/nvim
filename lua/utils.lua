@@ -2,6 +2,7 @@ local M = {
     keys = {},
     lua = {},
     terminal = {},
+    treesitter = {},
     windows = {},
 }
 
@@ -32,6 +33,19 @@ function M.keys.set_keymaps(keymaps)
     for _, km in ipairs(keymaps) do
         M.keys.set(km.modes, km.lhs, km.rhs, km.opts)
     end
+end
+
+-- TREESITTER
+
+--- Parser names are not filetypes (`vimdoc` -> `help`, `bash` -> `sh`, ...), so a FileType pattern
+--- built from parser names silently misses those buffers. Resolve at event time instead, when every
+--- plugin has registered its filetype -> parser aliases.
+---@param langs string[]
+---@param ft string
+---@return string | nil lang the parser for `ft`, if it is one of `langs`
+function M.treesitter.lang_for(langs, ft)
+    local lang = vim.treesitter.language.get_lang(ft)
+    return (lang and vim.list_contains(langs, lang)) and lang or nil
 end
 
 -- WINDOWS

@@ -87,7 +87,7 @@
 ---Allows the path to be a script e.g.: clangd.sh.
 ---@field useScriptAsExecutable? boolean
 
----@class lspconfig.settings.clangd
+---@class settings.clangd
 ---@field clangd? settings.clangd.Clangd
 
 ---@class ClangdInitializeResult: lsp.InitializeResult

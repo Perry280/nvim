@@ -10,7 +10,7 @@ local function get_distro()
     local data = vim.uv.fs_read(fd, vim.uv.fs_fstat(fd).size, 0)
     vim.uv.fs_close(fd)
 
-    return (data and data:match('ID="?([^"\n]+)"?') == 'arch') and arch or linux
+    return (data and ('\n' .. data):match('\nID="?([^"\n]+)"?') == 'arch') and arch or linux
 end
 
 require('lualine').setup({

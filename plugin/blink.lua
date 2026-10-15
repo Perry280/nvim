@@ -1,5 +1,12 @@
 local cmp = require('blink.cmp')
-cmp.build():wait(60000)
+
+local built, build_err = pcall(function() cmp.build():wait(60000) end)
+if not built then
+    vim.notify(
+        'blink.cmp: native build failed (is cargo installed?)\n' .. tostring(build_err),
+        vim.log.levels.WARN
+    )
+end
 
 cmp.setup({
     cmdline = {

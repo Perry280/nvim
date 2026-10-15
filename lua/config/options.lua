@@ -1,10 +1,7 @@
 local g                    = vim.g
 local opt                  = vim.opt
 
-local is_terminal_emulator = vim.uv.os_uname().sysname ~= 'Linux'
-    or (os.getenv('TERM') and os.getenv('TERM') ~= 'linux')
-local user                 = vim.uv.os_getenv("USER")
-local is_root              = not user and false or user == "root"
+local is_terminal_emulator = vim.uv.os_uname().sysname ~= 'Linux' or (vim.env.TERM ~= nil and vim.env.TERM ~= 'linux')
 
 g.c_syntax_for_h           = true
 g.c_functions              = true
@@ -20,8 +17,8 @@ g.loaded_python3_provider  = 0
 g.loaded_ruby_provider     = 0
 
 g.editorconfig             = false
-g.loaded_netrw             = not is_root and 1 or nil
-g.loaded_netrwPlugin       = not is_root and 1 or nil
+g.loaded_netrw             = not _G.user_is_root and 1 or nil
+g.loaded_netrwPlugin       = not _G.user_is_root and 1 or nil
 g.loaded_shada_plugin      = 1
 g.loaded_gzip              = 1
 g.loaded_spec              = 1
@@ -35,7 +32,7 @@ g.loaded_spellfile_plugin  = 1
 -- opt.shada                  = ''
 -- opt.shadafile              = 'NONE'
 
-opt.autocomplete           = is_root
+opt.autocomplete           = _G.user_is_root
 opt.complete               = '.,w,b,o'
 opt.completeopt            = 'menu,popup,menuone,noselect,fuzzy,preview'
 opt.pumheight              = 10

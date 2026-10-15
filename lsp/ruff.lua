@@ -41,6 +41,7 @@ return {
                     }
                 },
             },
+            configurationPreference = "filesystemFirst",
             lineLength = 100,
             lint = {
                 extendSelect = {

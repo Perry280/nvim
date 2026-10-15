@@ -4,10 +4,15 @@ local function reload_workspace(bufnr)
     for _, client in ipairs(clients) do
         vim.notify('Reloading Cargo Workspace')
         local method_name = 'rust-analyzer/reloadWorkspace'
-        client:request(method_name --[[@as LspRequest]], nil, function(err)
-            if err then error(tostring(err)) end
-            vim.notify('Cargo workspace reloaded')
-        end, 0)
+        client:request(
+            method_name --[[@as LspRequest]],
+            nil,
+            function(err)
+                if err then error(tostring(err)) end
+                vim.notify('Cargo workspace reloaded')
+            end,
+            0
+        )
     end
 end
 
@@ -16,17 +21,19 @@ end
 local function executable_exists(command)
     local exists = vim.fn.executable(command) == 1
 
-    if not exists then vim.notify_once(('[rust_analyzer] %s not found.'):format(command), vim.log.levels.WARN) end
+    if not exists then
+        vim.notify_once(('[rust_analyzer] %s not found.'):format(command), vim.log.levels.WARN)
+    end
 
     return exists
 end
 
----@return any
+---@return string | nil
 local function user_sysroot_src()
     return vim.tbl_get(vim.lsp.config['rust_analyzer'], 'settings', 'rust-analyzer', 'cargo', 'sysrootSrc')
 end
 
----@return string|nil
+---@return string | nil
 local function default_sysroot_src()
     local sysroot = vim.tbl_get(vim.lsp.config['rust_analyzer'], 'settings', 'rust-analyzer', 'cargo', 'sysroot')
     if not sysroot then
@@ -43,10 +50,10 @@ local function default_sysroot_src()
 end
 
 ---@param fname string
----@return string|nil
+---@return string | nil
 local function is_library(fname)
     local user_home = vim.fs.normalize(vim.env.HOME)
-    local cargo_home = os.getenv 'CARGO_HOME' or user_home .. '/.cargo'
+    local cargo_home = os.getenv('CARGO_HOME') or user_home .. '/.cargo'
     local registry = cargo_home .. '/registry/src'
     local git_registry = cargo_home .. '/git/checkouts'
 
@@ -55,9 +62,9 @@ local function is_library(fname)
 
     local sysroot_src = user_sysroot_src() or default_sysroot_src()
 
-    for _, item in ipairs { toolchains, registry, git_registry, sysroot_src } do
+    for _, item in ipairs({ toolchains, registry, git_registry, sysroot_src }) do
         if item and vim.fs.relpath(item, fname) then
-            local clients = vim.lsp.get_clients { name = 'rust_analyzer' }
+            local clients = vim.lsp.get_clients({ name = 'rust_analyzer' })
             return #clients > 0 and clients[#clients].config.root_dir or nil
         end
     end

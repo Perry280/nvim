@@ -59,7 +59,7 @@ set({ 'i', 'c' }, '<M-i>', '<C-o>_', { desc = 'Jump to start of the line' })
 -- Terminal
 set('t', '<ESC>', '<C-\\><C-N>', { desc = 'Switch to normal mode' })
 
-if vim.g.loaded_netrw ~= 1 then
+if _G.user_is_root then
     -- Terminal
     set('n', '<leader>tt', '<Cmd>tabnew<CR><Cmd>terminal<CR>i', { desc = 'Open terminal in a new tab', })
 
@@ -81,7 +81,7 @@ if vim.g.loaded_netrw ~= 1 then
             ---@param opts vim.keymap.set.Opts
             local function bind(lhs, rhs, opts)
                 ---@type vim.keymap.set.Opts
-                local kopts = { buffer = bufnr, }
+                local kopts = { buffer = bufnr, remap = true, }
                 set('n', lhs, rhs, opts and vim.tbl_deep_extend('force', opts, kopts) or kopts)
             end
 

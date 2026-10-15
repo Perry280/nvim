@@ -6,6 +6,7 @@ local function switch_source_header(bufnr, client)
         vim.notify('Method ' .. method_name .. ' is not supported by any servers active on the current buffer')
         return
     end
+
     client:request(
         method_name --[[@as LspRequest]],
         vim.lsp.util.make_text_document_params(bufnr),
@@ -30,6 +31,7 @@ local function symbol_info(bufnr, client)
         vim.notify('Clangd client not found', vim.log.levels.ERROR)
         return
     end
+
     local win = vim.api.nvim_get_current_win()
     client:request(
         method_name --[[@as LspRequest]],

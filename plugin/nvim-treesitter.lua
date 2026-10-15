@@ -6,7 +6,7 @@ local repeat_move = require('nvim-treesitter-textobjects.repeatable_move')
 local select_textobject = require('nvim-treesitter-textobjects.select').select_textobject
 local move = require('nvim-treesitter-textobjects.move')
 
-local languages = {
+local parsers = {
     'bash',
     'c',
     'cmake',
@@ -21,7 +21,7 @@ local languages = {
     'vimdoc',
 }
 
-require('nvim-treesitter').install(languages)
+require('nvim-treesitter').install(parsers)
 require('nvim-treesitter-textobjects').setup({
     select = {
         lookahead = true,
@@ -52,9 +52,9 @@ set({ 'n', 'x', 'o' }, 't', repeat_move.builtin_t_expr, { expr = true })
 set({ 'n', 'x', 'o' }, 'T', repeat_move.builtin_T_expr, { expr = true })
 
 vim.api.nvim_create_autocmd('FileType', {
-    pattern = languages,
     callback = function(args)
-        vim.treesitter.start()
+        if not require('utils').treesitter.lang_for(parsers, args.match) then return end
+        if not pcall(vim.treesitter.start) then return end
         vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
         vim.wo[0][0].foldmethod = 'expr'
         vim.bo.indentexpr = 'v:lua.require("nvim-treesitter").indentexpr()'

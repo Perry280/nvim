@@ -1,6 +1,6 @@
 require("config.options")
 require("config.keymaps")
 
-if vim.uv.os_uname().sysname == "Windows_NT" then
+if _G.on_windows then
     require("config.windows")
 end

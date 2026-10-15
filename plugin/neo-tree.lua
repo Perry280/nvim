@@ -74,7 +74,7 @@ require('neo-tree').setup({
 local set = require('utils').keys.set
 
 set('n', '<leader>nt', '<Cmd>Neotree toggle<CR>')
-set('n', '<C-t>', '<Cmd>Neotree reveal<CR>')
+set('n', '<leader>nr', '<Cmd>Neotree reveal<CR>')
 set('n', '<leader>nb', '<Cmd>Neotree focus buffers<CR>')
 set('n', '<leader>ng', '<Cmd>Neotree focus git_status<CR>')
 -- set('n', '<leader>ns', '<Cmd>Neotree focus document_symbols<CR>')

@@ -92,9 +92,27 @@ local method_config = {
                     },
                 })
             end
-            vim.api.nvim_create_autocmd('BufWritePre', { buffer = bufnr, callback = format })
 
-            set({ 'n', 'x' }, 'gq', format, { buf = bufnr })
+            local group = vim.api.nvim_create_augroup(
+                ('LspFormat.%d.%d'):format(bufnr, client.id),
+                { clear = true }
+            )
+
+            vim.api.nvim_create_autocmd('BufWritePre', { group = group, buffer = bufnr, callback = format })
+
+            vim.api.nvim_create_autocmd('LspDetach', {
+                group = group,
+                buffer = bufnr,
+                callback = function(args)
+                    if args.data.client_id == client.id then
+                        vim.schedule(function()
+                            pcall(vim.api.nvim_del_augroup_by_id, group)
+                        end)
+                    end
+                end,
+            })
+
+            set('n', 'grf', format, { buf = bufnr, desc = 'LSP: format buffer' })
         end,
     },
     {
@@ -106,7 +124,7 @@ local method_config = {
     },
     {
         method = 'textDocument/inlineValue',
-        enabled = true,
+        enabled = false,
         config = function(client, bufnr)
             client:request(
                 'textDocument/inlineValue',
@@ -207,24 +225,21 @@ vim.diagnostic.config({
     update_in_insert = false,
 })
 
----@param bufnr integer
-local function toggle_diagnostics(bufnr)
-    local virtual_lines_enabled = true
+local virtual_lines_enabled = true
 
-    set('n', '<leader>dt', function()
-        if not vim.diagnostic.is_enabled() then return end
-        virtual_lines_enabled = not virtual_lines_enabled
-        vim.diagnostic.config({
-            virtual_lines = (virtual_lines_enabled and { current_line = true }),
-            -- virtual_text = (not virtual_lines_enabled and { current_line = true }),
-        })
-    end, { desc = 'Toggle diagnostics virtual texts', buf = bufnr, })
+set('n', '<leader>dt', function()
+    if not vim.diagnostic.is_enabled() then return end
+    virtual_lines_enabled = not virtual_lines_enabled
+    vim.diagnostic.config({
+        virtual_lines = (virtual_lines_enabled and { current_line = true }),
+        -- virtual_text = (not virtual_lines_enabled and { current_line = true }),
+    })
+end, { desc = 'Toggle diagnostics virtual texts', })
 
-    set('n', '<leader>dT',
-        function() vim.diagnostic.enable(not vim.diagnostic.is_enabled()) end,
-        { desc = 'Toggle diagnostics', buf = bufnr, }
-    )
-end
+set('n', '<leader>dT',
+    function() vim.diagnostic.enable(not vim.diagnostic.is_enabled()) end,
+    { desc = 'Toggle diagnostics', }
+)
 
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
@@ -235,7 +250,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
         local bufnr = args.buf
 
-        toggle_diagnostics(bufnr)
         set('i', '<C-Space>', '<C-x><C-o>', { buf = bufnr, })
 
         for _, m in ipairs(method_config) do
