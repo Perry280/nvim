@@ -10,6 +10,7 @@ local parsers = {
     'bash',
     'c',
     'cmake',
+    'cpp',
     'lua',
     'make',
     'markdown',
@@ -67,8 +68,8 @@ vim.api.nvim_create_autocmd('FileType', {
         set({ 'x', 'o' }, 'im', function() select_textobject('@function.inner', to) end, opts)
         set({ 'x', 'o' }, 'ac', function() select_textobject('@class.outer', to) end, opts)
         set({ 'x', 'o' }, 'ic', function() select_textobject('@class.inner', to) end, opts)
-        -- set({ 'x', 'o' }, 'aa', function() select_textobject('@parameter.outer', to) end, opts)
-        -- set({ 'x', 'o' }, 'ia', function() select_textobject('@parameter.inner', to) end, opts)
+        set({ 'x', 'o' }, 'aa', function() select_textobject('@parameter.outer', to) end, opts)
+        set({ 'x', 'o' }, 'ia', function() select_textobject('@parameter.inner', to) end, opts)
         set({ 'x', 'o' }, 'as', function() select_textobject('@local.scope', 'locals') end, opts)
 
         set({ 'n', 'x', 'o' }, ']m', function() move.goto_next_start('@function.outer', to) end, opts)

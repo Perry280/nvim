@@ -18,13 +18,6 @@ require('lualine').setup({
         theme = 'auto',
         -- globalstatus = true,
     },
-    extensions = {
-        -- 'aerial',
-        -- 'lazy',
-        'neo-tree',
-        -- 'nvim-tree',
-        'trouble',
-    },
     sections = {
         lualine_c = { 'filename', },
         lualine_x = { 'filetype', },

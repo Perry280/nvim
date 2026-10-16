@@ -1,4 +1,4 @@
-require('utils').keys.set("t", "<ESC><ESC>", "<C-\\><C-N>:bd!<CR>", { desc = "Close terminal buffer" })
+require('utils').keys.set("t", "<C-d>", "<C-\\><C-N>:bd!<CR>", { desc = "Close terminal buffer" })
 
 vim.opt.shell        = vim.fn.executable('pwsh.exe') == 1 and 'pwsh.exe' or 'powershell.exe'
 

@@ -1,7 +1,9 @@
 vim.loader.enable()
 
-_G.on_windows = vim.uv.os_uname().sysname == "Windows_NT"
-_G.user_is_root = not _G.on_windows and (vim.uv.os_get_passwd() or {}).uid == 0
+_G.on_windows           = vim.uv.os_uname().sysname == "Windows_NT"
+_G.user_is_root         = not _G.on_windows and (vim.uv.os_get_passwd() or {}).uid == 0
+_G.is_terminal_emulator = vim.uv.os_uname().sysname ~= 'Linux' or (vim.env.TERM ~= nil and vim.env.TERM ~= 'linux')
+
 
 require('config')
 require('lsp')

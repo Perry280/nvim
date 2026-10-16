@@ -1,5 +1,6 @@
 local lsp = vim.lsp
 local buf = vim.lsp.buf
+local diagnostic = vim.diagnostic
 
 local set = require('utils').keys.set
 
@@ -191,28 +192,21 @@ local method_config = {
             vim.lsp.on_type_formatting.enable(true, { client_id = client.id })
         end,
     },
-    {
-        method = 'textDocument/semanticTokens',
-        enabled = true,
-        config = function(client, _)
-            vim.lsp.semantic_tokens.enable(true, { client_id = client.id })
-        end,
-    },
 }
 
-vim.diagnostic.config({
+diagnostic.config({
     signs = {
         text = _G.is_terminal_emulator and {
-            [vim.diagnostic.severity.ERROR] = '󰅚',
-            [vim.diagnostic.severity.WARN]  = '󰀪',
-            [vim.diagnostic.severity.INFO]  = '󰋽',
-            [vim.diagnostic.severity.HINT]  = '󰌶',
+            [diagnostic.severity.ERROR] = '󰅚',
+            [diagnostic.severity.WARN]  = '󰀪',
+            [diagnostic.severity.INFO]  = '󰋽',
+            [diagnostic.severity.HINT]  = '󰌶',
         } or nil,
         numhl = {
-            [vim.diagnostic.severity.ERROR] = 'DiagnosticError',
-            [vim.diagnostic.severity.WARN]  = 'DiagnosticWarn',
-            [vim.diagnostic.severity.INFO]  = 'DiagnosticInfo',
-            [vim.diagnostic.severity.HINT]  = 'DiagnosticHint',
+            [diagnostic.severity.ERROR] = 'DiagnosticError',
+            [diagnostic.severity.WARN]  = 'DiagnosticWarn',
+            [diagnostic.severity.INFO]  = 'DiagnosticInfo',
+            [diagnostic.severity.HINT]  = 'DiagnosticHint',
         },
     },
     float = {
@@ -228,16 +222,16 @@ vim.diagnostic.config({
 local virtual_lines_enabled = true
 
 set('n', '<leader>dt', function()
-    if not vim.diagnostic.is_enabled() then return end
+    if not diagnostic.is_enabled() then return end
     virtual_lines_enabled = not virtual_lines_enabled
-    vim.diagnostic.config({
+    diagnostic.config({
         virtual_lines = (virtual_lines_enabled and { current_line = true }),
         -- virtual_text = (not virtual_lines_enabled and { current_line = true }),
     })
 end, { desc = 'Toggle diagnostics virtual texts', })
 
 set('n', '<leader>dT',
-    function() vim.diagnostic.enable(not vim.diagnostic.is_enabled()) end,
+    function() diagnostic.enable(not diagnostic.is_enabled()) end,
     { desc = 'Toggle diagnostics', }
 )
 
@@ -245,12 +239,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
         local client = vim.lsp.get_client_by_id(args.data.client_id)
         if client == nil then
-            error('LspAttach autocommand failed.', vim.log.levels.ERROR)
+            error('LspAttach autocommand failed.')
         end
 
         local bufnr = args.buf
 
-        set('i', '<C-Space>', '<C-x><C-o>', { buf = bufnr, })
+        if _G.user_is_root then
+            set('i', '<C-Space>', '<C-x><C-o>', { buf = bufnr, })
+        end
 
         for _, m in ipairs(method_config) do
             -- vim.notify(

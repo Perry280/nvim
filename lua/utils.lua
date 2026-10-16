@@ -7,12 +7,6 @@ local M = {
 
 -- KEYS
 
----@class keymapSet
----@field modes string|string[]
----@field lhs string
----@field rhs? string|function
----@field opts? vim.keymap.set.Opts
-
 ---@param mode string | string[]
 ---@param lhs string
 ---@param rhs string | function
@@ -25,13 +19,6 @@ function M.keys.set(mode, lhs, rhs, opts)
         rhs,
         opts and vim.tbl_deep_extend('force', kopts, opts) or kopts
     )
-end
-
----@param keymaps keymapSet[]
-function M.keys.set_keymaps(keymaps)
-    for _, km in ipairs(keymaps) do
-        M.keys.set(km.modes, km.lhs, km.rhs, km.opts)
-    end
 end
 
 -- TERMINAL

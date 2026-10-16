@@ -59,6 +59,7 @@ local active_plugins = {
             signs = { add = '│', change = '│', delete = '│' },
         },
     },
+    icons = {},
     pairs = {
         mappings = {
             ['('] = { action = 'open', pair = '()', neigh_pattern = '^[^\\][^%w%)]$' },
@@ -98,4 +99,8 @@ if active_plugins.visits ~= nil then
     set('n', '<C-p>', function()
         MiniVisits.iterate_paths('backward', nil, { filter = label, warp = true, })
     end, { desc = 'MiniVisits: previous labeled buffer', })
+end
+
+if active_plugins.icons ~= nil then
+    MiniIcons.mock_nvim_web_devicons()
 end

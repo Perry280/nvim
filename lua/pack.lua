@@ -23,7 +23,4 @@ vim.pack.add({
     { src = gh 'nvim-treesitter/nvim-treesitter-textobjects', },
     { src = gh 'saghen/blink.cmp', },
     { src = gh 'saghen/blink.lib', },
-
-    -- dependencies
-    { src = gh 'nvim-tree/nvim-web-devicons', },
 })

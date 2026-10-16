@@ -1,13 +1,10 @@
 local g                    = vim.g
 local opt                  = vim.opt
 
-_G.is_terminal_emulator    = vim.uv.os_uname().sysname ~= 'Linux' or (vim.env.TERM ~= nil and vim.env.TERM ~= 'linux')
-
 g.c_syntax_for_h           = true
 g.c_functions              = true
 g.c_function_pointers      = true
 
-g.have_nerd_font           = _G.is_terminal_emulator
 g.mapleader                = ' '
 g.maplocalleader           = '\\'
 
@@ -74,7 +71,7 @@ opt.smartindent            = true
 opt.cindent                = true
 -- opt.cinoptions             =
 -- '>s,e0,n0,f0,{0,}0,^0,L-1,:s,=s,l0,b0,gs,hs,N0,E0,ps,ts,is,+s,c3,C0,/0,(2s,us,U0,w0,W0,k0,m0,j0,J0,)20,*70,#0,P0'
-opt.formatoptions          = 'tcqwnj'
+opt.formatoptions          = 'tcqnj'
 opt.wrap                   = false
 opt.syntax                 = 'ON'
 
