@@ -1,6 +1,6 @@
 ---@meta
 
----@class settings.lua_ls.Lua.AddonManager
+---@class lua_ls.settings.Lua.AddonManager
 ---Whether the addon manager is enabled or not.
 ---
 ---```lua
@@ -20,11 +20,11 @@
 ---```
 ---@field repositoryPath? string
 
----@class settings.lua_ls.Lua.CodeLens
+---@class lua_ls.settings.Lua.CodeLens
 ---Enable code lens.
 ---@field enable? boolean
 
----@class settings.lua_ls.Lua.Completion
+---@class lua_ls.settings.Lua.Completion
 ---When the input looks like a file name, automatically `require` this file.
 ---
 ---```lua
@@ -107,7 +107,7 @@
 ---`Fallback` means that diagnostics in this group are controlled by `diagnostics.neededFileStatus` separately.
 ---Other settings will override individual settings without end of `!`.
 ---
----@class settings.lua_ls.Lua.Diagnostics.GroupFileStatus
+---@class lua_ls.settings.Lua.Diagnostics.GroupFileStatus
 ---* ambiguity-1
 ---* count-down-loop
 ---* different-requires
@@ -240,7 +240,7 @@
 ---`Fallback` means that diagnostics in this group are controlled by `diagnostics.severity` separately.
 ---Other settings will override individual settings without end of `!`.
 ---
----@class settings.lua_ls.Lua.Diagnostics.GroupSeverity
+---@class lua_ls.settings.Lua.Diagnostics.GroupSeverity
 ---* ambiguity-1
 ---* count-down-loop
 ---* different-requires
@@ -375,7 +375,7 @@
 ---
 ---End with `!` means override the group setting `diagnostics.groupFileStatus`.
 ---
----@class settings.lua_ls.Lua.Diagnostics.NeededFileStatus
+---@class lua_ls.settings.Lua.Diagnostics.NeededFileStatus
 ---Enable ambiguous operator precedence diagnostics. For example, the `num or 0 + 1` expression will be suggested `(num or 0) + 1` instead.
 ---
 ---```lua
@@ -753,7 +753,7 @@
 ---
 ---End with `!` means override the group setting `diagnostics.groupSeverity`.
 ---
----@class settings.lua_ls.Lua.Diagnostics.Severity
+---@class lua_ls.settings.Lua.Diagnostics.Severity
 ---Enable ambiguous operator precedence diagnostics. For example, the `num or 0 + 1` expression will be suggested `(num or 0) + 1` instead.
 ---
 ---```lua
@@ -1127,7 +1127,7 @@
 ---```
 ---@field ["unused-vararg"]? "Error"|"Warning"|"Information"|"Hint"|"Error!"|"Warning!"|"Information!"|"Hint!"
 
----@class settings.lua_ls.Lua.Diagnostics
+---@class lua_ls.settings.Lua.Diagnostics
 ---Disabled diagnostic (Use code in hover brackets).
 ---
 ---```lua
@@ -1167,12 +1167,12 @@
 ---`Fallback` means that diagnostics in this group are controlled by `diagnostics.neededFileStatus` separately.
 ---Other settings will override individual settings without end of `!`.
 ---
----@field groupFileStatus? settings.lua_ls.Lua.Diagnostics.GroupFileStatus
+---@field groupFileStatus? lua_ls.settings.Lua.Diagnostics.GroupFileStatus
 ---Modify the diagnostic severity in a group.
 ---`Fallback` means that diagnostics in this group are controlled by `diagnostics.severity` separately.
 ---Other settings will override individual settings without end of `!`.
 ---
----@field groupSeverity? settings.lua_ls.Lua.Diagnostics.GroupSeverity
+---@field groupSeverity? lua_ls.settings.Lua.Diagnostics.GroupSeverity
 ---How to diagnose ignored files.
 ---
 ---```lua
@@ -1191,12 +1191,12 @@
 ---
 ---End with `!` means override the group setting `diagnostics.groupFileStatus`.
 ---
----@field neededFileStatus? settings.lua_ls.Lua.Diagnostics.NeededFileStatus
+---@field neededFileStatus? lua_ls.settings.Lua.Diagnostics.NeededFileStatus
 ---Modify the diagnostic severity.
 ---
 ---End with `!` means override the group setting `diagnostics.groupSeverity`.
 ---
----@field severity? settings.lua_ls.Lua.Diagnostics.Severity
+---@field severity? lua_ls.settings.Lua.Diagnostics.Severity
 ---Do not diagnose `unused-local` when the variable name matches the following pattern.
 ---
 ---```lua
@@ -1222,7 +1222,7 @@
 ---```
 ---@field workspaceRate? integer
 
----@class settings.lua_ls.Lua.Doc
+---@class lua_ls.settings.Lua.Doc
 ---Treat specific field names as package, e.g. `m_*` means `XXX.m_id` and `XXX.m_type` are package, witch can only be accessed in the file where the definition is located.
 ---
 ---```lua
@@ -1248,7 +1248,7 @@
 ---```
 ---@field regengine? "glob"|"lua"
 
----@class settings.lua_ls.Lua.Format
+---@class lua_ls.settings.Lua.Format
 ---The default format configuration. Has a lower priority than `.editorconfig` file in the workspace.
 ---Read [formatter docs](https://github.com/CppCXY/EmmyLuaCodeStyle/tree/master/docs) to learn usage.
 ---
@@ -1264,7 +1264,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.lua_ls.Lua.Hint
+---@class lua_ls.settings.Lua.Hint
 ---Show hints of array index when constructing a table.
 ---
 ---```lua
@@ -1302,7 +1302,7 @@
 ---Show hints of type at assignment operation.
 ---@field setType? boolean
 
----@class settings.lua_ls.Lua.Hover
+---@class lua_ls.settings.Lua.Hover
 ---Enable hover.
 ---
 ---```lua
@@ -1347,7 +1347,7 @@
 ---```
 ---@field viewStringMax? integer
 
----@class settings.lua_ls.Lua.Language
+---@class lua_ls.settings.Lua.Language
 ---(VSCode only) Automatically insert "---@ " after a line break following a annotation.
 ---
 ---```lua
@@ -1361,7 +1361,7 @@
 ---```
 ---@field fixIndent? boolean
 
----@class settings.lua_ls.Lua.Misc
+---@class lua_ls.settings.Lua.Misc
 ---Specify the executable path in VSCode.
 ---
 ---```lua
@@ -1375,7 +1375,7 @@
 ---```
 ---@field parameters? string[]
 
----@class settings.lua_ls.Lua.NameStyle
+---@class lua_ls.settings.Lua.NameStyle
 ---Set name style config.
 ---Read [formatter docs](https://github.com/CppCXY/EmmyLuaCodeStyle/tree/master/docs) to learn usage.
 ---
@@ -1391,7 +1391,7 @@
 ---* `enable`: always enable
 ---* `disable`: always disable
 ---
----@class settings.lua_ls.Lua.Runtime.Builtin
+---@class lua_ls.settings.Lua.Runtime.Builtin
 ---TODO: Needs documentation
 ---
 ---```lua
@@ -1513,14 +1513,14 @@
 ---```
 ---@field utf8? "default"|"enable"|"disable"
 
----@class settings.lua_ls.Lua.Runtime
+---@class lua_ls.settings.Lua.Runtime
 ---Adjust the enabled state of the built-in library. You can disable (or redefine) the non-existent library according to the actual runtime environment.
 ---
 ---* `default`: Indicates that the library will be enabled or disabled according to the runtime version
 ---* `enable`: always enable
 ---* `disable`: always disable
 ---
----@field builtin? settings.lua_ls.Lua.Runtime.Builtin
+---@field builtin? lua_ls.settings.Lua.Runtime.Builtin
 ---Enable LuaJIT extension syntax (requires `Lua.runtime.version` to be set to `LuaJIT`).
 ---Each extension can also be enabled individually via `Lua.runtime.nonstandardSymbol`.
 ---
@@ -1581,7 +1581,7 @@
 ---```
 ---@field version? "Lua 5.1"|"Lua 5.2"|"Lua 5.3"|"Lua 5.4"|"Lua 5.5"|"LuaJIT"
 
----@class settings.lua_ls.Lua.Semantic
+---@class lua_ls.settings.Lua.Semantic
 ---Semantic coloring of type annotations.
 ---
 ---```lua
@@ -1603,7 +1603,7 @@
 ---```
 ---@field variable? boolean
 
----@class settings.lua_ls.Lua.SignatureHelp
+---@class lua_ls.settings.Lua.SignatureHelp
 ---Enable signature help.
 ---
 ---```lua
@@ -1611,7 +1611,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.lua_ls.Lua.Spell
+---@class lua_ls.settings.Lua.Spell
 ---Custom words for spell checking.
 ---
 ---```lua
@@ -1619,7 +1619,7 @@
 ---```
 ---@field dict? string[]
 
----@class settings.lua_ls.Lua.Type
+---@class lua_ls.settings.Lua.Type
 ---Allowed to assign the `number` type to the `integer` type.
 ---
 ---```lua
@@ -1658,7 +1658,7 @@
 ---@field weakUnionCheck? boolean
 
 ---Configures the formatting behavior while typing Lua code.
----@class settings.lua_ls.Lua.TypeFormat.Config
+---@class lua_ls.settings.Lua.TypeFormat.Config
 ---Controls if `end` is automatically completed at suitable positions.
 ---
 ---```lua
@@ -1678,11 +1678,11 @@
 ---```
 ---@field format_line? string
 
----@class settings.lua_ls.Lua.TypeFormat
+---@class lua_ls.settings.Lua.TypeFormat
 ---Configures the formatting behavior while typing Lua code.
----@field config? settings.lua_ls.Lua.TypeFormat.Config
+---@field config? lua_ls.settings.Lua.TypeFormat.Config
 
----@class settings.lua_ls.Lua.Window
+---@class lua_ls.settings.Lua.Window
 ---Show progress bar in status bar.
 ---
 ---```lua
@@ -1696,7 +1696,7 @@
 ---```
 ---@field statusBar? boolean
 
----@class settings.lua_ls.Lua.Workspace
+---@class lua_ls.settings.Lua.Workspace
 ---Automatic detection and adaptation of third-party libraries, currently supported libraries are:
 ---
 ---* OpenResty
@@ -1756,38 +1756,38 @@
 ---```
 ---@field userThirdParty? string[]
 
----@class settings.lua_ls.Lua
----@field addonManager? settings.lua_ls.Lua.AddonManager
+---@class lua_ls.settings.Lua
+---@field addonManager? lua_ls.settings.Lua.AddonManager
 ---Specifies the addon repository path (not related to the addon manager).
 ---
 ---```lua
 ---default = ""
 ---```
 ---@field addonRepositoryPath? string
----@field codeLens? settings.lua_ls.Lua.CodeLens
----@field completion? settings.lua_ls.Lua.Completion
----@field diagnostics? settings.lua_ls.Lua.Diagnostics
----@field doc? settings.lua_ls.Lua.Doc
+---@field codeLens? lua_ls.settings.Lua.CodeLens
+---@field completion? lua_ls.settings.Lua.Completion
+---@field diagnostics? lua_ls.settings.Lua.Diagnostics
+---@field doc? lua_ls.settings.Lua.Doc
 ---The regular expression engine used for matching documentation scope names.
 ---
 ---```lua
 ---default = ""
 ---```
 ---@field docScriptPath? string
----@field format? settings.lua_ls.Lua.Format
----@field hint? settings.lua_ls.Lua.Hint
----@field hover? settings.lua_ls.Lua.Hover
----@field language? settings.lua_ls.Lua.Language
----@field misc? settings.lua_ls.Lua.Misc
----@field nameStyle? settings.lua_ls.Lua.NameStyle
----@field runtime? settings.lua_ls.Lua.Runtime
----@field semantic? settings.lua_ls.Lua.Semantic
----@field signatureHelp? settings.lua_ls.Lua.SignatureHelp
----@field spell? settings.lua_ls.Lua.Spell
----@field type? settings.lua_ls.Lua.Type
----@field typeFormat? settings.lua_ls.Lua.TypeFormat
----@field window? settings.lua_ls.Lua.Window
----@field workspace? settings.lua_ls.Lua.Workspace
+---@field format? lua_ls.settings.Lua.Format
+---@field hint? lua_ls.settings.Lua.Hint
+---@field hover? lua_ls.settings.Lua.Hover
+---@field language? lua_ls.settings.Lua.Language
+---@field misc? lua_ls.settings.Lua.Misc
+---@field nameStyle? lua_ls.settings.Lua.NameStyle
+---@field runtime? lua_ls.settings.Lua.Runtime
+---@field semantic? lua_ls.settings.Lua.Semantic
+---@field signatureHelp? lua_ls.settings.Lua.SignatureHelp
+---@field spell? lua_ls.settings.Lua.Spell
+---@field type? lua_ls.settings.Lua.Type
+---@field typeFormat? lua_ls.settings.Lua.TypeFormat
+---@field window? lua_ls.settings.Lua.Window
+---@field workspace? lua_ls.settings.Lua.Workspace
 
----@class settings.lua_ls
----@field Lua? settings.lua_ls.Lua
+---@class lua_ls.settings
+---@field Lua? lua_ls.settings.Lua

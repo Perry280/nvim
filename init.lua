@@ -9,7 +9,6 @@ require('config')
 require('lsp')
 
 vim.lsp.enable({
-    -- 'basedpyright',
     -- 'bashls',
     'clangd',
     'lua_ls',

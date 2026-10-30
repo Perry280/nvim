@@ -1,6 +1,9 @@
 ---@meta
 
----@class settings.clangd.Clangd.InactiveRegions
+---@class ClangdInitializeResult: lsp.InitializeResult
+---@field offsetEncoding? string
+
+---@class clangd.settings.Clangd.InactiveRegions
 ---Opacity of inactive regions (used only if clangd.inactiveRegions.useBackgroundHighlight=false)
 ---
 ---```lua
@@ -10,7 +13,7 @@
 ---Use a background highlight rather than opacity to identify inactive preprocessor regions.
 ---@field useBackgroundHighlight? boolean
 
----@class settings.clangd.Clangd
+---@class clangd.settings.Clangd
 ---Arguments for clangd server.
 ---
 ---```lua
@@ -49,7 +52,7 @@
 ---default = {}
 ---```
 ---@field fallbackFlags? string[]
----@field inactiveRegions? settings.clangd.Clangd.InactiveRegions
+---@field inactiveRegions? clangd.settings.Clangd.InactiveRegions
 ---What to do when clangd configuration files are changed. Ignored for clangd 12+, which can reload such files itself; however, this can be overridden with clangd.onConfigChangedForceEnable.
 ---
 ---```lua
@@ -87,8 +90,22 @@
 ---Allows the path to be a script e.g.: clangd.sh.
 ---@field useScriptAsExecutable? boolean
 
----@class settings.clangd
----@field clangd? settings.clangd.Clangd
+---@class clangd.settings
+---@field clangd? clangd.settings.Clangd
 
----@class ClangdInitializeResult: lsp.InitializeResult
----@field offsetEncoding? string
+---@class clangd.init_options.compilationDatabaseChanges.CompileCommand
+---@field workingDirectory? string
+---@field compilationCommand? string[]
+
+---@alias clangd.init_options.compilationDatabaseChanges { string: clangd.init_options.compilationDatabaseChanges.CompileCommand}
+
+---@class clangd.init_options
+---Specifies the directory containing the compilation database (e.g. `compile_commands.json`).
+---This path will be used for all files, instead of searching their ancestor directories.
+---@field compilationDatabasePath? string
+---Controls the flags used when no specific compile command is found.
+---The compile command will be approximately `clang $FILE $fallbackFlags` in this case.
+---@field fallbackFlags? string[]
+---Provides compile commands for files.
+---Keys are file paths.
+---@field compilationDatabaseChanges? clangd.init_options.compilationDatabaseChanges

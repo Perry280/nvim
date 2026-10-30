@@ -1,10 +1,62 @@
 ---@meta
 
+---@alias ty.settings.defs.Level "ignore" | "warn" | "error"
+
+---@alias ty.settings.defs.OutputFormat
+---The default full mode will print `pretty` diagnostics.
+---
+---That is, color will be used when printing to a `tty`.
+---Moreover, diagnostic messages may include additional
+---context and annotations on the input to help understand the message.
+---| "full"
+---Print diagnostics in a concise mode.
+---
+---This will guarantee that each diagnostic is printed on
+---a single line. Only the most important or primary aspects
+---of the diagnostic are included. Contextual information is
+---dropped.
+---
+---This may use color when printing to a `tty`.
+---| "concise"
+---Print diagnostics in the JSON format expected by GitLab [Code Quality] reports.
+---
+---[Code Quality]: https://docs.gitlab.com/ci/testing/code_quality/#code-quality-report-format
+---| "gitlab"
+---Print diagnostics in the format used by [GitHub Actions] workflow error annotations.
+---
+---[GitHub Actions]: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#setting-an-error-message
+---| "github"
+---Print diagnostics as a JUnit-style XML report.
+---| "junit"
+---Print diagnostics as a [SARIF] report.
+---
+---[SARIF]: https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html
+---| "sarif"
+
+---@alias ty.settings.defs.PythonPlatform string | "all" | "darwin" | "linux" | "win32"
+
+---@alias ty.settings.defs.SupportedPythonVersion "3.7" | "3.8" | "3.9" | "3.10" | "3.11" | "3.12" | "3.13" | "3.14" | "3.15"
+
+---An owned, mutable path on [`System`](`super::System`) (akin to [`String`]).
+---The path is guaranteed to be valid UTF-8.
+---@alias ty.settings.defs.SystemPathBuf string
+
+---A possibly relative path in a configuration file.
+---Relative paths in configuration files or from CLI options
+---require different anchoring:
+---  * CLI: The path is relative to the current working directory
+---  * Configuration file: The path is relative to the project's or script's configuration root.
+---@alias ty.settings.defs.RelativePathBuf ty.settings.defs.SystemPathBuf
+
+---@alias ty.settings.defs.ReturnTypeInference "never" | "always"
+
 ---Rules of the ty Python type checker, as documented at
 ---https://docs.astral.sh/ty/reference/rules/
 ---
 ---Each rule can be set to "ignore", "warn" or "error".
----@class settings.ty.ty.configuration.rules
+---@class ty.settings.defs.Rules
+---Set a default severity for all rules.
+---@field all? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -17,7 +69,7 @@
 ---An abstract method must be overridden for a subclass to become concrete, but a final method cannot
 ---be overridden. Combining the decorators therefore makes it impossible for a subclass to provide a
 ---concrete implementation.
----@field ["abstract-and-final-method"]? "ignore"|"warn"|"error"
+---@field ["abstract-and-final-method"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -35,7 +87,7 @@
 ---classes that have `ABCMeta` (or a subclass of it) as their metaclass. However, type checkers also
 ---enforce this for classes that do not use `ABCMeta`, since the intent for the class to be abstract is
 ---clear from the use of `@abstractmethod`.
----@field ["abstract-method-in-final-class"]? "ignore"|"warn"|"error"
+---@field ["abstract-method-in-final-class"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -49,7 +101,7 @@
 ---protocol method's `self` or `cls` receiver, leads to an ambiguous interface which may lead to the
 ---type checker inferring unexpected things. It's recommended to ensure that all members of a protocol
 ---class are explicitly declared.
----@field ["ambiguous-protocol-member"]? "ignore"|"warn"|"error"
+---@field ["ambiguous-protocol-member"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -65,7 +117,7 @@
 ---it to infer more precise types than can be expressed in user annotations. ty emits a different error
 ---code to [`type-assertion-failure`](#type-assertion-failure) in these situations so that users can easily differentiate between
 ---the two cases.
----@field ["assert-type-unspellable-subtype"]? "ignore"|"warn"|"error"
+---@field ["assert-type-unspellable-subtype"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -78,7 +130,7 @@
 ---A blanket `ty: ignore` comment suppresses every type-checking diagnostic on the applicable line or
 ---file. Specifying rule codes documents which diagnostics are expected and prevents the comment from
 ---silencing unrelated errors.
----@field ["blanket-ignore-comment"]? "ignore"|"warn"|"error"
+---@field ["blanket-ignore-comment"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -104,7 +156,7 @@
 ---
 ---Calling abstract classmethods or staticmethods via `type[X]` is allowed, since the actual runtime
 ---type could be a concrete subclass with an implementation.
----@field ["call-abstract-method"]? "ignore"|"warn"|"error"
+---@field ["call-abstract-method"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -122,7 +174,7 @@
 ---Abstract methods describe behavior that a subclass must implement before it can be instantiated.
 ---Classes using `ABCMeta` enforce this at runtime; the type checker also enforces it for classes
 ---without `ABCMeta`.
----@field ["call-non-callable"]? "ignore"|"warn"|"error"
+---@field ["call-non-callable"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -138,7 +190,7 @@
 ---its precise signature. This type represents the set of all possible callable types (including, e.g.,
 ---functions that take no arguments and functions that require arguments), so no specific set of
 ---arguments can be guaranteed to be valid.
----@field ["call-top-callable"]? "ignore"|"warn"|"error"
+---@field ["call-top-callable"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -150,7 +202,7 @@
 ---
 ---A variable with two conflicting declarations likely indicates a mistake. Moreover, it could lead to
 ---incorrect or ill-defined type inference for other code that relies on these variables.
----@field ["conflicting-declarations"]? "ignore"|"warn"|"error"
+---@field ["conflicting-declarations"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -162,7 +214,7 @@
 ---**Why is this bad?**
 ---
 ---Such a class definition raises a `TypeError` at runtime.
----@field ["conflicting-metaclass"]? "ignore"|"warn"|"error"
+---@field ["conflicting-metaclass"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -175,7 +227,7 @@
 ---Although forward references are natively supported in stub files, inheritance cycles are still
 ---disallowed, as it is impossible to resolve a consistent [method resolution order] for a class that
 ---inherits from itself.
----@field ["cyclic-class-definition"]? "ignore"|"warn"|"error"
+---@field ["cyclic-class-definition"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -189,7 +241,7 @@
 ---`list[Tree]`. An alias cannot expand directly to itself or include itself as a union member. This
 ---applies to implicit type aliases, aliases annotated with `TypeAlias`, `type` statements, and aliases
 ---created with `TypeAliasType`.
----@field ["cyclic-type-alias-definition"]? "ignore"|"warn"|"error"
+---@field ["cyclic-type-alias-definition"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -202,7 +254,7 @@
 ---In dataclasses, all required fields (fields without default values) must be defined before fields
 ---with default values. This is a Python requirement that will raise a `TypeError` at runtime if
 ---violated.
----@field ["dataclass-field-order"]? "ignore"|"warn"|"error"
+---@field ["dataclass-field-order"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -213,7 +265,7 @@
 ---**Why is this bad?**
 ---
 ---Deprecated items should no longer be used.
----@field ["deprecated"]? "ignore"|"warn"|"error"
+---@field ["deprecated"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -252,7 +304,7 @@
 ---
 ---This rule therefore provides a means for codebases to partially validate their uses of `cast()`
 ---without banning the API -- or even banning all unsound uses of the API -- entirely.
----@field ["disjoint-cast"]? "ignore"|"warn"|"error"
+---@field ["disjoint-cast"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -263,7 +315,7 @@
 ---**Why is this bad?**
 ---
 ---Dividing by zero raises a `ZeroDivisionError` at runtime.
----@field ["division-by-zero"]? "ignore"|"warn"|"error"
+---@field ["division-by-zero"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -274,7 +326,7 @@
 ---**Why is this bad?**
 ---
 ---Class definitions with duplicate bases raise `TypeError` at runtime.
----@field ["duplicate-base"]? "ignore"|"warn"|"error"
+---@field ["duplicate-base"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -288,7 +340,7 @@
 ---can only be used once per dataclass.
 ---
 ---Attempting to annotate two different fields with it will lead to a runtime error.
----@field ["duplicate-kw-only"]? "ignore"|"warn"|"error"
+---@field ["duplicate-kw-only"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -327,7 +379,7 @@
 ---[`ANN201`][ann201] and [`ANN202`][ann202] can complain about missing annotations in your first-party
 ---code, they cannot identify instances where unsound types leak into your code due to missing type
 ---annotations in third-party code installed into `site-packages`.
----@field ["dynamic-function-decorator-return"]? "ignore"|"warn"|"error"
+---@field ["dynamic-function-decorator-return"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -355,7 +407,7 @@
 ---- Abstract methods decorated with `@abstractmethod`
 ---- Overload declarations decorated with `@overload`
 ---- Functions in `if TYPE_CHECKING` blocks
----@field ["empty-body"]? "ignore"|"warn"|"error"
+---@field ["empty-body"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -366,7 +418,7 @@
 ---**Why is this bad?**
 ---
 ---Static analysis tools like ty can't analyze type annotations that contain escape characters.
----@field ["escape-character-in-forward-annotation"]? "ignore"|"warn"|"error"
+---@field ["escape-character-in-forward-annotation"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -383,7 +435,7 @@
 ---
 ---Conversely, if you are only using ty as your type checker, and if you are not relying on runtime
 ---inspection of type annotations, you can safely ignore this rule.
----@field ["experimental-syntax"]? "ignore"|"warn"|"error"
+---@field ["experimental-syntax"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -395,7 +447,7 @@
 ---
 ---The `@final` decorator is only meaningful on methods and classes. Applying it to a module-level
 ---function or a nested function has no effect and is likely a mistake.
----@field ["final-on-non-method"]? "ignore"|"warn"|"error"
+---@field ["final-on-non-method"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -410,7 +462,7 @@
 ---assignment. At module or function scope, the assignment must occur in the same scope. In a class
 ---body, the assignment may occur in `__init__`. Protocol members are declarations of an interface and
 ---do not require a value.
----@field ["final-without-value"]? "ignore"|"warn"|"error"
+---@field ["final-without-value"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -423,7 +475,7 @@
 ---
 ---A `ty: ignore[code]` or a `type: ignore[ty:code]` directive with a `code` that doesn't match any
 ---known rule will not suppress any type errors, and is probably a mistake.
----@field ["ignore-comment-unknown-rule"]? "ignore"|"warn"|"error"
+---@field ["ignore-comment-unknown-rule"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -434,7 +486,7 @@
 ---**Why is this bad?**
 ---
 ---Static analysis tools like ty can't analyze type annotations that use implicit concatenated strings.
----@field ["implicit-concatenated-string-type-annotation"]? "ignore"|"warn"|"error"
+---@field ["implicit-concatenated-string-type-annotation"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -445,7 +497,7 @@
 ---**Why is this bad?**
 ---
 ---Classes with an inconsistent MRO will raise a `TypeError` at runtime.
----@field ["inconsistent-mro"]? "ignore"|"warn"|"error"
+---@field ["inconsistent-mro"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -456,7 +508,7 @@
 ---**Why is this bad?**
 ---
 ---Using an out of bounds index will raise an `IndexError` at runtime.
----@field ["index-out-of-bounds"]? "ignore"|"warn"|"error"
+---@field ["index-out-of-bounds"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -469,7 +521,7 @@
 ---The `final()` function is designed to be used as a decorator. When called directly as a function
 ---(e.g., `final(type(...))`), type checkers will not understand the application of `final` and will
 ---not prevent subclassing.
----@field ["ineffective-final"]? "ignore"|"warn"|"error"
+---@field ["ineffective-final"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -533,7 +585,7 @@
 ---# fine
 ---class D(A, B, C): ...
 ---```
----@field ["instance-layout-conflict"]? "ignore"|"warn"|"error"
+---@field ["instance-layout-conflict"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -546,7 +598,7 @@
 ---Passing an argument of a type the function (or callable object) does not accept violates the
 ---expectations of the function author and may cause unexpected runtime errors within the body of the
 ---function.
----@field ["invalid-argument-type"]? "ignore"|"warn"|"error"
+---@field ["invalid-argument-type"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -558,7 +610,7 @@
 ---
 ---Such assignments break the rules of the type system and weaken a type checker's ability to
 ---accurately reason about your code.
----@field ["invalid-assignment"]? "ignore"|"warn"|"error"
+---@field ["invalid-assignment"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -580,7 +632,7 @@
 ---
 ---Incorrect assignments break the rules of the type system and weaken a type checker's ability to
 ---accurately reason about your code.
----@field ["invalid-attribute-access"]? "ignore"|"warn"|"error"
+---@field ["invalid-attribute-access"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -597,7 +649,7 @@
 ---Overriding one with the other violates the
 ---[Liskov Substitution Principle][liskov-substitution-principle] ("LSP"), because code that is valid
 ---for the superclass may no longer be valid for the subclass.
----@field ["invalid-attribute-override"]? "ignore"|"warn"|"error"
+---@field ["invalid-attribute-override"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -608,7 +660,7 @@
 ---**Why is this bad?**
 ---
 ---Such expressions will lead to `TypeError` being raised at runtime.
----@field ["invalid-await"]? "ignore"|"warn"|"error"
+---@field ["invalid-await"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -619,7 +671,7 @@
 ---**Why is this bad?**
 ---
 ---Class definitions with bases like this will lead to `TypeError` being raised at runtime.
----@field ["invalid-base"]? "ignore"|"warn"|"error"
+---@field ["invalid-base"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -630,7 +682,7 @@
 ---**Why is this bad?**
 ---
 ---Such a statement will raise `TypeError` at runtime.
----@field ["invalid-context-manager"]? "ignore"|"warn"|"error"
+---@field ["invalid-context-manager"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -653,7 +705,7 @@
 ---    class.
 ---- `Enum` classes with `@dataclass` are [explicitly not supported].
 ---- `Protocol` classes define interfaces and cannot be instantiated.
----@field ["invalid-dataclass"]? "ignore"|"warn"|"error"
+---@field ["invalid-dataclass"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -668,7 +720,7 @@
 ---`FrozenInstanceError` to emulate immutability.
 ---
 ---Overriding either of these methods raises a runtime error.
----@field ["invalid-dataclass-override"]? "ignore"|"warn"|"error"
+---@field ["invalid-dataclass-override"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -681,7 +733,7 @@
 ---
 ---Such declarations break the rules of the type system and weaken a type checker's ability to
 ---accurately reason about your code.
----@field ["invalid-declaration"]? "ignore"|"warn"|"error"
+---@field ["invalid-declaration"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -697,7 +749,7 @@
 ---
 ---In CPython's `enum` module, annotated assignments with values are still treated as members at
 ---runtime, but the annotation will confuse readers of the code.
----@field ["invalid-enum-member-annotation"]? "ignore"|"warn"|"error"
+---@field ["invalid-enum-member-annotation"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -708,7 +760,7 @@
 ---**Why is this bad?**
 ---
 ---Catching classes that do not inherit from `BaseException` will raise a `TypeError` at runtime.
----@field ["invalid-exception-caught"]? "ignore"|"warn"|"error"
+---@field ["invalid-exception-caught"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -721,7 +773,7 @@
 ---
 ---Decorating a method with `@override` declares to the type checker that the intention is that it
 ---should override a method from a superclass.
----@field ["invalid-explicit-override"]? "ignore"|"warn"|"error"
+---@field ["invalid-explicit-override"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -735,7 +787,7 @@
 ---**Why is this bad?**
 ---
 ---Python raises a `TypeError` at runtime when either of these inheritance patterns occurs.
----@field ["invalid-frozen-dataclass-subclass"]? "ignore"|"warn"|"error"
+---@field ["invalid-frozen-dataclass-subclass"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -747,7 +799,7 @@
 ---
 ---There are several requirements that you must follow when defining a generic class. Many of these
 ---result in `TypeError` being raised at runtime if they are violated.
----@field ["invalid-generic-class"]? "ignore"|"warn"|"error"
+---@field ["invalid-generic-class"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -760,7 +812,7 @@
 ---Enum classes cannot be generic. Python does not support generic enums: attempting to create one will
 ---either result in an immediate `TypeError` at runtime, or will create a class that cannot be
 ---specialized in the way that a normal generic class can.
----@field ["invalid-generic-enum"]? "ignore"|"warn"|"error"
+---@field ["invalid-generic-enum"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -771,7 +823,7 @@
 ---**Why is this bad?**
 ---
 ---A syntactically incorrect ignore comment is probably a mistake and is useless.
----@field ["invalid-ignore-comment"]? "ignore"|"warn"|"error"
+---@field ["invalid-ignore-comment"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -787,7 +839,7 @@
 ---make their meaning ambiguous. The
 ---[typing specification](https://typing.python.org/en/latest/spec/constructors.html#init-method)
 ---allows type variables scoped to `__init__` instead.
----@field ["invalid-init-type-variable"]? "ignore"|"warn"|"error"
+---@field ["invalid-init-type-variable"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -801,7 +853,7 @@
 ---
 ---Creating a `TypedDict` with an unknown key is likely a mistake; if the `TypedDict` is `closed=true`
 ---it also violates the expectations of the type.
----@field ["invalid-key"]? "ignore"|"warn"|"error"
+---@field ["invalid-key"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -825,7 +877,7 @@
 ---In most cases, a type checker will not consider a parameter to be positional-only if it comes after
 ---a positional-or-keyword parameter, even if its name starts with `__`. This may be unexpected if the
 ---author intended to use the legacy convention.
----@field ["invalid-legacy-positional-parameter"]? "ignore"|"warn"|"error"
+---@field ["invalid-legacy-positional-parameter"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -836,7 +888,7 @@
 ---**Why is this bad?**
 ---
 ---There are several requirements that you must follow when creating a legacy `TypeVar`.
----@field ["invalid-legacy-type-variable"]? "ignore"|"warn"|"error"
+---@field ["invalid-legacy-type-variable"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -853,7 +905,7 @@
 ---- Matching against `collections.abc.Callable` with positional subpatterns.
 ---- Matching against a non-runtime-checkable protocol.
 ---- Matching against a `TypedDict`.
----@field ["invalid-match-pattern"]? "ignore"|"warn"|"error"
+---@field ["invalid-match-pattern"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -865,7 +917,7 @@
 ---
 ---Python allows arbitrary expressions to be used as the argument to `metaclass=`. These expressions,
 ---however, need to be callable and accept the same arguments as `type.__new__`.
----@field ["invalid-metaclass"]? "ignore"|"warn"|"error"
+---@field ["invalid-metaclass"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -886,7 +938,7 @@
 ---
 ---Violating the Liskov Substitution Principle will lead to many of ty's assumptions and inferences
 ---being incorrect, which will mean that it will fail to catch many possible type errors in your code.
----@field ["invalid-method-override"]? "ignore"|"warn"|"error"
+---@field ["invalid-method-override"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -898,7 +950,34 @@
 ---
 ---If a module defines `__getattr__`, Python calls it when a `from` import requests a name that is not
 ---otherwise defined. The import raises an exception if `__getattr__` cannot accept the requested name.
----@field ["invalid-module-getattr-call"]? "ignore"|"warn"|"error"
+---@field ["invalid-module-getattr-call"]? ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects overrides that narrow the type of a writable attribute.
+---
+---**Why is this bad?**
+---
+---A subclass must accept every write allowed by the superclass.
+---Narrowing a mutable attribute's type allows code using the superclass interface
+---to invalidate the subclass's attribute type.
+---@field ["invalid-mutable-override"]? ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects overrides that change the readable type of an inherited property incompatibly,
+---restrict the values accepted by its setter, or remove a required write operation.
+---
+---**Why is this bad?**
+---
+---Code using the superclass interface must continue to work on subclass instances.
+---A getter can return a more specific type, but a setter must accept every value accepted by the superclass.
+---A writable attribute cannot be replaced by a read-only property.
+---@field ["invalid-property-type-override"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -910,7 +989,7 @@
 ---
 ---An invalidly defined `NamedTuple` class may lead to the type checker drawing incorrect conclusions.
 ---It may also lead to `TypeError`s or `AttributeError`s at runtime.
----@field ["invalid-named-tuple"]? "ignore"|"warn"|"error"
+---@field ["invalid-named-tuple"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -922,7 +1001,7 @@
 ---
 ---Reusing an inherited `NamedTuple` field name in a subclass creates a class where tuple indexing and
 ---`repr()` still reflect the original field, while attribute access follows the subclass member.
----@field ["invalid-named-tuple-override"]? "ignore"|"warn"|"error"
+---@field ["invalid-named-tuple-override"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -933,7 +1012,7 @@
 ---**Why is this bad?**
 ---
 ---There are several requirements that you must follow when creating a `NewType`.
----@field ["invalid-newtype"]? "ignore"|"warn"|"error"
+---@field ["invalid-newtype"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -947,7 +1026,7 @@
 ---combinations of arguments and return different types based on the arguments passed. This is mainly
 ---beneficial for type checkers. But, if the `@overload` usage is invalid, the type checker may not be
 ---able to provide correct type information.
----@field ["invalid-overload"]? "ignore"|"warn"|"error"
+---@field ["invalid-overload"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -959,7 +1038,7 @@
 ---
 ---This breaks the rules of the type system and weakens a type checker's ability to accurately reason
 ---about your code.
----@field ["invalid-parameter-default"]? "ignore"|"warn"|"error"
+---@field ["invalid-parameter-default"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -970,7 +1049,7 @@
 ---**Why is this bad?**
 ---
 ---There are several requirements that you must follow when creating a `ParamSpec`.
----@field ["invalid-paramspec"]? "ignore"|"warn"|"error"
+---@field ["invalid-paramspec"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -982,7 +1061,7 @@
 ---
 ---An invalidly defined protocol class may lead to the type checker inferring unexpected things or
 ---accepting unsafe operations. Some invalid protocol definitions also raise `TypeError` at runtime.
----@field ["invalid-protocol"]? "ignore"|"warn"|"error"
+---@field ["invalid-protocol"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -996,7 +1075,7 @@
 ---Only subclasses or instances of `BaseException` can be raised. For an exception's cause, the same
 ---rules apply, except that `None` is also permitted. Violating these rules results in a `TypeError` at
 ---runtime.
----@field ["invalid-raise"]? "ignore"|"warn"|"error"
+---@field ["invalid-raise"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1011,7 +1090,7 @@
 ---
 ---Returning an object of a type incompatible with the annotated return type is unsound, and will lead
 ---to ty inferring incorrect types elsewhere.
----@field ["invalid-return-type"]? "ignore"|"warn"|"error"
+---@field ["invalid-return-type"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1032,7 +1111,7 @@
 ---    - `issubclass(obj, type)` is `True`
 ---
 ---Violating this relationship will raise a `TypeError` at runtime.
----@field ["invalid-super-argument"]? "ignore"|"warn"|"error"
+---@field ["invalid-super-argument"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1048,7 +1127,7 @@
 ---Type annotations are permitted to be string-literal expressions, in order to enable forward
 ---references to names not yet defined. However, it must be possible to parse the contents of that
 ---string literal as a normal Python expression.
----@field ["invalid-syntax-in-forward-annotation"]? "ignore"|"warn"|"error"
+---@field ["invalid-syntax-in-forward-annotation"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1061,7 +1140,7 @@
 ---
 ---The `@total_ordering` decorator requires the class to define at least one ordering method. If none
 ---is defined, Python raises a `ValueError` at runtime.
----@field ["invalid-total-ordering"]? "ignore"|"warn"|"error"
+---@field ["invalid-total-ordering"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1072,7 +1151,7 @@
 ---**Why is this bad?**
 ---
 ---There are several requirements that you must follow when creating a `TypeAliasType`.
----@field ["invalid-type-alias-type"]? "ignore"|"warn"|"error"
+---@field ["invalid-type-alias-type"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1085,7 +1164,7 @@
 ---Providing the wrong number of type arguments or type arguments that don't satisfy the type
 ---variable's bounds or constraints will lead to incorrect type inference and may indicate a
 ---misunderstanding of the generic type's interface.
----@field ["invalid-type-arguments"]? "ignore"|"warn"|"error"
+---@field ["invalid-type-arguments"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1101,7 +1180,7 @@
 ---`typing_extensions`, but it can also be defined locally. If defined locally, it must be assigned the
 ---value `False` at runtime; the type checker will consider its value to be `True`. If annotated, it
 ---must be annotated as a type that can accept `bool` values.
----@field ["invalid-type-checking-constant"]? "ignore"|"warn"|"error"
+---@field ["invalid-type-checking-constant"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1113,7 +1192,7 @@
 ---**Why is this bad?**
 ---
 ---Such expressions cannot be understood by ty. In some cases, they might raise errors at runtime.
----@field ["invalid-type-form"]? "ignore"|"warn"|"error"
+---@field ["invalid-type-form"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1128,7 +1207,7 @@
 ---accept another in addition to `self`/`cls`).
 ---
 ---Extra parameters/arguments are allowed but do not affect narrowing.
----@field ["invalid-type-guard-definition"]? "ignore"|"warn"|"error"
+---@field ["invalid-type-guard-definition"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1139,7 +1218,7 @@
 ---**Why is this bad?**
 ---
 ---The bound of a type variable must be a concrete type.
----@field ["invalid-type-variable-bound"]? "ignore"|"warn"|"error"
+---@field ["invalid-type-variable-bound"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1151,7 +1230,7 @@
 ---**Why is this bad?**
 ---
 ---A constrained type variable must have at least two constraints.
----@field ["invalid-type-variable-constraints"]? "ignore"|"warn"|"error"
+---@field ["invalid-type-variable-constraints"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1165,7 +1244,7 @@
 ---If a type variable has a bound, the default must be assignable to that bound (see: [bound rules]).
 ---If a type variable has constraints, the default must be one of the constraints (see:
 ---[constraint rules]).
----@field ["invalid-type-variable-default"]? "ignore"|"warn"|"error"
+---@field ["invalid-type-variable-default"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1177,7 +1256,7 @@
 ---
 ---`TypedDict` subclasses cannot redefine inherited fields incompatibly. Doing so breaks the subtype
 ---guarantees that `TypedDict` inheritance is meant to preserve.
----@field ["invalid-typed-dict-field"]? "ignore"|"warn"|"error"
+---@field ["invalid-typed-dict-field"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1190,7 +1269,7 @@
 ---The typing spec states that `TypedDict`s are not permitted to have custom metaclasses. Using `**`
 ---unpacking in a `TypedDict` header is also prohibited by ty, as it means that ty cannot statically
 ---determine whether keys in the `TypedDict` are intended to be required or optional.
----@field ["invalid-typed-dict-header"]? "ignore"|"warn"|"error"
+---@field ["invalid-typed-dict-header"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1203,7 +1282,7 @@
 ---`TypedDict` class bodies aren't allowed to contain any other types of statements. For example,
 ---method definitions and field values aren't allowed. None of these will be available on "instances of
 ---the `TypedDict`" at runtime (as `dict` is the runtime class of all "`TypedDict` instances").
----@field ["invalid-typed-dict-statement"]? "ignore"|"warn"|"error"
+---@field ["invalid-typed-dict-statement"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1217,7 +1296,7 @@
 ---Yielding a value of a type that doesn't match the generator's declared yield type, or using
 ---`yield from` with a sub-iterator whose yield or send type is incompatible, is a type error that may
 ---cause downstream consumers of the generator to receive values of an unexpected type.
----@field ["invalid-yield"]? "ignore"|"warn"|"error"
+---@field ["invalid-yield"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1231,7 +1310,7 @@
 ---**Why is this bad?**
 ---
 ---These calls (implicit or explicit) raise `TypeError` at runtime.
----@field ["isinstance-against-protocol"]? "ignore"|"warn"|"error"
+---@field ["isinstance-against-protocol"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1243,7 +1322,27 @@
 ---**Why is this bad?**
 ---
 ---Using a `TypedDict` class in these contexts raises `TypeError` at runtime.
----@field ["isinstance-against-typed-dict"]? "ignore"|"warn"|"error"
+---@field ["isinstance-against-typed-dict"]? ty.settings.defs.Level
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Checks for `builtins.sentinel` and `typing_extensions.Sentinel` definitions
+---whose name argument does not match the variable they are assigned to.
+---In class scope, the name can be unqualified or include the full enclosing class path.
+---
+---**Why is this bad?**
+---
+---A mismatched name can be a typo and can make a sentinel's runtime representation confusing.
+---
+---**Default level**
+---
+---This rule is disabled by default because sentinel names are not required to match their assigned variables,
+---and sometimes the preferred __repr__ for a sentinel may include non-identifier characters.
+---Enable this rule to enforce consistent sentinel naming.
+---This rule is similar to `mismatched-type-name`, but is a distinct rule because the default severity differs.
+---@field ["mismatched-sentinel-name"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -1257,7 +1356,7 @@
 ---Constructors like `TypeVar`, `ParamSpec`, `NewType`, `NamedTuple`, `TypedDict`, and `TypeAliasType`
 ---all take a name argument that is normally expected to match the assigned variable. A mismatch is
 ---usually a typo and makes later diagnostics harder to understand.
----@field ["mismatched-type-name"]? "ignore"|"warn"|"error"
+---@field ["mismatched-type-name"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1268,7 +1367,7 @@
 ---**Why is this bad?**
 ---
 ---Failing to provide a required argument will raise a `TypeError` at runtime.
----@field ["missing-argument"]? "ignore"|"warn"|"error"
+---@field ["missing-argument"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -1292,7 +1391,7 @@
 ---
 ---See uv's [guide to managing dependencies](https://docs.astral.sh/uv/concepts/projects/dependencies/)
 ---for how to add these declarations.
----@field ["missing-direct-dependency"]? "ignore"|"warn"|"error"
+---@field ["missing-direct-dependency"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -1309,7 +1408,7 @@
 ---Without an `@override` annotation, refactors can silently change whether a method is an override.
 ---Requiring `@override` on every override lets ty report when an intended override stops overriding
 ---anything, and when a method unexpectedly starts overriding a superclass member.
----@field ["missing-override-decorator"]? "ignore"|"warn"|"error"
+---@field ["missing-override-decorator"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1341,7 +1440,7 @@
 ---in `__slots__`, instances of the class have no dictionary in which to store additional attributes.
 ---Attempting to assign to an attribute not declared in `__slots__` will often raise `AttributeError`
 ---at runtime if the instance has no instance dictionary.
----@field ["missing-slot"]? "ignore"|"warn"|"error"
+---@field ["missing-slot"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -1354,7 +1453,7 @@
 ---Using a generic type without specifying its type parameters results in the type parameters being
 ---implicitly filled with `Unknown`, reducing the precision of type checking. Explicit type parameters
 ---make the intended types clear and enable the type checker to catch more errors.
----@field ["missing-type-argument"]? "ignore"|"warn"|"error"
+---@field ["missing-type-argument"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1366,7 +1465,7 @@
 ---
 ---`TypedDict` requires all non-optional keys to be provided during construction. Missing items can
 ---lead to a `KeyError` at runtime.
----@field ["missing-typed-dict-key"]? "ignore"|"warn"|"error"
+---@field ["missing-typed-dict-key"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1378,7 +1477,7 @@
 ---
 ---Failing to provide the correct arguments to one of the overloads will raise a `TypeError` at
 ---runtime.
----@field ["no-matching-overload"]? "ignore"|"warn"|"error"
+---@field ["no-matching-overload"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1390,7 +1489,7 @@
 ---
 ---If a class defines a non-callable `__init_subclass__` method/attribute, any attempt to subclass that
 ---class will raise a `TypeError` at runtime.
----@field ["non-callable-init-subclass"]? "ignore"|"warn"|"error"
+---@field ["non-callable-init-subclass"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1401,7 +1500,7 @@
 ---**Why is this bad?**
 ---
 ---Iterating over an object that is not iterable will raise a `TypeError` at runtime.
----@field ["not-iterable"]? "ignore"|"warn"|"error"
+---@field ["not-iterable"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1412,7 +1511,7 @@
 ---**Why is this bad?**
 ---
 ---Subscripting an object that does not support it will raise a `TypeError` at runtime.
----@field ["not-subscriptable"]? "ignore"|"warn"|"error"
+---@field ["not-subscriptable"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1424,7 +1523,7 @@
 ---
 ---Decorating a method with `@final` declares to the type checker that it should not be overridden on
 ---any subclass.
----@field ["override-of-final-method"]? "ignore"|"warn"|"error"
+---@field ["override-of-final-method"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1437,7 +1536,7 @@
 ---
 ---Declaring a variable as `Final` indicates to the type checker that it should not be overridden on
 ---any subclass.
----@field ["override-of-final-variable"]? "ignore"|"warn"|"error"
+---@field ["override-of-final-variable"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1448,7 +1547,7 @@
 ---**Why is this bad?**
 ---
 ---Providing multiple values for a single parameter will raise a `TypeError` at runtime.
----@field ["parameter-already-assigned"]? "ignore"|"warn"|"error"
+---@field ["parameter-already-assigned"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1459,7 +1558,7 @@
 ---**Why is this bad?**
 ---
 ---Providing a positional-only parameter as a keyword argument will raise `TypeError` at runtime.
----@field ["positional-only-parameter-as-kwarg"]? "ignore"|"warn"|"error"
+---@field ["positional-only-parameter-as-kwarg"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -1470,7 +1569,7 @@
 ---**Why is this bad?**
 ---
 ---Attempting to access a missing attribute will raise an `AttributeError` at runtime.
----@field ["possibly-missing-attribute"]? "ignore"|"warn"|"error"
+---@field ["possibly-missing-attribute"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -1482,7 +1581,7 @@
 ---
 ---Expressions such as `x[y]` and `x * y` call methods under the hood (`__getitem__` and `__mul__`
 ---respectively). Calling a missing method will raise an `AttributeError` at runtime.
----@field ["possibly-missing-implicit-call"]? "ignore"|"warn"|"error"
+---@field ["possibly-missing-implicit-call"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -1493,7 +1592,7 @@
 ---**Why is this bad?**
 ---
 ---Importing a missing module or name will raise a `ModuleNotFoundError` or `ImportError` at runtime.
----@field ["possibly-missing-import"]? "ignore"|"warn"|"error"
+---@field ["possibly-missing-import"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -1506,7 +1605,7 @@
 ---When module `a` has a submodule `b`, `import a` isn't generally enough to let you access `a.b.` You
 ---either need to explicitly `import a.b`, or else you need the `__init__.py` file of `a` to include
 ---`from . import b`. Without one of those, `a.b` is an `AttributeError`.
----@field ["possibly-missing-submodule"]? "ignore"|"warn"|"error"
+---@field ["possibly-missing-submodule"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -1517,7 +1616,7 @@
 ---**Why is this bad?**
 ---
 ---Using an undefined variable will raise a `NameError` at runtime.
----@field ["possibly-unresolved-reference"]? "ignore"|"warn"|"error"
+---@field ["possibly-unresolved-reference"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -1530,7 +1629,7 @@
 ---
 ---A discarded argument has no effect on the constructed model, but it may indicate a misspelled field
 ---name or an incorrect assumption about the model's schema.
----@field ["pydantic-discarded-extra-argument"]? "ignore"|"warn"|"error"
+---@field ["pydantic-discarded-extra-argument"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1541,7 +1640,7 @@
 ---**Why is this bad?**
 ---
 ---Static analysis tools like ty can't analyze type annotations that use raw-string notation.
----@field ["raw-string-type-annotation"]? "ignore"|"warn"|"error"
+---@field ["raw-string-type-annotation"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -1552,7 +1651,7 @@
 ---**Why is this bad?**
 ---
 ---These casts have no effect and can be removed.
----@field ["redundant-cast"]? "ignore"|"warn"|"error"
+---@field ["redundant-cast"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -1578,7 +1677,7 @@
 ---and can often lead to incorrect behavior. If an `if` condition is inferred as always false,
 ---moreover, ty will infer all code within that `if` branch as being unreachable, and will not report
 ---any diagnostics on code in that region.
----@field ["redundant-condition"]? "ignore"|"warn"|"error"
+---@field ["redundant-condition"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -1607,7 +1706,7 @@
 ---and can often lead to incorrect behavior. If an `if` condition is inferred as always false,
 ---moreover, ty will infer all code within that `if` branch as being unreachable, and will not report
 ---any diagnostics on code in that region.
----@field ["redundant-condition-strict"]? "ignore"|"warn"|"error"
+---@field ["redundant-condition-strict"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -1622,7 +1721,7 @@
 ---
 ---Note that this diagnostic is not emitted for dataclass fields or protocol members, where
 ---`ClassVar[Final[int]]` has a distinct meaning from `Final[int]`.
----@field ["redundant-final-classvar"]? "ignore"|"warn"|"error"
+---@field ["redundant-final-classvar"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1634,7 +1733,7 @@
 ---**Why is this bad?**
 ---
 ---Shadowing type variables makes the code confusing and is disallowed by the typing spec.
----@field ["shadowed-type-variable"]? "ignore"|"warn"|"error"
+---@field ["shadowed-type-variable"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1646,7 +1745,7 @@
 ---
 ---A `static_assert` call represents an explicit request from the user for the type checker to emit an
 ---error if the argument cannot be verified to evaluate to `True` in a boolean context.
----@field ["static-assert-error"]? "ignore"|"warn"|"error"
+---@field ["static-assert-error"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -1663,7 +1762,7 @@
 ---
 ---This violates the [Liskov Substitution Principle][liskov-substitution-principle] because child class
 ---instances cannot be used in all contexts where parent class instances are expected.
----@field ["subclass-of-dataclass-with-order"]? "ignore"|"warn"|"error"
+---@field ["subclass-of-dataclass-with-order"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1674,7 +1773,7 @@
 ---**Why is this bad?**
 ---
 ---Decorating a class with `@final` declares to the type checker that it should not be subclassed.
----@field ["subclass-of-final-class"]? "ignore"|"warn"|"error"
+---@field ["subclass-of-final-class"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1685,7 +1784,7 @@
 ---**Why is this bad?**
 ---
 ---Using `super()` in a method of a `NamedTuple` class will raise an exception at runtime.
----@field ["super-call-in-named-tuple-method"]? "ignore"|"warn"|"error"
+---@field ["super-call-in-named-tuple-method"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1696,7 +1795,7 @@
 ---**Why is this bad?**
 ---
 ---Passing too many positional arguments will raise `TypeError` at runtime.
----@field ["too-many-positional-arguments"]? "ignore"|"warn"|"error"
+---@field ["too-many-positional-arguments"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -1710,7 +1809,7 @@
 ---If `predicate` is a variable inferred as having a `Callable` type, therefore, a boolean test such as
 ---`if predicate:` is usually not what you want; `if predicate()` (or similar) is usually what was
 ---intended.
----@field ["truthiness-test-of-callable"]? "ignore"|"warn"|"error"
+---@field ["truthiness-test-of-callable"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -1726,7 +1825,7 @@
 ---truthy if they do not define `__len__` or `__bool__`. The classic example of this is a generator:
 ---unevaluated generators in Python are always truthy, even if they do not yield any elements at
 ---runtime.
----@field ["truthiness-test-of-iterable"]? "ignore"|"warn"|"error"
+---@field ["truthiness-test-of-iterable"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -1746,7 +1845,7 @@
 ---object of type `int | None` can still be falsy even if it is an integer, since `0` is falsy. Boolean
 ---tests on objects of type `str | None`, `bytes | None`, or `list | None` have similar pitfalls: an
 ---empty string, bytestring, or list is also falsy in Python.
----@field ["truthiness-test-of-none-union"]? "ignore"|"warn"|"error"
+---@field ["truthiness-test-of-none-union"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1758,7 +1857,7 @@
 ---**Why is this bad?**
 ---
 ---`assert_type()` allows confirming the inferred type of a certain value.
----@field ["type-assertion-failure"]? "ignore"|"warn"|"error"
+---@field ["type-assertion-failure"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1772,7 +1871,7 @@
 ---When `super()` is used without arguments, Python tries to find two things: the nearest enclosing
 ---class and the first argument of the immediately enclosing function (typically self or cls). If
 ---either of these is missing, the call will fail at runtime with a `RuntimeError`.
----@field ["unavailable-implicit-super-arguments"]? "ignore"|"warn"|"error"
+---@field ["unavailable-implicit-super-arguments"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1784,7 +1883,7 @@
 ---**Why is this bad?**
 ---
 ---Using a type variable outside of a scope that binds it has no well-defined meaning.
----@field ["unbound-type-variable"]? "ignore"|"warn"|"error"
+---@field ["unbound-type-variable"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -1795,7 +1894,7 @@
 ---**Why is this bad?**
 ---
 ---Using `reveal_type` without importing it will raise a `NameError` at runtime.
----@field ["undefined-reveal"]? "ignore"|"warn"|"error"
+---@field ["undefined-reveal"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1806,7 +1905,7 @@
 ---**Why is this bad?**
 ---
 ---Providing an unknown keyword argument will raise `TypeError` at runtime.
----@field ["unknown-argument"]? "ignore"|"warn"|"error"
+---@field ["unknown-argument"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1819,7 +1918,7 @@
 ---Accessing an unbound attribute will raise an `AttributeError` at runtime. An unresolved attribute is
 ---not guaranteed to exist from the type alone, so this could also indicate that the object is not of
 ---the type that the user expects.
----@field ["unresolved-attribute"]? "ignore"|"warn"|"error"
+---@field ["unresolved-attribute"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -1833,7 +1932,7 @@
 ---Function bodies with `global` statements can run in any order (or not at all), which makes it hard
 ---for static analysis tools to infer the types of globals without explicit definitions or
 ---declarations.
----@field ["unresolved-global"]? "ignore"|"warn"|"error"
+---@field ["unresolved-global"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1849,7 +1948,7 @@
 ---configured incorrectly. See the
 ---[import troubleshooting FAQ](https://docs.astral.sh/ty/reference/typing-faq/#why-cant-ty-resolve-my-imports)
 ---for more details.
----@field ["unresolved-import"]? "ignore"|"warn"|"error"
+---@field ["unresolved-import"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1860,7 +1959,7 @@
 ---**Why is this bad?**
 ---
 ---Using an undefined variable will raise a `NameError` at runtime.
----@field ["unresolved-reference"]? "ignore"|"warn"|"error"
+---@field ["unresolved-reference"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -1925,7 +2024,7 @@
 ---```
 ---
 ---This rule works especially well when combined with ty's [`missing-type-argument`](#missing-type-argument) rule.
----@field ["unsound-assignment"]? "ignore"|"warn"|"error"
+---@field ["unsound-assignment"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -2001,7 +2100,7 @@
 ---This rule is analogous to mypy's [`no-any-return`][no-any-return] error code, which is enabled by
 ---mypy’s [`--strict`][mypy-strict] mode and can also be enabled on its own using mypy’s
 ---[`--warn-return-any`][warn-return-any] option.
----@field ["unsound-return-statement"]? "ignore"|"warn"|"error"
+---@field ["unsound-return-statement"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -2071,7 +2170,7 @@
 ---effectively makes it much less likely that a `yield` expression can lead to unsoundness "leaking"
 ---out of a function unless that function has been *explicitly* annotated with a dynamic type in some
 ---way (`-> Generator[Any]` or `-> Generator[tuple[Any]]`, for example).
----@field ["unsound-yield"]? "ignore"|"warn"|"error"
+---@field ["unsound-yield"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -2084,7 +2183,7 @@
 ---If a class has a base that is an instance of a complex type such as a union type, ty will not be
 ---able to resolve the [method resolution order] (MRO) for the class. This will lead to an inferior
 ---understanding of your codebase and unpredictable type-checking behavior.
----@field ["unsupported-base"]? "ignore"|"warn"|"error"
+---@field ["unsupported-base"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -2096,7 +2195,7 @@
 ---
 ---If an exception is raised when you attempt to evaluate the truthiness of an object, using the object
 ---in a boolean context will fail at runtime.
----@field ["unsupported-bool-conversion"]? "ignore"|"warn"|"error"
+---@field ["unsupported-bool-conversion"]? ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -2112,7 +2211,7 @@
 ---If a dynamically created class has a base that is an unsupported type such as `type[T]`, ty will not
 ---be able to resolve the [method resolution order] (MRO) for the class. This may lead to an inferior
 ---understanding of your codebase and unpredictable type-checking behavior.
----@field ["unsupported-dynamic-base"]? "ignore"|"warn"|"error"
+---@field ["unsupported-dynamic-base"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -2124,7 +2223,7 @@
 ---**Why is this bad?**
 ---
 ---Attempting to use an unsupported operator will raise a `TypeError` at runtime.
----@field ["unsupported-operator"]? "ignore"|"warn"|"error"
+---@field ["unsupported-operator"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -2138,7 +2237,7 @@
 ---Calling an `async def` function returns a coroutine object. If the coroutine is never awaited, the
 ---body of the async function will never execute, which is almost always a bug. Python emits a
 ---`RuntimeWarning: coroutine was never awaited` at runtime in this case.
----@field ["unused-awaitable"]? "ignore"|"warn"|"error"
+---@field ["unused-awaitable"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -2150,7 +2249,7 @@
 ---
 ---A `ty: ignore` directive that no longer matches any diagnostic violations is likely included by
 ---mistake, and should be removed to avoid confusion.
----@field ["unused-ignore-comment"]? "ignore"|"warn"|"error"
+---@field ["unused-ignore-comment"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -2162,7 +2261,7 @@
 ---
 ---A `type: ignore` directive that no longer matches any diagnostic violations is likely included by
 ---mistake, and should be removed to avoid confusion.
----@field ["unused-type-ignore-comment"]? "ignore"|"warn"|"error"
+---@field ["unused-type-ignore-comment"]? ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -2176,7 +2275,7 @@
 ---implementation function that follows the series of overloads. While it is not illegal to provide a
 ---body for an `@overload`-decorated function, it may indicate a misunderstanding of how the
 ---`@overload` decorator works.
----@field ["useless-overload-body"]? "ignore"|"warn"|"error"
+---@field ["useless-overload-body"]? ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -2187,9 +2286,9 @@
 ---**Why is this bad?**
 ---
 ---Python's built-in sequence types raise a `ValueError` when sliced with a step size of zero.
----@field ["zero-stepsize-in-slice"]? "ignore"|"warn"|"error"
+---@field ["zero-stepsize-in-slice"]? ty.settings.defs.Level
 
----@class settings.ty.ty.configuration.analysis
+---@class ty.settings.defs.AnalysisOptions
 ---A list of module glob patterns for which unresolved-import diagnostics should be suppressed.
 ---
 ---Details on supported glob patterns:
@@ -2226,6 +2325,19 @@
 ---
 ---Default value: `true`
 ---@field ["respect-type-ignore-comments"]? boolean
+---This setting controls when ty infers return types for functions without an explicit return type annotation.
+---  "never": Do not infer return types from function bodies. Unannotated functions will have an inferred return type of Unknown.
+---  "always": Infer return types for unannotated functions and methods.
+---
+---Enabling return type inference will never override explicit return type annotations.
+---Lambda functions are not affected by this setting and their return type will always be inferred.
+---
+---Return types for generator functions and asynchronous functions are currently not inferred, but we plan to change this soon.
+---
+---Functions in stubs and `if TYPE_CHECKING` blocks are never considered for return type inference.
+---
+---Default value: `"never"`
+---@field ["return-type-inference"]? ty.settings.defs.ReturnTypeInference
 ---Configure ty's behavior regarding type inference and narrowing of equality checks.
 ---Defaults to false.
 ---
@@ -2316,7 +2428,7 @@
 ---Default value: `false`
 ---@field ["strict-generic-narrowing"]? boolean
 
----@class settings.ty.ty.configuration.environment
+---@class ty.settings.defs.EnvironmentOptions
 ---User-provided paths that should take first priority in module resolution.
 ---
 ---This is an advanced option that should usually only be used for first-party
@@ -2326,7 +2438,7 @@
 ---This option is similar to mypy's MYPYPATH environment variable and pyright's stubPath configuration setting.
 ---
 ---Default value: `[]`
----@field ["extra-paths"]? string[]
+---@field ["extra-paths"]? ty.settings.defs.RelativePathBuf[]
 ---Path to your project's Python environment or interpreter.
 ---
 ---ty uses the site-packages directory of your project's Python environment
@@ -2349,7 +2461,7 @@
 ---Unlike projects, they do not automatically use a .venv directory.
 ---
 ---Default value: `null`
----@field python? string
+---@field python? ty.settings.defs.RelativePathBuf
 ---Specifies the target platform that will be used to analyze the source code.
 ---If specified, ty will understand conditions based on comparisons with sys.platform,
 ---such as are commonly found in typeshed to reflect the differing contents of the standard library across platforms.
@@ -2363,7 +2475,7 @@
 ---  linux for everything else
 ---
 ---Default value: `<current-platform>`
----@field ["python-platform"]? string | "win32" | "darwin" | "android" | "ios" | "linux" | "all"
+---@field ["python-platform"]? ty.settings.defs.PythonPlatform
 ---Specifies the version of Python that will be used to analyze the source code.
 ---The version should be specified as a string in the format M.m where M is the major version and m is the minor (e.g. "3.7" or "3.12").
 ---If a version is provided, ty will generate errors if the source code makes use of language features that are not supported in that version.
@@ -2385,7 +2497,7 @@
 ---These are commonly found in typeshed, for example, to reflect the differing contents of the standard library across Python versions.
 ---
 ---Default value: `"3.14"`
----@field ["python-version"]? "3.7" | "3.8" | "3.9" | "3.10" | "3.11" | "3.12" | "3.13" | "3.14" | "3.15"
+---@field ["python-version"]? ty.settings.defs.SupportedPythonVersion
 ---The root paths of the project, used for finding first-party modules.
 ---
 ---Accepts a list of directory paths searched in priority order (first has highest priority).
@@ -2402,23 +2514,20 @@
 ---Set root = ["."] to allow importing local modules.
 ---
 ---Default value: `null`
----@field root? string[]
+---@field root? ty.settings.defs.RelativePathBuf[]
 ---Optional path to a "typeshed" directory on disk for us to use for standard-library types.
 ---If this is not provided, we will fallback to our vendored typeshed stubs for the stdlib,
 ---bundled as a zip file in the binary
 ---
 ---Default value: `null`
----@field typeshed? string[]
-
----@alias settings.ty.ty.configuration.overrides.rules settings.ty.ty.configuration.rules
----@alias settings.ty.ty.configuration.overrides.analysis settings.ty.ty.configuration.analysis
+---@field typeshed? ty.settings.defs.RelativePathBuf
 
 ---Configuration override that applies to specific files based on glob patterns.
 ---
 ---An override allows you to apply different rule configurations to specific files or directories.
 ---Multiple overrides can match the same file, with later overrides take precedence.
 ---Override rules take precedence over global rules for matching files.
----@class settings.ty.ty.configuration.overrides
+---@class ty.settings.defs.OverridesOptions
 ---A list of file and directory patterns to exclude from this override.
 ---
 ---Patterns follow a syntax similar to .gitignore.
@@ -2442,10 +2551,10 @@
 ---These rules will be merged with the global rules, with override rules taking precedence for matching files. You can set rules to different severity levels or disable them entirely.
 ---
 ---Default value: `{}`
----@field rules? settings.ty.ty.configuration.overrides.rules
----@field analysis? settings.ty.ty.configuration.overrides.analysis
+---@field rules? ty.settings.defs.Rules
+---@field analysis? ty.settings.defs.AnalysisOptions
 
----@class settings.ty.ty.configuration.src
+---@class ty.settings.defs.SrcOptions
 ---A list of file and directory patterns to exclude from type checking.
 ---
 ---Patterns follow a syntax similar to .gitignore:
@@ -2514,7 +2623,7 @@
 ---Default value: `true`
 ---@field ["respect-ignore-files"]? boolean
 
----@class settings.ty.ty.configuration.terminal
+---@class ty.settings.defs.TerminalOptions
 ---Use exit code 1, even if all diagnostics only had warning severity.
 ---
 ---Default value: `true`
@@ -2522,18 +2631,27 @@
 ---The format to use for printing diagnostic messages.
 ---
 ---Default value: `"full"`
----@field ["output-format"]? "full" | "concise" | "github" | "gitlab" | "junit"
+---@field ["output-format"]? ty.settings.defs.OutputFormat
 
----@class settings.ty.ty.configuration
----@field rules? settings.ty.ty.configuration.rules
----@field analysis? settings.ty.ty.configuration.analysis
----@field environment? settings.ty.ty.configuration.environment
----@field overrides? settings.ty.ty.configuration.overrides
----@field src? settings.ty.ty.configuration.src
----@field terminal? settings.ty.ty.configuration.terminal
+---@class ty.settings.ty.configuration
+---Path to the JSON file that records existing lint diagnostics for this project.
+---Relative paths are resolved against the project root.
+---Use ty `check --update-baseline` to create or update the file.
+---
+---Diagnostic baselines are in preview.
+---The file format may change between ty releases.
+---
+---Default value: `nil`
+---@field analysis? ty.settings.defs.AnalysisOptions
+---@field baseline? ty.settings.defs.RelativePathBuf
+---@field environment? ty.settings.defs.EnvironmentOptions
+---@field overrides? ty.settings.defs.OverridesOptions
+---@field rules? ty.settings.defs.Rules
+---@field src? ty.settings.defs.SrcOptions
+---@field terminal? ty.settings.defs.TerminalOptions
 
 ---These settings control the inline hints that ty provides in an editor.
----@class settings.ty.ty.inlayHints
+---@class ty.settings.ty.inlayHints
 ---Whether to show the types of variables as inline hints.
 ---
 ---Default value: `true`
@@ -2544,7 +2662,7 @@
 ---@field callArgumentNames? boolean
 
 ---These settings control how code completions offered by ty work.
----@class settings.ty.ty.completions
+---@class ty.settings.ty.completions
 ---Whether to include auto-import suggestions in code completions.
 ---That is, code completions will include symbols not currently in scope but available in your environment.
 ---
@@ -2555,8 +2673,8 @@
 ---Default value: `false`
 ---@field completeFunctionParentheses? boolean
 
----@class settings.ty.ty
----@field configuration? settings.ty.ty.configuration
+---@class ty.settings.ty
+---@field configuration? ty.settings.ty.configuration
 ---The path to a ty.toml configuration file.
 ---ty will use the specified configuration over any automatically discovered configuration.
 ---ty will expand a tilde ~ at the start of a string to the user's home directory,
@@ -2593,15 +2711,15 @@
 ---
 ---Default value: `true`
 ---@field showSyntaxErrors? boolean
----@field inlayHints? settings.ty.ty.inlayHints
----@field completions? settings.ty.ty.completions
+---@field inlayHints? ty.settings.ty.inlayHints
+---@field completions? ty.settings.ty.completions
 
----@class settings.ty
----@field ty? settings.ty.ty
+---@class ty.settings
+---@field ty? ty.settings.ty
 
 
 
----@class init_options.ty.experimental
+---@class ty.init_options.experimental
 ---Control how ty uses uv:
 ---  off: Do not use uv.
 ---  scripts: Use uv to create and update environments for standalone scripts with PEP 723 inline metadata.
@@ -2614,8 +2732,8 @@
 ---Default value: `null`
 ---@field useUv? "off" | "scripts" | "on"
 
----@class init_options.ty
----@field experimental? init_options.ty.experimental
+---@class ty.init_options
+---@field experimental? ty.init_options.experimental
 ---Path to the file to which the language server writes its log messages.
 ---By default, ty writes log messages to stderr.
 ---

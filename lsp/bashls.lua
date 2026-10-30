@@ -3,7 +3,7 @@ return {
     cmd = { 'bash-language-server', 'start' },
     filetypes = { 'bash', 'sh' },
     root_markers = { '.git' },
-    ---@type settings.bashls
+    ---@type bashls.settings
     settings = {
         bashIde = {
             enableSourceErrorDiagnostics = true,

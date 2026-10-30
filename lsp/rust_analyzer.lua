@@ -138,7 +138,7 @@ return {
             },
         },
     },
-    ---@type settings.rust_analyzer
+    ---@type rust_analyzer.settings
     settings = {
         ['rust-analyzer'] = {
             completion = {

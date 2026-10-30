@@ -78,7 +78,7 @@ return {
         local t = { objc = 'objective-c', objcpp = 'objective-cpp', cuda = 'cuda-cpp' }
         return t[ftype] or ftype
     end,
-    -- ---@type settings.clangd
+    -- ---@type clangd.settings
     -- settings = {},
     ---@param init_result ClangdInitializeResult
     on_init = function(client, init_result)

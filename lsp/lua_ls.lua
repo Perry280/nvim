@@ -17,7 +17,7 @@ return {
         },
         { '.git' },
     },
-    ---@type settings.lua_ls
+    ---@type lua_ls.settings
     settings = {
         Lua = {
             codeLens = { enable = true },
@@ -59,9 +59,9 @@ return {
             end
         end
 
-        ---@type settings.lua_ls.Lua
+        ---@type lua_ls.settings.Lua
         client.config.settings.Lua = vim.tbl_deep_extend('force',
-            client.config.settings.Lua --[[@as settings.lua_ls.Lua]],
+            client.config.settings.Lua --[[@as lua_ls.settings.Lua]],
             {
                 runtime = {
                     version = 'LuaJIT',

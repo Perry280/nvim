@@ -1,6 +1,6 @@
 ---@meta
 
----@class settings.bashls.BashIde.Shfmt
+---@class bashls.settings.BashIde.Shfmt
 ---Additional Shfmt arguments. Note that common arguments can be configured via the other settings.
 ---
 ---```lua
@@ -34,7 +34,7 @@
 ---Follow redirection operators with a space.
 ---@field spaceRedirects? boolean
 
----@class settings.bashls.BashIde
+---@class bashls.settings.BashIde
 ---Glob patterns excluded from background file discovery. Open files and sourced files can still be analyzed on demand.
 ---
 ---```lua
@@ -87,7 +87,7 @@
 ---default = "shellcheck"
 ---```
 ---@field shellcheckPath? string
----@field shfmt? settings.bashls.BashIde.Shfmt
+---@field shfmt? bashls.settings.BashIde.Shfmt
 
----@class settings.bashls
----@field bashIde? settings.bashls.BashIde
+---@class bashls.settings
+---@field bashIde? bashls.settings.BashIde

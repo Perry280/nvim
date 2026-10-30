@@ -1,6 +1,6 @@
 ---@meta
 
----@class settings.rust_analyzer.RustAnalyzer.Assist.TermSearch
+---@class rust_analyzer.settings.RustAnalyzer.Assist.TermSearch
 ---Term search fuel in "units of work" for assists (Defaults to 1800).
 ---
 ---```lua
@@ -8,7 +8,7 @@
 ---```
 ---@field fuel? integer
 
----@class settings.rust_analyzer.RustAnalyzer.Assist
+---@class rust_analyzer.settings.RustAnalyzer.Assist
 ---Insert #[must_use] when generating `as_` methods for enum variants.
 ---@field emitMustUse? boolean
 ---Placeholder expression to use for missing expressions in assists.
@@ -19,9 +19,9 @@
 ---@field expressionFillDefault? "todo"|"default"
 ---Prefer to use `Self` over the type name when inserting a type (e.g. in "fill match arms" assist).
 ---@field preferSelf? boolean
----@field termSearch? settings.rust_analyzer.RustAnalyzer.Assist.TermSearch
+---@field termSearch? rust_analyzer.settings.RustAnalyzer.Assist.TermSearch
 
----@class settings.rust_analyzer.RustAnalyzer.CachePriming
+---@class rust_analyzer.settings.RustAnalyzer.CachePriming
 ---Warm up caches on project load.
 ---
 ---```lua
@@ -36,7 +36,7 @@
 ---```
 ---@field numThreads? number|"physical"|"logical"
 
----@class settings.rust_analyzer.RustAnalyzer.Cargo.BuildScripts
+---@class rust_analyzer.settings.RustAnalyzer.Cargo.BuildScripts
 ---Run build scripts (`build.rs`) for more precise code analysis.
 ---
 ---```lua
@@ -90,7 +90,7 @@
 ---```
 ---@field useRustcWrapper? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Cargo
+---@class rust_analyzer.settings.RustAnalyzer.Cargo
 ---Pass `--all-targets` to cargo invocation.
 ---
 ---```lua
@@ -104,7 +104,7 @@
 ---default = true
 ---```
 ---@field autoreload? boolean
----@field buildScripts? settings.rust_analyzer.RustAnalyzer.Cargo.BuildScripts
+---@field buildScripts? rust_analyzer.settings.RustAnalyzer.Cargo.BuildScripts
 ---List of cfg options to enable with the given values.
 ---
 ---To enable a name without a value, use `"key"`.
@@ -178,7 +178,7 @@
 ---set to a path relative to the workspace to use that path.
 ---@field targetDir? boolean|string
 
----@class settings.rust_analyzer.RustAnalyzer.Cfg
+---@class rust_analyzer.settings.RustAnalyzer.Cfg
 ---Set `cfg(test)` for local crates. Defaults to true.
 ---
 ---```lua
@@ -186,7 +186,7 @@
 ---```
 ---@field setTest? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Check
+---@class rust_analyzer.settings.RustAnalyzer.Check
 ---Check all targets and tests (`--all-targets`). Defaults to
 ---`#rust-analyzer.cargo.allTargets#`.
 ---@field allTargets? boolean
@@ -288,7 +288,7 @@
 ---```
 ---@field workspace? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Completion.AutoAwait
+---@class rust_analyzer.settings.RustAnalyzer.Completion.AutoAwait
 ---Show method calls and field accesses completions with `await` prefixed to them when
 ---completing on a future.
 ---
@@ -297,7 +297,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Completion.AutoIter
+---@class rust_analyzer.settings.RustAnalyzer.Completion.AutoIter
 ---Show method call completions with `iter()` or `into_iter()` prefixed to them when
 ---completing on a type that has them.
 ---
@@ -306,7 +306,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Completion.Autoimport
+---@class rust_analyzer.settings.RustAnalyzer.Completion.Autoimport
 ---Show completions that automatically add imports when completed.
 ---
 ---Note that your client must specify the `additionalTextEdits` LSP client capability to
@@ -346,7 +346,7 @@
 ---```
 ---@field exclude? (string|table)[]
 
----@class settings.rust_analyzer.RustAnalyzer.Completion.Autoself
+---@class rust_analyzer.settings.RustAnalyzer.Completion.Autoself
 ---Show method calls and field access completions with `self` prefixed to them when
 ---inside a method.
 ---
@@ -355,7 +355,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Completion.Callable
+---@class rust_analyzer.settings.RustAnalyzer.Completion.Callable
 ---Add parenthesis and argument snippets when completing function.
 ---
 ---```lua
@@ -363,11 +363,11 @@
 ---```
 ---@field snippets? "fill_arguments"|"add_parentheses"|"none"
 
----@class settings.rust_analyzer.RustAnalyzer.Completion.FullFunctionSignatures
+---@class rust_analyzer.settings.RustAnalyzer.Completion.FullFunctionSignatures
 ---Show full function / method signatures in completion docs.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Completion.Postfix
+---@class rust_analyzer.settings.RustAnalyzer.Completion.Postfix
 ---Show postfix snippets like `dbg`, `if`, `not`, etc.
 ---
 ---```lua
@@ -375,12 +375,12 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Completion.PrivateEditable
+---@class rust_analyzer.settings.RustAnalyzer.Completion.PrivateEditable
 ---Show completions of private items and fields that are defined in the current workspace
 ---even if they are not visible at the current position.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Completion.Snippets
+---@class rust_analyzer.settings.RustAnalyzer.Completion.Snippets
 ---Custom completion snippets.
 ---
 ---```lua
@@ -428,7 +428,7 @@
 ---```
 ---@field custom? table
 
----@class settings.rust_analyzer.RustAnalyzer.Completion.TermSearch
+---@class rust_analyzer.settings.RustAnalyzer.Completion.TermSearch
 ---Enable term search based snippets like `Some(foo.bar().baz())`.
 ---@field enable? boolean
 ---Term search fuel in "units of work" for autocompletion (Defaults to 1000).
@@ -438,7 +438,7 @@
 ---```
 ---@field fuel? integer
 
----@class settings.rust_analyzer.RustAnalyzer.Completion.Turbofish
+---@class rust_analyzer.settings.RustAnalyzer.Completion.Turbofish
 ---Complete turbofish (`::<>`) at the call site (if needed).
 ---
 ---```lua
@@ -446,7 +446,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Completion
+---@class rust_analyzer.settings.RustAnalyzer.Completion
 ---Automatically add `::` when completing the module.
 ---
 ---Will not be completed in `use`.
@@ -463,11 +463,11 @@
 ---default = true
 ---```
 ---@field addSemicolonToUnit? boolean
----@field autoAwait? settings.rust_analyzer.RustAnalyzer.Completion.AutoAwait
----@field autoIter? settings.rust_analyzer.RustAnalyzer.Completion.AutoIter
----@field autoimport? settings.rust_analyzer.RustAnalyzer.Completion.Autoimport
----@field autoself? settings.rust_analyzer.RustAnalyzer.Completion.Autoself
----@field callable? settings.rust_analyzer.RustAnalyzer.Completion.Callable
+---@field autoAwait? rust_analyzer.settings.RustAnalyzer.Completion.AutoAwait
+---@field autoIter? rust_analyzer.settings.RustAnalyzer.Completion.AutoIter
+---@field autoimport? rust_analyzer.settings.RustAnalyzer.Completion.Autoimport
+---@field autoself? rust_analyzer.settings.RustAnalyzer.Completion.Autoself
+---@field callable? rust_analyzer.settings.RustAnalyzer.Completion.Callable
 ---A list of full paths to traits whose methods to exclude from completion.
 ---
 ---Methods from these traits won't be completed, even if the trait is in scope. However,
@@ -480,19 +480,19 @@
 ---default = {}
 ---```
 ---@field excludeTraits? string[]
----@field fullFunctionSignatures? settings.rust_analyzer.RustAnalyzer.Completion.FullFunctionSignatures
+---@field fullFunctionSignatures? rust_analyzer.settings.RustAnalyzer.Completion.FullFunctionSignatures
 ---Omit deprecated items from completions. By default they are marked as deprecated but not
 ---hidden.
 ---@field hideDeprecated? boolean
 ---Maximum number of completions to return. If `None`, the limit is infinite.
 ---@field limit? integer
----@field postfix? settings.rust_analyzer.RustAnalyzer.Completion.Postfix
----@field privateEditable? settings.rust_analyzer.RustAnalyzer.Completion.PrivateEditable
----@field snippets? settings.rust_analyzer.RustAnalyzer.Completion.Snippets
----@field termSearch? settings.rust_analyzer.RustAnalyzer.Completion.TermSearch
----@field turbofish? settings.rust_analyzer.RustAnalyzer.Completion.Turbofish
+---@field postfix? rust_analyzer.settings.RustAnalyzer.Completion.Postfix
+---@field privateEditable? rust_analyzer.settings.RustAnalyzer.Completion.PrivateEditable
+---@field snippets? rust_analyzer.settings.RustAnalyzer.Completion.Snippets
+---@field termSearch? rust_analyzer.settings.RustAnalyzer.Completion.TermSearch
+---@field turbofish? rust_analyzer.settings.RustAnalyzer.Completion.Turbofish
 
----@class settings.rust_analyzer.RustAnalyzer.Debug
+---@class rust_analyzer.settings.RustAnalyzer.Debug
 ---Whether to rebuild the project modules before debugging the same test again
 ---@field buildBeforeRestart? boolean
 ---Preferred debug engine.
@@ -516,16 +516,16 @@
 ---```
 ---@field sourceFileMap? table|string
 
----@class settings.rust_analyzer.RustAnalyzer.Diagnostics.Experimental
+---@class rust_analyzer.settings.RustAnalyzer.Diagnostics.Experimental
 ---Show experimental rust-analyzer diagnostics that might have more false positives than
 ---usual.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Diagnostics.StyleLints
+---@class rust_analyzer.settings.RustAnalyzer.Diagnostics.StyleLints
 ---Run additional style lints.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Diagnostics
+---@class rust_analyzer.settings.RustAnalyzer.Diagnostics
 ---List of rust-analyzer diagnostics to disable.
 ---
 ---```lua
@@ -538,7 +538,7 @@
 ---default = true
 ---```
 ---@field enable? boolean
----@field experimental? settings.rust_analyzer.RustAnalyzer.Diagnostics.Experimental
+---@field experimental? rust_analyzer.settings.RustAnalyzer.Diagnostics.Experimental
 ---Whether to show the main part of the rendered rustc output of a diagnostic message.
 ---@field previewRustcOutput? boolean
 ---Map of prefixes to be substituted when parsing diagnostic file paths. This should be the
@@ -548,7 +548,7 @@
 ---default = {}
 ---```
 ---@field remapPrefix? table
----@field styleLints? settings.rust_analyzer.RustAnalyzer.Diagnostics.StyleLints
+---@field styleLints? rust_analyzer.settings.RustAnalyzer.Diagnostics.StyleLints
 ---Whether to show diagnostics using the original rustc error code. If this is false, all rustc diagnostics will have the code 'rustc(Click for full compiler diagnostics)'
 ---@field useRustcErrorCode? boolean
 ---List of warnings that should be displayed with hint severity.
@@ -570,7 +570,7 @@
 ---```
 ---@field warningsAsInfo? string[]
 
----@class settings.rust_analyzer.RustAnalyzer.Document.Symbol.Search
+---@class rust_analyzer.settings.RustAnalyzer.Document.Symbol.Search
 ---Exclude all locals from document symbol search.
 ---
 ---```lua
@@ -578,13 +578,13 @@
 ---```
 ---@field excludeLocals? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Document.Symbol
----@field search? settings.rust_analyzer.RustAnalyzer.Document.Symbol.Search
+---@class rust_analyzer.settings.RustAnalyzer.Document.Symbol
+---@field search? rust_analyzer.settings.RustAnalyzer.Document.Symbol.Search
 
----@class settings.rust_analyzer.RustAnalyzer.Document
----@field symbol? settings.rust_analyzer.RustAnalyzer.Document.Symbol
+---@class rust_analyzer.settings.RustAnalyzer.Document
+---@field symbol? rust_analyzer.settings.RustAnalyzer.Document.Symbol
 
----@class settings.rust_analyzer.RustAnalyzer.Files
+---@class rust_analyzer.settings.RustAnalyzer.Files
 ---List of files to ignore
 ---
 ---These paths (file/directories) will be ignored by rust-analyzer. They are relative to
@@ -602,11 +602,11 @@
 ---```
 ---@field watcher? "client"|"server"
 
----@class settings.rust_analyzer.RustAnalyzer.GotoImplementations
+---@class rust_analyzer.settings.RustAnalyzer.GotoImplementations
 ---If this is `true`, when "Goto Implementations" and in "Implementations" lens, are triggered on a `struct` or `enum` or `union`, we filter out trait implementations that originate from `derive`s above the type.
 ---@field filterAdjacentDerives? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.HighlightRelated.BranchExitPoints
+---@class rust_analyzer.settings.RustAnalyzer.HighlightRelated.BranchExitPoints
 ---Highlight related return values while the cursor is on any `match`, `if`, or match arm
 ---arrow (`=>`).
 ---
@@ -615,7 +615,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.HighlightRelated.BreakPoints
+---@class rust_analyzer.settings.RustAnalyzer.HighlightRelated.BreakPoints
 ---Highlight related references while the cursor is on `break`, `loop`, `while`, or `for`
 ---keywords.
 ---
@@ -624,7 +624,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.HighlightRelated.ClosureCaptures
+---@class rust_analyzer.settings.RustAnalyzer.HighlightRelated.ClosureCaptures
 ---Highlight all captures of a closure while the cursor is on the `|` or move keyword of a closure.
 ---
 ---```lua
@@ -632,7 +632,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.HighlightRelated.ExitPoints
+---@class rust_analyzer.settings.RustAnalyzer.HighlightRelated.ExitPoints
 ---Highlight all exit points while the cursor is on any `return`, `?`, `fn`, or return type
 ---arrow (`->`).
 ---
@@ -641,7 +641,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.HighlightRelated.References
+---@class rust_analyzer.settings.RustAnalyzer.HighlightRelated.References
 ---Highlight related references while the cursor is on any identifier.
 ---
 ---```lua
@@ -649,7 +649,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.HighlightRelated.YieldPoints
+---@class rust_analyzer.settings.RustAnalyzer.HighlightRelated.YieldPoints
 ---Highlight all break points for a loop or block context while the cursor is on any
 ---`async` or `await` keywords.
 ---
@@ -658,15 +658,15 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.HighlightRelated
----@field branchExitPoints? settings.rust_analyzer.RustAnalyzer.HighlightRelated.BranchExitPoints
----@field breakPoints? settings.rust_analyzer.RustAnalyzer.HighlightRelated.BreakPoints
----@field closureCaptures? settings.rust_analyzer.RustAnalyzer.HighlightRelated.ClosureCaptures
----@field exitPoints? settings.rust_analyzer.RustAnalyzer.HighlightRelated.ExitPoints
----@field references? settings.rust_analyzer.RustAnalyzer.HighlightRelated.References
----@field yieldPoints? settings.rust_analyzer.RustAnalyzer.HighlightRelated.YieldPoints
+---@class rust_analyzer.settings.RustAnalyzer.HighlightRelated
+---@field branchExitPoints? rust_analyzer.settings.RustAnalyzer.HighlightRelated.BranchExitPoints
+---@field breakPoints? rust_analyzer.settings.RustAnalyzer.HighlightRelated.BreakPoints
+---@field closureCaptures? rust_analyzer.settings.RustAnalyzer.HighlightRelated.ClosureCaptures
+---@field exitPoints? rust_analyzer.settings.RustAnalyzer.HighlightRelated.ExitPoints
+---@field references? rust_analyzer.settings.RustAnalyzer.HighlightRelated.References
+---@field yieldPoints? rust_analyzer.settings.RustAnalyzer.HighlightRelated.YieldPoints
 
----@class settings.rust_analyzer.RustAnalyzer.Hover.Actions.Debug
+---@class rust_analyzer.settings.RustAnalyzer.Hover.Actions.Debug
 ---Show `Debug` action. Only applies when `#rust-analyzer.hover.actions.enable#` is set.
 ---
 ---```lua
@@ -674,7 +674,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Hover.Actions.GotoTypeDef
+---@class rust_analyzer.settings.RustAnalyzer.Hover.Actions.GotoTypeDef
 ---Show `Go to Type Definition` action. Only applies when
 ---`#rust-analyzer.hover.actions.enable#` is set.
 ---
@@ -683,7 +683,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Hover.Actions.Implementations
+---@class rust_analyzer.settings.RustAnalyzer.Hover.Actions.Implementations
 ---Show `Implementations` action. Only applies when `#rust-analyzer.hover.actions.enable#`
 ---is set.
 ---
@@ -692,12 +692,12 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Hover.Actions.References
+---@class rust_analyzer.settings.RustAnalyzer.Hover.Actions.References
 ---Show `References` action. Only applies when `#rust-analyzer.hover.actions.enable#` is
 ---set.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Hover.Actions.Run
+---@class rust_analyzer.settings.RustAnalyzer.Hover.Actions.Run
 ---Show `Run` action. Only applies when `#rust-analyzer.hover.actions.enable#` is set.
 ---
 ---```lua
@@ -705,7 +705,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Hover.Actions.UpdateTest
+---@class rust_analyzer.settings.RustAnalyzer.Hover.Actions.UpdateTest
 ---Show `Update Test` action. Only applies when `#rust-analyzer.hover.actions.enable#` and
 ---`#rust-analyzer.hover.actions.run.enable#` are set.
 ---
@@ -714,21 +714,21 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Hover.Actions
----@field debug? settings.rust_analyzer.RustAnalyzer.Hover.Actions.Debug
+---@class rust_analyzer.settings.RustAnalyzer.Hover.Actions
+---@field debug? rust_analyzer.settings.RustAnalyzer.Hover.Actions.Debug
 ---Show HoverActions in Rust files.
 ---
 ---```lua
 ---default = true
 ---```
 ---@field enable? boolean
----@field gotoTypeDef? settings.rust_analyzer.RustAnalyzer.Hover.Actions.GotoTypeDef
----@field implementations? settings.rust_analyzer.RustAnalyzer.Hover.Actions.Implementations
----@field references? settings.rust_analyzer.RustAnalyzer.Hover.Actions.References
----@field run? settings.rust_analyzer.RustAnalyzer.Hover.Actions.Run
----@field updateTest? settings.rust_analyzer.RustAnalyzer.Hover.Actions.UpdateTest
+---@field gotoTypeDef? rust_analyzer.settings.RustAnalyzer.Hover.Actions.GotoTypeDef
+---@field implementations? rust_analyzer.settings.RustAnalyzer.Hover.Actions.Implementations
+---@field references? rust_analyzer.settings.RustAnalyzer.Hover.Actions.References
+---@field run? rust_analyzer.settings.RustAnalyzer.Hover.Actions.Run
+---@field updateTest? rust_analyzer.settings.RustAnalyzer.Hover.Actions.UpdateTest
 
----@class settings.rust_analyzer.RustAnalyzer.Hover.Documentation.Keywords
+---@class rust_analyzer.settings.RustAnalyzer.Hover.Documentation.Keywords
 ---Show keyword hover popups. Only applies when
 ---`#rust-analyzer.hover.documentation.enable#` is set.
 ---
@@ -737,16 +737,16 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Hover.Documentation
+---@class rust_analyzer.settings.RustAnalyzer.Hover.Documentation
 ---Show documentation on hover.
 ---
 ---```lua
 ---default = true
 ---```
 ---@field enable? boolean
----@field keywords? settings.rust_analyzer.RustAnalyzer.Hover.Documentation.Keywords
+---@field keywords? rust_analyzer.settings.RustAnalyzer.Hover.Documentation.Keywords
 
----@class settings.rust_analyzer.RustAnalyzer.Hover.DropGlue
+---@class rust_analyzer.settings.RustAnalyzer.Hover.DropGlue
 ---Show drop glue information on hover.
 ---
 ---```lua
@@ -754,7 +754,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Hover.Links
+---@class rust_analyzer.settings.RustAnalyzer.Hover.Links
 ---Use markdown syntax for links on hover.
 ---
 ---```lua
@@ -762,7 +762,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Hover.MemoryLayout
+---@class rust_analyzer.settings.RustAnalyzer.Hover.MemoryLayout
 ---How to render the align information in a memory layout hover.
 ---
 ---```lua
@@ -792,7 +792,7 @@
 ---```
 ---@field size? "both"|"decimal"|"hexadecimal"
 
----@class settings.rust_analyzer.RustAnalyzer.Hover.Show
+---@class rust_analyzer.settings.RustAnalyzer.Hover.Show
 ---How many variants of an enum to display when hovering on. Show none if empty.
 ---
 ---```lua
@@ -809,11 +809,11 @@
 ---How many associated items of a trait to display when hovering a trait.
 ---@field traitAssocItems? integer
 
----@class settings.rust_analyzer.RustAnalyzer.Hover
----@field actions? settings.rust_analyzer.RustAnalyzer.Hover.Actions
----@field documentation? settings.rust_analyzer.RustAnalyzer.Hover.Documentation
----@field dropGlue? settings.rust_analyzer.RustAnalyzer.Hover.DropGlue
----@field links? settings.rust_analyzer.RustAnalyzer.Hover.Links
+---@class rust_analyzer.settings.RustAnalyzer.Hover
+---@field actions? rust_analyzer.settings.RustAnalyzer.Hover.Actions
+---@field documentation? rust_analyzer.settings.RustAnalyzer.Hover.Documentation
+---@field dropGlue? rust_analyzer.settings.RustAnalyzer.Hover.DropGlue
+---@field links? rust_analyzer.settings.RustAnalyzer.Hover.Links
 ---Show what types are used as generic arguments in calls etc. on hover, and limit the max
 ---length to show such types, beyond which they will be shown with ellipsis.
 ---
@@ -826,10 +826,10 @@
 ---default = 20
 ---```
 ---@field maxSubstitutionLength? "hide"|integer
----@field memoryLayout? settings.rust_analyzer.RustAnalyzer.Hover.MemoryLayout
----@field show? settings.rust_analyzer.RustAnalyzer.Hover.Show
+---@field memoryLayout? rust_analyzer.settings.RustAnalyzer.Hover.MemoryLayout
+---@field show? rust_analyzer.settings.RustAnalyzer.Hover.Show
 
----@class settings.rust_analyzer.RustAnalyzer.Imports.Granularity
+---@class rust_analyzer.settings.RustAnalyzer.Imports.Granularity
 ---Enforce the import granularity setting for all files. If set to false rust-analyzer will
 ---try to keep import styles consistent per file.
 ---@field enforce? boolean
@@ -840,7 +840,7 @@
 ---```
 ---@field group? "crate"|"module"|"item"|"one"|"preserve"
 
----@class settings.rust_analyzer.RustAnalyzer.Imports.Group
+---@class rust_analyzer.settings.RustAnalyzer.Imports.Group
 ---Group inserted imports by the [following
 ---order](https://rust-analyzer.github.io/book/features.html#auto-import). Groups are
 ---separated by newlines.
@@ -850,7 +850,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Imports.Merge
+---@class rust_analyzer.settings.RustAnalyzer.Imports.Merge
 ---Allow import insertion to merge new imports into single path glob imports like `use
 ---std::fmt::*;`.
 ---
@@ -859,10 +859,10 @@
 ---```
 ---@field glob? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Imports
----@field granularity? settings.rust_analyzer.RustAnalyzer.Imports.Granularity
----@field group? settings.rust_analyzer.RustAnalyzer.Imports.Group
----@field merge? settings.rust_analyzer.RustAnalyzer.Imports.Merge
+---@class rust_analyzer.settings.RustAnalyzer.Imports
+---@field granularity? rust_analyzer.settings.RustAnalyzer.Imports.Granularity
+---@field group? rust_analyzer.settings.RustAnalyzer.Imports.Group
+---@field merge? rust_analyzer.settings.RustAnalyzer.Imports.Merge
 ---Prefer to unconditionally use imports of the core and alloc crate, over the std crate.
 ---@field preferNoStd? boolean
 ---Prefer import paths containing a `prelude` module.
@@ -878,11 +878,11 @@
 ---E.g. `use ::std::io::Read;`.
 ---@field prefixExternPrelude? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.BindingModeHints
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.BindingModeHints
 ---Show inlay type hints for binding modes.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.ChainingHints
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.ChainingHints
 ---Show inlay type hints for method chains.
 ---
 ---```lua
@@ -890,7 +890,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.ClosingBraceHints
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.ClosingBraceHints
 ---Show inlay hints after a closing `}` to indicate what item it belongs to.
 ---
 ---```lua
@@ -905,11 +905,11 @@
 ---```
 ---@field minLines? integer
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.ClosureCaptureHints
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.ClosureCaptureHints
 ---Show inlay hints for closure and coroutine captures.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.ClosureReturnTypeHints
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.ClosureReturnTypeHints
 ---Show inlay type hints for return types of closures.
 ---
 ---```lua
@@ -917,7 +917,7 @@
 ---```
 ---@field enable? "always"|"never"|"with_block"
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.DiscriminantHints
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.DiscriminantHints
 ---Show enum variant discriminant hints.
 ---
 ---```lua
@@ -925,7 +925,7 @@
 ---```
 ---@field enable? "always"|"never"|"fieldless"
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.ExpressionAdjustmentHints
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.ExpressionAdjustmentHints
 ---Disable reborrows in expression adjustments inlay hints.
 ---
 ---Reborrows are a pair of a builtin deref then borrow, i.e. `&*`. They are inserted by the compiler but are mostly useless to the programmer.
@@ -951,7 +951,7 @@
 ---```
 ---@field mode? "prefix"|"postfix"|"prefer_prefix"|"prefer_postfix"
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.GenericParameterHints.Const
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.GenericParameterHints.Const
 ---Show const generic parameter name inlay hints.
 ---
 ---```lua
@@ -959,28 +959,28 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.GenericParameterHints.Lifetime
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.GenericParameterHints.Lifetime
 ---Show generic lifetime parameter name inlay hints.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.GenericParameterHints.Type
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.GenericParameterHints.Type
 ---Show generic type parameter name inlay hints.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.GenericParameterHints
----@field const? settings.rust_analyzer.RustAnalyzer.InlayHints.GenericParameterHints.Const
----@field lifetime? settings.rust_analyzer.RustAnalyzer.InlayHints.GenericParameterHints.Lifetime
----@field type? settings.rust_analyzer.RustAnalyzer.InlayHints.GenericParameterHints.Type
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.GenericParameterHints
+---@field const? rust_analyzer.settings.RustAnalyzer.InlayHints.GenericParameterHints.Const
+---@field lifetime? rust_analyzer.settings.RustAnalyzer.InlayHints.GenericParameterHints.Lifetime
+---@field type? rust_analyzer.settings.RustAnalyzer.InlayHints.GenericParameterHints.Type
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.ImplicitDrops
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.ImplicitDrops
 ---Show implicit drop hints.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.ImplicitSizedBoundHints
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.ImplicitSizedBoundHints
 ---Show inlay hints for the implied type parameter `Sized` bound.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.ImpliedDynTraitHints
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.ImpliedDynTraitHints
 ---Show inlay hints for the implied `dyn` keyword in trait object types.
 ---
 ---```lua
@@ -988,7 +988,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.LifetimeElisionHints
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.LifetimeElisionHints
 ---Show inlay type hints for elided lifetimes in function signatures.
 ---
 ---```lua
@@ -998,24 +998,24 @@
 ---Prefer using parameter names as the name for elided lifetime hints if possible.
 ---@field useParameterNames? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.ParameterHints.MissingArguments
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.ParameterHints.MissingArguments
 ---Show parameter name inlay hints for missing arguments at the call site.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.ParameterHints
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.ParameterHints
 ---Show function parameter name inlay hints at the call site.
 ---
 ---```lua
 ---default = true
 ---```
 ---@field enable? boolean
----@field missingArguments? settings.rust_analyzer.RustAnalyzer.InlayHints.ParameterHints.MissingArguments
+---@field missingArguments? rust_analyzer.settings.RustAnalyzer.InlayHints.ParameterHints.MissingArguments
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.RangeExclusiveHints
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.RangeExclusiveHints
 ---Show exclusive range inlay hints.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.ReborrowHints
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.ReborrowHints
 ---Show inlay hints for compiler inserted reborrows.
 ---
 ---This setting is deprecated in favor of
@@ -1026,7 +1026,7 @@
 ---```
 ---@field enable? "always"|"never"|"mutable"
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints.TypeHints
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints.TypeHints
 ---Show inlay type hints for variables.
 ---
 ---```lua
@@ -1051,25 +1051,25 @@
 ---```
 ---@field location? "inline"|"end_of_line"
 
----@class settings.rust_analyzer.RustAnalyzer.InlayHints
----@field bindingModeHints? settings.rust_analyzer.RustAnalyzer.InlayHints.BindingModeHints
----@field chainingHints? settings.rust_analyzer.RustAnalyzer.InlayHints.ChainingHints
----@field closingBraceHints? settings.rust_analyzer.RustAnalyzer.InlayHints.ClosingBraceHints
----@field closureCaptureHints? settings.rust_analyzer.RustAnalyzer.InlayHints.ClosureCaptureHints
----@field closureReturnTypeHints? settings.rust_analyzer.RustAnalyzer.InlayHints.ClosureReturnTypeHints
+---@class rust_analyzer.settings.RustAnalyzer.InlayHints
+---@field bindingModeHints? rust_analyzer.settings.RustAnalyzer.InlayHints.BindingModeHints
+---@field chainingHints? rust_analyzer.settings.RustAnalyzer.InlayHints.ChainingHints
+---@field closingBraceHints? rust_analyzer.settings.RustAnalyzer.InlayHints.ClosingBraceHints
+---@field closureCaptureHints? rust_analyzer.settings.RustAnalyzer.InlayHints.ClosureCaptureHints
+---@field closureReturnTypeHints? rust_analyzer.settings.RustAnalyzer.InlayHints.ClosureReturnTypeHints
 ---Closure notation in type and chaining inlay hints.
 ---
 ---```lua
 ---default = "impl_fn"
 ---```
 ---@field closureStyle? "impl_fn"|"rust_analyzer"|"with_id"|"hide"
----@field discriminantHints? settings.rust_analyzer.RustAnalyzer.InlayHints.DiscriminantHints
----@field expressionAdjustmentHints? settings.rust_analyzer.RustAnalyzer.InlayHints.ExpressionAdjustmentHints
----@field genericParameterHints? settings.rust_analyzer.RustAnalyzer.InlayHints.GenericParameterHints
----@field implicitDrops? settings.rust_analyzer.RustAnalyzer.InlayHints.ImplicitDrops
----@field implicitSizedBoundHints? settings.rust_analyzer.RustAnalyzer.InlayHints.ImplicitSizedBoundHints
----@field impliedDynTraitHints? settings.rust_analyzer.RustAnalyzer.InlayHints.ImpliedDynTraitHints
----@field lifetimeElisionHints? settings.rust_analyzer.RustAnalyzer.InlayHints.LifetimeElisionHints
+---@field discriminantHints? rust_analyzer.settings.RustAnalyzer.InlayHints.DiscriminantHints
+---@field expressionAdjustmentHints? rust_analyzer.settings.RustAnalyzer.InlayHints.ExpressionAdjustmentHints
+---@field genericParameterHints? rust_analyzer.settings.RustAnalyzer.InlayHints.GenericParameterHints
+---@field implicitDrops? rust_analyzer.settings.RustAnalyzer.InlayHints.ImplicitDrops
+---@field implicitSizedBoundHints? rust_analyzer.settings.RustAnalyzer.InlayHints.ImplicitSizedBoundHints
+---@field impliedDynTraitHints? rust_analyzer.settings.RustAnalyzer.InlayHints.ImpliedDynTraitHints
+---@field lifetimeElisionHints? rust_analyzer.settings.RustAnalyzer.InlayHints.LifetimeElisionHints
 ---Maximum length for inlay hints. Set to null to have an unlimited length.
 ---
 ---**Note:** This is mostly a hint, and we don't guarantee to strictly follow the limit.
@@ -1078,22 +1078,22 @@
 ---default = 25
 ---```
 ---@field maxLength? integer
----@field parameterHints? settings.rust_analyzer.RustAnalyzer.InlayHints.ParameterHints
----@field rangeExclusiveHints? settings.rust_analyzer.RustAnalyzer.InlayHints.RangeExclusiveHints
----@field reborrowHints? settings.rust_analyzer.RustAnalyzer.InlayHints.ReborrowHints
+---@field parameterHints? rust_analyzer.settings.RustAnalyzer.InlayHints.ParameterHints
+---@field rangeExclusiveHints? rust_analyzer.settings.RustAnalyzer.InlayHints.RangeExclusiveHints
+---@field reborrowHints? rust_analyzer.settings.RustAnalyzer.InlayHints.ReborrowHints
 ---Whether to render leading colons for type hints, and trailing colons for parameter hints.
 ---
 ---```lua
 ---default = true
 ---```
 ---@field renderColons? boolean
----@field typeHints? settings.rust_analyzer.RustAnalyzer.InlayHints.TypeHints
+---@field typeHints? rust_analyzer.settings.RustAnalyzer.InlayHints.TypeHints
 
----@class settings.rust_analyzer.RustAnalyzer.Interpret
+---@class rust_analyzer.settings.RustAnalyzer.Interpret
 ---Enable the experimental support for interpreting tests.
 ---@field tests? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.JoinLines
+---@class rust_analyzer.settings.RustAnalyzer.JoinLines
 ---Join lines merges consecutive declaration and initialization of an assignment.
 ---
 ---```lua
@@ -1119,7 +1119,7 @@
 ---```
 ---@field unwrapTrivialBlock? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Lens.Debug
+---@class rust_analyzer.settings.RustAnalyzer.Lens.Debug
 ---Show `Debug` lens. Only applies when `#rust-analyzer.lens.enable#` is set.
 ---
 ---```lua
@@ -1127,7 +1127,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Lens.Implementations
+---@class rust_analyzer.settings.RustAnalyzer.Lens.Implementations
 ---Show `Implementations` lens. Only applies when `#rust-analyzer.lens.enable#` is set.
 ---
 ---```lua
@@ -1135,32 +1135,32 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Lens.References.Adt
+---@class rust_analyzer.settings.RustAnalyzer.Lens.References.Adt
 ---Show `References` lens for Struct, Enum, and Union. Only applies when
 ---`#rust-analyzer.lens.enable#` is set.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Lens.References.EnumVariant
+---@class rust_analyzer.settings.RustAnalyzer.Lens.References.EnumVariant
 ---Show `References` lens for Enum Variants. Only applies when
 ---`#rust-analyzer.lens.enable#` is set.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Lens.References.Method
+---@class rust_analyzer.settings.RustAnalyzer.Lens.References.Method
 ---Show `Method References` lens. Only applies when `#rust-analyzer.lens.enable#` is set.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Lens.References.Trait
+---@class rust_analyzer.settings.RustAnalyzer.Lens.References.Trait
 ---Show `References` lens for Trait. Only applies when `#rust-analyzer.lens.enable#` is
 ---set.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Lens.References
----@field adt? settings.rust_analyzer.RustAnalyzer.Lens.References.Adt
----@field enumVariant? settings.rust_analyzer.RustAnalyzer.Lens.References.EnumVariant
----@field method? settings.rust_analyzer.RustAnalyzer.Lens.References.Method
----@field trait? settings.rust_analyzer.RustAnalyzer.Lens.References.Trait
+---@class rust_analyzer.settings.RustAnalyzer.Lens.References
+---@field adt? rust_analyzer.settings.RustAnalyzer.Lens.References.Adt
+---@field enumVariant? rust_analyzer.settings.RustAnalyzer.Lens.References.EnumVariant
+---@field method? rust_analyzer.settings.RustAnalyzer.Lens.References.Method
+---@field trait? rust_analyzer.settings.RustAnalyzer.Lens.References.Trait
 
----@class settings.rust_analyzer.RustAnalyzer.Lens.Run
+---@class rust_analyzer.settings.RustAnalyzer.Lens.Run
 ---Show `Run` lens. Only applies when `#rust-analyzer.lens.enable#` is set.
 ---
 ---```lua
@@ -1168,7 +1168,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Lens.UpdateTest
+---@class rust_analyzer.settings.RustAnalyzer.Lens.UpdateTest
 ---Show `Update Test` lens. Only applies when `#rust-analyzer.lens.enable#` and
 ---`#rust-analyzer.lens.run.enable#` are set.
 ---
@@ -1177,26 +1177,26 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Lens
----@field debug? settings.rust_analyzer.RustAnalyzer.Lens.Debug
+---@class rust_analyzer.settings.RustAnalyzer.Lens
+---@field debug? rust_analyzer.settings.RustAnalyzer.Lens.Debug
 ---Show CodeLens in Rust files.
 ---
 ---```lua
 ---default = true
 ---```
 ---@field enable? boolean
----@field implementations? settings.rust_analyzer.RustAnalyzer.Lens.Implementations
+---@field implementations? rust_analyzer.settings.RustAnalyzer.Lens.Implementations
 ---Where to render annotations.
 ---
 ---```lua
 ---default = "above_name"
 ---```
 ---@field location? "above_name"|"above_whole_item"
----@field references? settings.rust_analyzer.RustAnalyzer.Lens.References
----@field run? settings.rust_analyzer.RustAnalyzer.Lens.Run
----@field updateTest? settings.rust_analyzer.RustAnalyzer.Lens.UpdateTest
+---@field references? rust_analyzer.settings.RustAnalyzer.Lens.References
+---@field run? rust_analyzer.settings.RustAnalyzer.Lens.Run
+---@field updateTest? rust_analyzer.settings.RustAnalyzer.Lens.UpdateTest
 
----@class settings.rust_analyzer.RustAnalyzer.Lru.Query
+---@class rust_analyzer.settings.RustAnalyzer.Lru.Query
 ---The LRU capacity of the specified queries.
 ---
 ---```lua
@@ -1204,12 +1204,12 @@
 ---```
 ---@field capacities? table
 
----@class settings.rust_analyzer.RustAnalyzer.Lru
+---@class rust_analyzer.settings.RustAnalyzer.Lru
 ---Number of syntax trees rust-analyzer keeps in memory. Defaults to 128.
 ---@field capacity? integer
----@field query? settings.rust_analyzer.RustAnalyzer.Lru.Query
+---@field query? rust_analyzer.settings.RustAnalyzer.Lru.Query
 
----@class settings.rust_analyzer.RustAnalyzer.Notifications
+---@class rust_analyzer.settings.RustAnalyzer.Notifications
 ---Show `can't find Cargo.toml` error message.
 ---
 ---```lua
@@ -1217,7 +1217,7 @@
 ---```
 ---@field cargoTomlNotFound? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.ProcMacro.Attributes
+---@class rust_analyzer.settings.RustAnalyzer.ProcMacro.Attributes
 ---Expand attribute macros. Requires `#rust-analyzer.procMacro.enable#` to be set.
 ---
 ---```lua
@@ -1225,8 +1225,8 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.ProcMacro
----@field attributes? settings.rust_analyzer.RustAnalyzer.ProcMacro.Attributes
+---@class rust_analyzer.settings.RustAnalyzer.ProcMacro
+---@field attributes? rust_analyzer.settings.RustAnalyzer.ProcMacro.Attributes
 ---Enable support for procedural macros, implies `#rust-analyzer.cargo.buildScripts.enable#`.
 ---
 ---```lua
@@ -1253,14 +1253,14 @@
 ---Internal config, path to proc-macro server executable.
 ---@field server? string
 
----@class settings.rust_analyzer.RustAnalyzer.Profiling
+---@class rust_analyzer.settings.RustAnalyzer.Profiling
 ---The path where to save memory profiling output.
 ---
 ---**Note:** Memory profiling is not enabled by default in rust-analyzer builds, you need to build
 ---from source for it.
 ---@field memoryProfile? string
 
----@class settings.rust_analyzer.RustAnalyzer.ProjectCreation
+---@class rust_analyzer.settings.RustAnalyzer.ProjectCreation
 ---Control what happens after `rust-analyzer: Create New Project...` finishes creating a Cargo project.
 ---
 ---```lua
@@ -1268,13 +1268,13 @@
 ---```
 ---@field openAfterCreate? "ask"|"open"|"openNewWindow"|"addToWorkspace"
 
----@class settings.rust_analyzer.RustAnalyzer.References
+---@class rust_analyzer.settings.RustAnalyzer.References
 ---Exclude imports from find-all-references.
 ---@field excludeImports? boolean
 ---Exclude tests from find-all-references and call-hierarchy.
 ---@field excludeTests? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Rename
+---@class rust_analyzer.settings.RustAnalyzer.Rename
 ---Whether to warn when a rename will cause conflicts (change the meaning of the code).
 ---
 ---```lua
@@ -1282,7 +1282,7 @@
 ---```
 ---@field showConflicts? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Runnables.Bench
+---@class rust_analyzer.settings.RustAnalyzer.Runnables.Bench
 ---Subcommand used for bench runnables instead of `bench`.
 ---
 ---```lua
@@ -1303,7 +1303,7 @@
 ---    (includes `rust-analyzer.runnables.extraTestBinaryArgs`).
 ---@field overrideCommand? string[]
 
----@class settings.rust_analyzer.RustAnalyzer.Runnables.Doctest
+---@class rust_analyzer.settings.RustAnalyzer.Runnables.Doctest
 ---Override the command used for doc-test runnables.
 ---The first element of the array should be the program to execute (for example, `cargo`).
 ---
@@ -1318,7 +1318,7 @@
 ---    (includes `rust-analyzer.runnables.extraTestBinaryArgs`).
 ---@field overrideCommand? string[]
 
----@class settings.rust_analyzer.RustAnalyzer.Runnables.Test
+---@class rust_analyzer.settings.RustAnalyzer.Runnables.Test
 ---Subcommand used for test runnables instead of `test`.
 ---
 ---```lua
@@ -1339,17 +1339,17 @@
 ---    (includes `rust-analyzer.runnables.extraTestBinaryArgs`).
 ---@field overrideCommand? string[]
 
----@class settings.rust_analyzer.RustAnalyzer.Runnables
+---@class rust_analyzer.settings.RustAnalyzer.Runnables
 ---Ask before updating the test when running it.
 ---
 ---```lua
 ---default = true
 ---```
 ---@field askBeforeUpdateTest? boolean
----@field bench? settings.rust_analyzer.RustAnalyzer.Runnables.Bench
+---@field bench? rust_analyzer.settings.RustAnalyzer.Runnables.Bench
 ---Command to be executed instead of 'cargo' for runnables.
 ---@field command? string
----@field doctest? settings.rust_analyzer.RustAnalyzer.Runnables.Doctest
+---@field doctest? rust_analyzer.settings.RustAnalyzer.Runnables.Doctest
 ---Additional arguments to be passed to cargo for runnables such as
 ---tests or binaries. For example, it may be `--release`.
 ---
@@ -1377,9 +1377,9 @@
 ---default = { "$rustc" }
 ---```
 ---@field problemMatcher? string[]
----@field test? settings.rust_analyzer.RustAnalyzer.Runnables.Test
+---@field test? rust_analyzer.settings.RustAnalyzer.Runnables.Test
 
----@class settings.rust_analyzer.RustAnalyzer.Rustc
+---@class rust_analyzer.settings.RustAnalyzer.Rustc
 ---Path to the Cargo.toml of the rust compiler workspace, for usage in rustc_private
 ---projects, or "discover" to try to automatically find it if the `rustc-dev` component
 ---is installed.
@@ -1390,13 +1390,13 @@
 ---This option does not take effect until rust-analyzer is restarted.
 ---@field source? string
 
----@class settings.rust_analyzer.RustAnalyzer.Rustfmt.RangeFormatting
+---@class rust_analyzer.settings.RustAnalyzer.Rustfmt.RangeFormatting
 ---Enables the use of rustfmt's unstable range formatting command for the
 ---`textDocument/rangeFormatting` request. The rustfmt option is unstable and only
 ---available on a nightly build.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.Rustfmt
+---@class rust_analyzer.settings.RustAnalyzer.Rustfmt
 ---Additional arguments to `rustfmt`.
 ---
 ---```lua
@@ -1412,9 +1412,9 @@
 ---Note: The option must be specified as an array of command line arguments, with
 ---the first argument being the name of the command to run.
 ---@field overrideCommand? string[]
----@field rangeFormatting? settings.rust_analyzer.RustAnalyzer.Rustfmt.RangeFormatting
+---@field rangeFormatting? rust_analyzer.settings.RustAnalyzer.Rustfmt.RangeFormatting
 
----@class settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Comments
+---@class rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Comments
 ---Use semantic tokens for comments.
 ---
 ---In some editors (e.g. vscode) semantic tokens override other highlighting grammars.
@@ -1426,7 +1426,7 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Doc.Comment.Inject
+---@class rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Doc.Comment.Inject
 ---Inject additional highlighting into doc comments.
 ---
 ---When enabled, rust-analyzer will highlight rust source in doc comments as well as intra
@@ -1437,20 +1437,20 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Doc.Comment
----@field inject? settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Doc.Comment.Inject
+---@class rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Doc.Comment
+---@field inject? rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Doc.Comment.Inject
 
----@class settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Doc
----@field comment? settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Doc.Comment
+---@class rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Doc
+---@field comment? rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Doc.Comment
 
----@class settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Operator.Specialization
+---@class rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Operator.Specialization
 ---Use specialized semantic tokens for operators.
 ---
 ---When enabled, rust-analyzer will emit special token types for operator tokens instead
 ---of the generic `operator` token type.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Operator
+---@class rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Operator
 ---Use semantic tokens for operators.
 ---
 ---When disabled, rust-analyzer will emit semantic tokens only for operator tokens when
@@ -1460,33 +1460,33 @@
 ---default = true
 ---```
 ---@field enable? boolean
----@field specialization? settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Operator.Specialization
+---@field specialization? rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Operator.Specialization
 
----@class settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Punctuation.Separate.Macro
+---@class rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Punctuation.Separate.Macro
 ---When enabled, rust-analyzer will emit a punctuation semantic token for the `!` of macro
 ---calls.
 ---@field bang? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Punctuation.Separate
----@field macro? settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Punctuation.Separate.Macro
+---@class rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Punctuation.Separate
+---@field macro? rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Punctuation.Separate.Macro
 
----@class settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Punctuation.Specialization
+---@class rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Punctuation.Specialization
 ---Use specialized semantic tokens for punctuation.
 ---
 ---When enabled, rust-analyzer will emit special token types for punctuation tokens instead
 ---of the generic `punctuation` token type.
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Punctuation
+---@class rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Punctuation
 ---Use semantic tokens for punctuation.
 ---
 ---When disabled, rust-analyzer will emit semantic tokens only for punctuation tokens when
 ---they are tagged with modifiers or have a special role.
 ---@field enable? boolean
----@field separate? settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Punctuation.Separate
----@field specialization? settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Punctuation.Specialization
+---@field separate? rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Punctuation.Separate
+---@field specialization? rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Punctuation.Specialization
 
----@class settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Strings
+---@class rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Strings
 ---Use semantic tokens for strings.
 ---
 ---In some editors (e.g. vscode) semantic tokens override other highlighting grammars.
@@ -1498,9 +1498,9 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.SemanticHighlighting
----@field comments? settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Comments
----@field doc? settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Doc
+---@class rust_analyzer.settings.RustAnalyzer.SemanticHighlighting
+---@field comments? rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Comments
+---@field doc? rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Doc
 ---Emit non-standard tokens and modifiers
 ---
 ---When enabled, rust-analyzer will emit tokens and modifiers that are not part of the
@@ -1510,17 +1510,17 @@
 ---default = true
 ---```
 ---@field nonStandardTokens? boolean
----@field operator? settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Operator
----@field punctuation? settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Punctuation
----@field strings? settings.rust_analyzer.RustAnalyzer.SemanticHighlighting.Strings
+---@field operator? rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Operator
+---@field punctuation? rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Punctuation
+---@field strings? rust_analyzer.settings.RustAnalyzer.SemanticHighlighting.Strings
 
----@class settings.rust_analyzer.RustAnalyzer.Server
+---@class rust_analyzer.settings.RustAnalyzer.Server
 ---Extra environment variables that will be passed to the rust-analyzer executable. Useful for passing e.g. `RA_LOG` for debugging.
 ---@field extraEnv? table
 ---Path to rust-analyzer executable (points to bundled binary by default).
 ---@field path? string
 
----@class settings.rust_analyzer.RustAnalyzer.SignatureInfo.Documentation
+---@class rust_analyzer.settings.RustAnalyzer.SignatureInfo.Documentation
 ---Show documentation.
 ---
 ---```lua
@@ -1528,16 +1528,16 @@
 ---```
 ---@field enable? boolean
 
----@class settings.rust_analyzer.RustAnalyzer.SignatureInfo
+---@class rust_analyzer.settings.RustAnalyzer.SignatureInfo
 ---Show full signature of the callable. Only shows parameters if disabled.
 ---
 ---```lua
 ---default = "full"
 ---```
 ---@field detail? "full"|"parameters"
----@field documentation? settings.rust_analyzer.RustAnalyzer.SignatureInfo.Documentation
+---@field documentation? rust_analyzer.settings.RustAnalyzer.SignatureInfo.Documentation
 
----@class settings.rust_analyzer.RustAnalyzer.StatusBar
+---@class rust_analyzer.settings.RustAnalyzer.StatusBar
 ---Action to run when clicking the extension status bar item.
 ---
 ---```lua
@@ -1570,7 +1570,7 @@
 ---```
 ---@field showStatusBar? "always"|"never"|table
 
----@class settings.rust_analyzer.RustAnalyzer.Trace
+---@class rust_analyzer.settings.RustAnalyzer.Trace
 ---Enable logging of VS Code extensions itself.
 ---@field extension? boolean
 ---Trace requests to the rust-analyzer (this is usually overly verbose and not recommended for regular users).
@@ -1580,7 +1580,7 @@
 ---```
 ---@field server? "off"|"messages"|"verbose"
 
----@class settings.rust_analyzer.RustAnalyzer.Typing
+---@class rust_analyzer.settings.RustAnalyzer.Typing
 ---Whether to prefix newlines after comments with the corresponding comment prefix.
 ---
 ---```lua
@@ -1606,7 +1606,7 @@
 ---```
 ---@field triggerChars? string
 
----@class settings.rust_analyzer.RustAnalyzer.Vfs
+---@class rust_analyzer.settings.RustAnalyzer.Vfs
 ---Additional paths to include in the VFS. Generally for code that is
 ---generated or otherwise managed by a build system outside of Cargo,
 ---though Cargo might be the eventual consumer.
@@ -1616,12 +1616,12 @@
 ---```
 ---@field extraIncludes? string[]
 
----@class settings.rust_analyzer.RustAnalyzer.Workspace.DiscoverConfig
+---@class rust_analyzer.settings.RustAnalyzer.Workspace.DiscoverConfig
 ---@field command? string[]
 ---@field filesToWatch? string[]
 ---@field progressLabel? string
 
----@class settings.rust_analyzer.RustAnalyzer.Workspace.Symbol.Search
+---@class rust_analyzer.settings.RustAnalyzer.Workspace.Symbol.Search
 ---Exclude all imports from workspace symbol search.
 ---
 ---In addition to regular imports (which are always excluded),
@@ -1649,10 +1649,10 @@
 ---```
 ---@field scope? "workspace"|"workspace_and_dependencies"
 
----@class settings.rust_analyzer.RustAnalyzer.Workspace.Symbol
----@field search? settings.rust_analyzer.RustAnalyzer.Workspace.Symbol.Search
+---@class rust_analyzer.settings.RustAnalyzer.Workspace.Symbol
+---@field search? rust_analyzer.settings.RustAnalyzer.Workspace.Symbol.Search
 
----@class settings.rust_analyzer.RustAnalyzer.Workspace
+---@class rust_analyzer.settings.RustAnalyzer.Workspace
 ---Configure a command that rust-analyzer can invoke to
 ---obtain configuration.
 ---
@@ -1772,40 +1772,40 @@
 ---
 ---Stderr is not parsed as JSONL. It is treated as command log
 ---output and forwarded to rust-analyzer's own logs.
----@field discoverConfig? settings.rust_analyzer.RustAnalyzer.Workspace.DiscoverConfig
----@field symbol? settings.rust_analyzer.RustAnalyzer.Workspace.Symbol
+---@field discoverConfig? rust_analyzer.settings.RustAnalyzer.Workspace.DiscoverConfig
+---@field symbol? rust_analyzer.settings.RustAnalyzer.Workspace.Symbol
 
----@class settings.rust_analyzer.RustAnalyzer
----@field assist? settings.rust_analyzer.RustAnalyzer.Assist
----@field cachePriming? settings.rust_analyzer.RustAnalyzer.CachePriming
----@field cargo? settings.rust_analyzer.RustAnalyzer.Cargo
----@field cfg? settings.rust_analyzer.RustAnalyzer.Cfg
----@field check? settings.rust_analyzer.RustAnalyzer.Check
+---@class rust_analyzer.settings.RustAnalyzer
+---@field assist? rust_analyzer.settings.RustAnalyzer.Assist
+---@field cachePriming? rust_analyzer.settings.RustAnalyzer.CachePriming
+---@field cargo? rust_analyzer.settings.RustAnalyzer.Cargo
+---@field cfg? rust_analyzer.settings.RustAnalyzer.Cfg
+---@field check? rust_analyzer.settings.RustAnalyzer.Check
 ---Run the check command for diagnostics on save.
 ---
 ---```lua
 ---default = true
 ---```
 ---@field checkOnSave? boolean
----@field completion? settings.rust_analyzer.RustAnalyzer.Completion
----@field debug? settings.rust_analyzer.RustAnalyzer.Debug
----@field diagnostics? settings.rust_analyzer.RustAnalyzer.Diagnostics
+---@field completion? rust_analyzer.settings.RustAnalyzer.Completion
+---@field debug? rust_analyzer.settings.RustAnalyzer.Debug
+---@field diagnostics? rust_analyzer.settings.RustAnalyzer.Diagnostics
 ---Disable support for `#[rust_analyzer::rust_fixture]` snippets.
 ---
 ---If you are not working on rust-analyzer itself, you should ignore this config.
 ---@field disableFixtureSupport? boolean
----@field document? settings.rust_analyzer.RustAnalyzer.Document
----@field files? settings.rust_analyzer.RustAnalyzer.Files
----@field gotoImplementations? settings.rust_analyzer.RustAnalyzer.GotoImplementations
----@field highlightRelated? settings.rust_analyzer.RustAnalyzer.HighlightRelated
----@field hover? settings.rust_analyzer.RustAnalyzer.Hover
----@field imports? settings.rust_analyzer.RustAnalyzer.Imports
+---@field document? rust_analyzer.settings.RustAnalyzer.Document
+---@field files? rust_analyzer.settings.RustAnalyzer.Files
+---@field gotoImplementations? rust_analyzer.settings.RustAnalyzer.GotoImplementations
+---@field highlightRelated? rust_analyzer.settings.RustAnalyzer.HighlightRelated
+---@field hover? rust_analyzer.settings.RustAnalyzer.Hover
+---@field imports? rust_analyzer.settings.RustAnalyzer.Imports
 ---Do not start rust-analyzer server when the extension is activated.
 ---@field initializeStopped? boolean
----@field inlayHints? settings.rust_analyzer.RustAnalyzer.InlayHints
----@field interpret? settings.rust_analyzer.RustAnalyzer.Interpret
----@field joinLines? settings.rust_analyzer.RustAnalyzer.JoinLines
----@field lens? settings.rust_analyzer.RustAnalyzer.Lens
+---@field inlayHints? rust_analyzer.settings.RustAnalyzer.InlayHints
+---@field interpret? rust_analyzer.settings.RustAnalyzer.Interpret
+---@field joinLines? rust_analyzer.settings.RustAnalyzer.JoinLines
+---@field lens? rust_analyzer.settings.RustAnalyzer.Lens
 ---Disable project auto-discovery in favor of explicitly specified set of projects.
 ---
 ---Elements must be paths pointing to `Cargo.toml`, `rust-project.json`, `.rs` files (which
@@ -1815,23 +1815,23 @@
 ---default = {}
 ---```
 ---@field linkedProjects? (string|table)[]
----@field lru? settings.rust_analyzer.RustAnalyzer.Lru
----@field notifications? settings.rust_analyzer.RustAnalyzer.Notifications
+---@field lru? rust_analyzer.settings.RustAnalyzer.Lru
+---@field notifications? rust_analyzer.settings.RustAnalyzer.Notifications
 ---The number of worker threads in the main loop. The default `null` means to pick
 ---automatically.
 ---@field numThreads? number|"physical"|"logical"
----@field procMacro? settings.rust_analyzer.RustAnalyzer.ProcMacro
----@field profiling? settings.rust_analyzer.RustAnalyzer.Profiling
----@field projectCreation? settings.rust_analyzer.RustAnalyzer.ProjectCreation
----@field references? settings.rust_analyzer.RustAnalyzer.References
----@field rename? settings.rust_analyzer.RustAnalyzer.Rename
+---@field procMacro? rust_analyzer.settings.RustAnalyzer.ProcMacro
+---@field profiling? rust_analyzer.settings.RustAnalyzer.Profiling
+---@field projectCreation? rust_analyzer.settings.RustAnalyzer.ProjectCreation
+---@field references? rust_analyzer.settings.RustAnalyzer.References
+---@field rename? rust_analyzer.settings.RustAnalyzer.Rename
 ---Restart the server automatically when settings that require a restart are changed.
 ---@field restartServerOnConfigChange? boolean
----@field runnables? settings.rust_analyzer.RustAnalyzer.Runnables
----@field rustc? settings.rust_analyzer.RustAnalyzer.Rustc
----@field rustfmt? settings.rust_analyzer.RustAnalyzer.Rustfmt
----@field semanticHighlighting? settings.rust_analyzer.RustAnalyzer.SemanticHighlighting
----@field server? settings.rust_analyzer.RustAnalyzer.Server
+---@field runnables? rust_analyzer.settings.RustAnalyzer.Runnables
+---@field rustc? rust_analyzer.settings.RustAnalyzer.Rustc
+---@field rustfmt? rust_analyzer.settings.RustAnalyzer.Rustfmt
+---@field semanticHighlighting? rust_analyzer.settings.RustAnalyzer.SemanticHighlighting
+---@field server? rust_analyzer.settings.RustAnalyzer.Server
 ---Show Rust Dependencies in the Explorer view.
 ---
 ---```lua
@@ -1852,14 +1852,14 @@
 ---default = true
 ---```
 ---@field showUnlinkedFileNotification? boolean
----@field signatureInfo? settings.rust_analyzer.RustAnalyzer.SignatureInfo
----@field statusBar? settings.rust_analyzer.RustAnalyzer.StatusBar
+---@field signatureInfo? rust_analyzer.settings.RustAnalyzer.SignatureInfo
+---@field statusBar? rust_analyzer.settings.RustAnalyzer.StatusBar
 ---Show the Test Explorer view.
 ---@field testExplorer? boolean
----@field trace? settings.rust_analyzer.RustAnalyzer.Trace
----@field typing? settings.rust_analyzer.RustAnalyzer.Typing
----@field vfs? settings.rust_analyzer.RustAnalyzer.Vfs
----@field workspace? settings.rust_analyzer.RustAnalyzer.Workspace
+---@field trace? rust_analyzer.settings.RustAnalyzer.Trace
+---@field typing? rust_analyzer.settings.RustAnalyzer.Typing
+---@field vfs? rust_analyzer.settings.RustAnalyzer.Vfs
+---@field workspace? rust_analyzer.settings.RustAnalyzer.Workspace
 
----@class settings.rust_analyzer
----@field ["rust-analyzer"]? settings.rust_analyzer.RustAnalyzer
+---@class rust_analyzer.settings
+---@field ["rust-analyzer"]? rust_analyzer.settings.RustAnalyzer
