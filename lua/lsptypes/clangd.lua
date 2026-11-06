@@ -1,9 +1,9 @@
 ---@meta
 
----@class ClangdInitializeResult: lsp.InitializeResult
+---@class clangd.on_init.init_result.ClangdInitializeResult: lsp.InitializeResult
 ---@field offsetEncoding? string
 
----@class clangd.settings.Clangd.InactiveRegions
+---@class _.clangd.settings.Clangd.InactiveRegions
 ---Opacity of inactive regions (used only if clangd.inactiveRegions.useBackgroundHighlight=false)
 ---
 ---```lua
@@ -13,7 +13,7 @@
 ---Use a background highlight rather than opacity to identify inactive preprocessor regions.
 ---@field useBackgroundHighlight? boolean
 
----@class clangd.settings.Clangd
+---@class _.clangd.settings.Clangd
 ---Arguments for clangd server.
 ---
 ---```lua
@@ -52,7 +52,7 @@
 ---default = {}
 ---```
 ---@field fallbackFlags? string[]
----@field inactiveRegions? clangd.settings.Clangd.InactiveRegions
+---@field inactiveRegions? _.clangd.settings.Clangd.InactiveRegions
 ---What to do when clangd configuration files are changed. Ignored for clangd 12+, which can reload such files itself; however, this can be overridden with clangd.onConfigChangedForceEnable.
 ---
 ---```lua
@@ -91,13 +91,13 @@
 ---@field useScriptAsExecutable? boolean
 
 ---@class clangd.settings
----@field clangd? clangd.settings.Clangd
+---@field clangd? _.clangd.settings.Clangd
 
----@class clangd.init_options.compilationDatabaseChanges.CompileCommand
+---@class _.clangd.init_options.compilationDatabaseChanges.CompileCommand
 ---@field workingDirectory? string
 ---@field compilationCommand? string[]
 
----@alias clangd.init_options.compilationDatabaseChanges { string: clangd.init_options.compilationDatabaseChanges.CompileCommand}
+---@alias _.clangd.init_options.compilationDatabaseChanges { string: _.clangd.init_options.compilationDatabaseChanges.CompileCommand}
 
 ---@class clangd.init_options
 ---Specifies the directory containing the compilation database (e.g. `compile_commands.json`).
@@ -108,4 +108,4 @@
 ---@field fallbackFlags? string[]
 ---Provides compile commands for files.
 ---Keys are file paths.
----@field compilationDatabaseChanges? clangd.init_options.compilationDatabaseChanges
+---@field compilationDatabaseChanges? _.clangd.init_options.compilationDatabaseChanges

@@ -33,7 +33,7 @@ if _G.user_is_root then
     vim.api.nvim_create_autocmd('FileType', {
         callback = function(args)
             if not require('utils').treesitter.lang_for(parsers, args.match) then return end
-            vim.treesitter.start()
+            if not pcall(vim.treesitter.start) then return end
             vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
             vim.wo[0][0].foldmethod = 'expr'
         end,

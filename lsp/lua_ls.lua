@@ -59,9 +59,9 @@ return {
             end
         end
 
-        ---@type lua_ls.settings.Lua
+        ---@type _.lua_ls.settings.Lua
         client.config.settings.Lua = vim.tbl_deep_extend('force',
-            client.config.settings.Lua --[[@as lua_ls.settings.Lua]],
+            client.config.settings.Lua --[[@as _.lua_ls.settings.Lua]],
             {
                 runtime = {
                     version = 'LuaJIT',

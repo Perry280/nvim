@@ -9,3 +9,15 @@ vim.api.nvim_create_autocmd('PackChanged', {
         end
     end
 })
+
+vim.api.nvim_create_autocmd('PackChanged', {
+    callback = function(ev)
+        local name = ev.data.spec.name
+        local kind = ev.data.kind
+        local active = ev.data.active
+        if name == 'blink.cmp' and kind == 'update' then
+            if not active then vim.cmd.packadd('blink.cmp') end
+            require('blink.cmp').build():pwait()
+        end
+    end
+})
