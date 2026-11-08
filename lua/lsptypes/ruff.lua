@@ -9,7 +9,7 @@
 ---@alias _.ruff.settings.defs.AllowedValue string|integer|_.ruff.settings.defs.AllowedFloatValue
 
 ---Configures Ruff's `analyze` command.
----@class _.ruff.settings.defs.AnalyzeOptions
+---@class (exact) _.ruff.settings.defs.AnalyzeOptions
 ---Whether to detect imports from string literals. When enabled, Ruff will search for string
 ---literals that "look like" import paths, and include them in the import map, if they resolve
 ---to valid Python modules.
@@ -50,7 +50,7 @@
 
 ---@alias _.ruff.settings.defs.AnnotationSemanticsSelection table|string[]
 
----@class _.ruff.settings.defs.ApiBan
+---@class (exact) _.ruff.settings.defs.ApiBan
 ---The message to display when the API is used.
 ---@field msg string
 
@@ -70,7 +70,7 @@
 ---@alias _.ruff.settings.defs.DocstringCodeLineWidth _.ruff.settings.defs.LineWidth|"dynamic"
 
 ---Options for the `flake8-annotations` plugin.
----@class _.ruff.settings.defs.Flake8AnnotationsOptions
+---@class (exact) _.ruff.settings.defs.Flake8AnnotationsOptions
 ---Whether to suppress `ANN401` for dynamically typed `*args` and
 ---`**kwargs` arguments.
 ---@field ["allow-star-arg-any"]? boolean
@@ -93,7 +93,7 @@
 ---@field ["suppress-none-returning"]? boolean
 
 ---Options for the `flake8-bandit` plugin.
----@class _.ruff.settings.defs.Flake8BanditOptions
+---@class (exact) _.ruff.settings.defs.Flake8BanditOptions
 ---A list of callable names, whose result may be safely passed into
 ---[`markupsafe.Markup`](https://markupsafe.palletsprojects.com/en/stable/escaping/#markupsafe.Markup).
 ---
@@ -137,7 +137,7 @@
 ---@field ["hardcoded-tmp-directory-extend"]? string[]
 
 ---Options for the `flake8-boolean-trap` plugin
----@class _.ruff.settings.defs.Flake8BooleanTrapOptions
+---@class (exact) _.ruff.settings.defs.Flake8BooleanTrapOptions
 ---Additional callable functions with which to allow boolean traps.
 ---
 ---Expects to receive a list of fully-qualified names (e.g., `pydantic.Field`, rather than
@@ -145,7 +145,7 @@
 ---@field ["extend-allowed-calls"]? string[]
 
 ---Options for the `flake8-bugbear` plugin.
----@class _.ruff.settings.defs.Flake8BugbearOptions
+---@class (exact) _.ruff.settings.defs.Flake8BugbearOptions
 ---Additional callable functions to consider "immutable" when evaluating, e.g., the
 ---`function-call-in-default-argument` rule (`B008`) or `function-call-in-dataclass-defaults`
 ---rule (`RUF009`).
@@ -155,7 +155,7 @@
 ---@field ["extend-immutable-calls"]? string[]
 
 ---Options for the `flake8-builtins` plugin.
----@class _.ruff.settings.defs.Flake8BuiltinsOptions
+---@class (exact) _.ruff.settings.defs.Flake8BuiltinsOptions
 ---List of builtin module names to allow.
 ---@field ["allowed-modules"]? string[]
 ---DEPRECATED: This option has been renamed to `allowed-modules`. Use `allowed-modules` instead.
@@ -184,12 +184,12 @@
 ---@field ["strict-checking"]? boolean
 
 ---Options for the `flake8-comprehensions` plugin.
----@class _.ruff.settings.defs.Flake8ComprehensionsOptions
+---@class (exact) _.ruff.settings.defs.Flake8ComprehensionsOptions
 ---Allow `dict` calls that make use of keyword arguments (e.g., `dict(a=1, b=2)`).
 ---@field ["allow-dict-calls-with-keyword-arguments"]? boolean
 
 ---Options for the `flake8-copyright` plugin.
----@class _.ruff.settings.defs.Flake8CopyrightOptions
+---@class (exact) _.ruff.settings.defs.Flake8CopyrightOptions
 ---Author to enforce within the copyright notice. If provided, the
 ---author must be present immediately following the copyright notice.
 ---@field author? string
@@ -209,12 +209,12 @@
 ---@field ["notice-rgx"]? string
 
 ---Options for the `flake8-errmsg` plugin.
----@class _.ruff.settings.defs.Flake8ErrMsgOptions
+---@class (exact) _.ruff.settings.defs.Flake8ErrMsgOptions
 ---Maximum string length for string literals in exception messages.
 ---@field ["max-string-length"]? integer
 
 ---Options for the `flake8-gettext` plugin.
----@class _.ruff.settings.defs.Flake8GetTextOptions
+---@class (exact) _.ruff.settings.defs.Flake8GetTextOptions
 ---Additional function names to consider as internationalization calls, in addition to those
 ---included in [`function-names`](#lint_flake8-gettext_function-names).
 ---@field ["extend-function-names"]? _.ruff.settings.defs.Name[]
@@ -222,7 +222,7 @@
 ---@field ["function-names"]? _.ruff.settings.defs.Name[]
 
 ---Options for the `flake8-implicit-str-concat` plugin
----@class _.ruff.settings.defs.Flake8ImplicitStrConcatOptions
+---@class (exact) _.ruff.settings.defs.Flake8ImplicitStrConcatOptions
 ---Whether to allow implicit string concatenations for multiline strings.
 ---By default, implicit concatenations of multiline strings are
 ---allowed (but continuation lines, delimited with a backslash, are
@@ -236,7 +236,7 @@
 ---@field ["allow-multiline"]? boolean
 
 ---Options for the `flake8-import-conventions` plugin
----@class _.ruff.settings.defs.Flake8ImportConventionsOptions
+---@class (exact) _.ruff.settings.defs.Flake8ImportConventionsOptions
 ---The conventional aliases for imports. These aliases can be extended by
 ---the [`extend-aliases`](#lint_flake8-import-conventions_extend-aliases) option.
 ---@field aliases? table
@@ -254,7 +254,7 @@
 ---@field ["extend-aliases"]? table
 
 ---Options for the `flake8-pytest-style` plugin
----@class _.ruff.settings.defs.Flake8PytestStyleOptions
+---@class (exact) _.ruff.settings.defs.Flake8PytestStyleOptions
 ---Boolean flag specifying whether `@pytest.fixture()` without parameters
 ---should have parentheses. If the option is set to `false` (the default),
 ---`@pytest.fixture` is valid and `@pytest.fixture()` is invalid. If set
@@ -330,7 +330,7 @@
 ---@field ["warns-require-match-for"]? string[]
 
 ---Options for the `flake8-quotes` plugin.
----@class _.ruff.settings.defs.Flake8QuotesOptions
+---@class (exact) _.ruff.settings.defs.Flake8QuotesOptions
 ---Whether to avoid using single quotes if a string contains single quotes,
 ---or vice-versa with double quotes, as per [PEP 8](https://peps.python.org/pep-0008/#string-quotes).
 ---This minimizes the need to escape quotation marks within strings.
@@ -354,7 +354,7 @@
 ---@field ["multiline-quotes"]? _.ruff.settings.defs.Quote
 
 ---Options for the `flake8_self` plugin.
----@class _.ruff.settings.defs.Flake8SelfOptions
+---@class (exact) _.ruff.settings.defs.Flake8SelfOptions
 ---Additional names to ignore when considering `flake8-self` violations,
 ---in addition to those included in [`ignore-names`](#lint_flake8-self_ignore-names).
 ---@field ["extend-ignore-names"]? _.ruff.settings.defs.Name[]
@@ -362,7 +362,7 @@
 ---@field ["ignore-names"]? _.ruff.settings.defs.Name[]
 
 ---Options for the `flake8-tidy-imports` plugin
----@class _.ruff.settings.defs.Flake8TidyImportsOptions
+---@class (exact) _.ruff.settings.defs.Flake8TidyImportsOptions
 ---Specific modules that may not be imported lazily, or `"all"` to forbid lazy imports except
 ---for any modules excluded from the selector. This rule is only enforced when targeting
 ---Python 3.15 or newer.
@@ -395,7 +395,7 @@
 ---@field ["require-lazy"]? _.ruff.settings.defs.ImportSelector
 
 ---Options for the `flake8-type-checking` plugin
----@class _.ruff.settings.defs.Flake8TypeCheckingOptions
+---@class (exact) _.ruff.settings.defs.Flake8TypeCheckingOptions
 ---Exempt certain modules from needing to be moved into type-checking
 ---blocks.
 ---@field ["exempt-modules"]? string[]
@@ -509,12 +509,12 @@
 ---@field strict? boolean
 
 ---Options for the `flake8-unused-arguments` plugin
----@class _.ruff.settings.defs.Flake8UnusedArgumentsOptions
+---@class (exact) _.ruff.settings.defs.Flake8UnusedArgumentsOptions
 ---Whether to allow unused variadic arguments, like `*args` and `**kwargs`.
 ---@field ["ignore-variadic-names"]? boolean
 
 ---Configures the way Ruff formats your code.
----@class _.ruff.settings.defs.FormatOptions
+---@class (exact) _.ruff.settings.defs.FormatOptions
 ---Whether to format code snippets in docstrings.
 ---
 ---When this is enabled, Python code examples within docstrings are
@@ -756,7 +756,7 @@
 
 ---@alias _.ruff.settings.defs.ImportSelector _.ruff.settings.defs.ImportSelection|_.ruff.settings.defs.ImportSelectorSettings
 
----@class _.ruff.settings.defs.ImportSelectorSettings
+---@class (exact) _.ruff.settings.defs.ImportSelectorSettings
 ---```lua
 ---default = {}
 ---```
@@ -776,7 +776,7 @@
 ---@alias _.ruff.settings.defs.IndentWidth integer
 
 ---Options for the `isort` plugin.
----@class _.ruff.settings.defs.IsortOptions
+---@class (exact) _.ruff.settings.defs.IsortOptions
 ---Sort imports taking into account case sensitivity.
 ---
 ---Note that the [`order-by-type`](#lint_isort_order-by-type) setting will
@@ -1021,7 +1021,7 @@
 ---Configures how Ruff checks your code.
 ---
 ---Options specified in the `lint` section take precedence over the deprecated top-level settings.
----@class _.ruff.settings.defs.LintOptions
+---@class (exact) _.ruff.settings.defs.LintOptions
 ---A list of allowed "confusable" Unicode characters to ignore when
 ---enforcing `RUF001`, `RUF002`, and `RUF003`.
 ---@field ["allowed-confusables"]? string[]
@@ -1248,7 +1248,7 @@
 ---@field unfixable? _.ruff.settings.defs.RuleSelector[]
 
 ---Options for the `mccabe` plugin.
----@class _.ruff.settings.defs.McCabeOptions
+---@class (exact) _.ruff.settings.defs.McCabeOptions
 ---The maximum McCabe complexity to allow before triggering `C901` errors.
 ---@field ["max-complexity"]? integer
 
@@ -1312,7 +1312,7 @@
 ---| "list"
 
 ---Options for the `pep8-naming` plugin.
----@class _.ruff.settings.defs.Pep8NamingOptions
+---@class (exact) _.ruff.settings.defs.Pep8NamingOptions
 ---A list of decorators that, when applied to a method, indicate that the
 ---method should be treated as a class method (in addition to the builtin
 ---`@classmethod`).
@@ -1350,7 +1350,7 @@
 ---@field ["staticmethod-decorators"]? string[]
 
 ---Options for the `pyupgrade` plugin.
----@class _.ruff.settings.defs.PyUpgradeOptions
+---@class (exact) _.ruff.settings.defs.PyUpgradeOptions
 ---Whether to avoid [PEP 585](https://peps.python.org/pep-0585/) (`List[int]` -> `list[int]`) and [PEP 604](https://peps.python.org/pep-0604/)
 ---(`Union[str, int]` -> `str | int`) rewrites even if a file imports
 ---`from __future__ import annotations`.
@@ -1382,7 +1382,7 @@
 ---@field ["keep-runtime-typing"]? boolean
 
 ---Options for the `pycodestyle` plugin.
----@class _.ruff.settings.defs.PycodestyleOptions
+---@class (exact) _.ruff.settings.defs.PycodestyleOptions
 ---Whether line-length violations (`E501`) should be triggered for
 ---comments starting with [`task-tags`](#lint_task-tags) (by default: "TODO", "FIXME",
 ---and "XXX").
@@ -1418,7 +1418,7 @@
 ---@field ["max-line-length"]? _.ruff.settings.defs.LineLength
 
 ---Options for the `pydoclint` plugin.
----@class _.ruff.settings.defs.PydoclintOptions
+---@class (exact) _.ruff.settings.defs.PydoclintOptions
 ---Skip docstrings which fit on a single line.
 ---
 ---Note: The corresponding setting in `pydoclint`
@@ -1426,7 +1426,7 @@
 ---@field ["ignore-one-line-docstrings"]? boolean
 
 ---Options for the `pydocstyle` plugin.
----@class _.ruff.settings.defs.PydocstyleOptions
+---@class (exact) _.ruff.settings.defs.PydocstyleOptions
 ---Whether to use Google-style, NumPy-style conventions, or the [PEP 257](https://peps.python.org/pep-0257/)
 ---defaults when analyzing docstring sections.
 ---
@@ -1526,7 +1526,7 @@
 ---@field ["property-decorators"]? string[]
 
 ---Options for the `pyflakes` plugin.
----@class _.ruff.settings.defs.PyflakesOptions
+---@class (exact) _.ruff.settings.defs.PyflakesOptions
 ---A list of modules to ignore when considering unused imports.
 ---
 ---Used to prevent violations for specific modules that are known to have side effects on
@@ -1545,7 +1545,7 @@
 ---@field ["extend-generics"]? string[]
 
 ---Options for the `pylint` plugin.
----@class _.ruff.settings.defs.PylintOptions
+---@class (exact) _.ruff.settings.defs.PylintOptions
 ---Dunder methods name to allow, in addition to the default set from the
 ---Python standard library (see `PLW3201`).
 ---@field ["allow-dunder-method-names"]? string[]
@@ -1607,7 +1607,7 @@
 ---@alias _.ruff.settings.defs.RequiredVersion string
 
 ---Options for the `ruff` plugin
----@class _.ruff.settings.defs.RuffOptions
+---@class (exact) _.ruff.settings.defs.RuffOptions
 ---A list of callable names, whose result may be safely passed into
 ---[`markupsafe.Markup`](https://markupsafe.palletsprojects.com/en/stable/escaping/#markupsafe.Markup).
 ---
@@ -4076,7 +4076,7 @@
 
 ---@alias _.ruff.settings.defs.Strictness "parents"|"all"
 
----@class ruff.settings
+---@class (exact) ruff.settings
 ---A list of allowed "confusable" Unicode characters to ignore when
 ---enforcing `RUF001`, `RUF002`, and `RUF003`.
 ---@field ["allowed-confusables"]? string[]
@@ -4530,25 +4530,25 @@
 ---If set to false, the hint will be hidden.
 ---@field ["unsafe-fixes"]? boolean
 
----@class _.ruff.init_options.settings.codeAction.disableRuleComment
+---@class (exact) _.ruff.init_options.settings.codeAction.disableRuleComment
 ---Whether to display Quick Fix actions to disable rules via noqa suppression comments.
 ---
 ---Default value: `true`
 ---@field enable? boolean
 
----@class _.ruff.init_options.settings.codeAction.fixViolation
+---@class (exact) _.ruff.init_options.settings.codeAction.fixViolation
 ---Whether to display Quick Fix actions to autofix violations.
 ---
 ---Default value: `true`
 ---@field enable? boolean
 
 ---Enable or disable code actions provided by the server.
----@class _.ruff.init_options.settings.codeAction
+---@class (exact) _.ruff.init_options.settings.codeAction
 ---@field disableRuleComment? _.ruff.init_options.settings.codeAction.disableRuleComment
 ---@field fixViolation? _.ruff.init_options.settings.codeAction.fixViolation
 
 ---Settings specific to the Ruff linter.
----@class _.ruff.init_options.settings.lint
+---@class (exact) _.ruff.init_options.settings.lint
 ---Whether to enable linting. Set to false to use Ruff exclusively as a formatter.
 ---
 ---Default value: `true`
@@ -4571,7 +4571,7 @@
 ---@field ignore? string[]
 
 ---Settings specific to the Ruff formatter.
----@class _.ruff.init_options.settings.format
+---@class (exact) _.ruff.init_options.settings.format
 ---Whether to enable Ruff's preview mode when formatting.
 ---
 ---Default value: `null`
@@ -4590,7 +4590,7 @@
 ---@field backend? "internal" | "uv"
 
 
----@class _.ruff.init_options.settings
+---@class (exact) _.ruff.init_options.settings
 ---The configuration setting allows you to configure editor-specific Ruff behavior.
 ---This can be done in one of the following ways:
 ---  1. Configuration file path:
@@ -4658,5 +4658,5 @@
 ---@field lint? _.ruff.init_options.settings.lint
 ---@field format? _.ruff.init_options.settings.format
 
----@class ruff.init_options
+---@class (exact) ruff.init_options
 ---@field settings? _.ruff.init_options.settings

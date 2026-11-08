@@ -19,7 +19,7 @@ return {
         ty = {
             configuration = {
                 rules = {
-                    ["unresolved-import"] = "ignore",
+                    ["import-not-found"] = "ignore",
                     ["missing-override-decorator"] = "warn",
                     ["missing-type-argument"] = "warn",
                 },

@@ -54,8 +54,9 @@
 ---https://docs.astral.sh/ty/reference/rules/
 ---
 ---Each rule can be set to "ignore", "warn" or "error".
----@class _.ty.settings.defs.Rules
----Set a default severity for all rules.
+---@class (exact) _.ty.settings.defs.Rules
+---Configure a default severity level for all rules.
+---Individual rule settings override this default.
 ---@field all? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
@@ -492,6 +493,22 @@
 ---
 ---**What it does**
 ---
+---Checks for import statements for which the module cannot be resolved.
+---
+---**Why is this bad?**
+---
+---Importing a module that cannot be resolved will raise a `ModuleNotFoundError` at runtime.
+---
+---These diagnostics can often be caused due to ty's Python environment or search paths being
+---configured incorrectly. See the
+---[import troubleshooting FAQ](https://docs.astral.sh/ty/reference/typing-faq/#why-cant-ty-resolve-my-imports)
+---for more details.
+---@field ["import-not-found"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
 ---Checks for classes with an inconsistent [method resolution order] (MRO).
 ---
 ---**Why is this bad?**
@@ -840,20 +857,6 @@
 ---[typing specification](https://typing.python.org/en/latest/spec/constructors.html#init-method)
 ---allows type variables scoped to `__init__` instead.
 ---@field ["invalid-init-type-variable"]? _.ty.settings.defs.Level
----
----**Default level: `error`**
----
----**What it does**
----
----Checks for subscript accesses with invalid keys and `TypedDict` construction with an unknown key.
----
----**Why is this bad?**
----
----Subscripting with an invalid key will raise a `KeyError` at runtime.
----
----Creating a `TypedDict` with an unknown key is likely a mistake; if the `TypedDict` is `closed=true`
----it also violates the expectations of the type.
----@field ["invalid-key"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -1275,6 +1278,20 @@
 ---
 ---**What it does**
 ---
+---Checks for invalid keys when accessing or assigning items on a `TypedDict`.
+---This rule flags invalid keys such as a misspelled string literal or an integer.
+---If the rejected key is a string whose value is unknown, ty reports `non-literal-typed-dict-key` instead.
+---
+---**Why is this bad?**
+---
+---Reading a missing key raises `KeyError`. Assigning to an undeclared key can silently add it to the dictionary.
+---
+---@field ["invalid-typed-dict-key"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
 ---Detects statements other than annotated declarations in `TypedDict` class bodies.
 ---
 ---**Why is this bad?**
@@ -1368,6 +1385,21 @@
 ---
 ---Failing to provide a required argument will raise a `TypeError` at runtime.
 ---@field ["missing-argument"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for references to attributes that ty cannot find on the object's type.
+---For a union, this rule applies when every member lacks the attribute.
+---If only some members lack it, ty reports `missing-union-attribute`.
+---
+---**Why is this bad?**
+---
+---Accessing an unbound attribute will raise an `AttributeError` at runtime.
+---An unresolved attribute is not guaranteed to exist from the type alone,
+---so this could also indicate that the object is not of the type that the user expects.
+---@field ["missing-attribute"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -1471,6 +1503,17 @@
 ---
 ---**What it does**
 ---
+---Checks for reads or deletions of attributes that are present on some members of a union and missing from others.
+---
+---**Why is this bad?**
+---
+---Reading or deleting the attribute raises an `AttributeError` when the runtime value lacks it.
+---@field ["missing-union-attribute"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
 ---Checks for calls to an overloaded function that do not match any of the overloads.
 ---
 ---**Why is this bad?**
@@ -1490,6 +1533,20 @@
 ---If a class defines a non-callable `__init_subclass__` method/attribute, any attempt to subclass that
 ---class will raise a `TypeError` at runtime.
 ---@field ["non-callable-init-subclass"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Reports attempts to subscript `TypedDict` instances with a key of type `str`.
+---
+---**Why is this bad?**
+---
+---A `TypedDict` declares a mapping type where a known set of keys may exist
+---and each key may have a distinct value type.
+---Given an arbitrary `str`, ty cannot check for possible `KeyError`s,
+---and cannot infer a precise type for the subscript expression.
+---@field ["non-literal-typed-dict-key"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1723,6 +1780,18 @@
 ---`ClassVar[Final[int]]` has a distinct meaning from `Final[int]`.
 ---@field ["redundant-final-classvar"]? _.ty.settings.defs.Level
 ---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for renamed rules in `ty: ignore` and `type: ignore[ty:...]` comments.
+---
+---**Why is this bad?**
+---
+---When ty renames a rule, the old name still works in ignore comments.
+---Prefer the current name to keep ignore comments consistent across your codebase.
+---@field ["renamed-rule-in-ignore-comment"]? _.ty.settings.defs.Level
+---
 ---**Default level: `error`**
 ---
 ---**What it does**
@@ -1911,14 +1980,13 @@
 ---
 ---**What it does**
 ---
----Checks for unresolved attributes.
+---Reports `TypedDict` constructions where an unknown key is or may be provided.
 ---
 ---**Why is this bad?**
 ---
----Accessing an unbound attribute will raise an `AttributeError` at runtime. An unresolved attribute is
----not guaranteed to exist from the type alone, so this could also indicate that the object is not of
----the type that the user expects.
----@field ["unresolved-attribute"]? _.ty.settings.defs.Level
+---An unexpected key in a constructor often means a field name was misspelled.
+---Even an implicitly open `TypedDict` rejects an explicitly supplied key it does not declare.
+---@field ["unknown-typed-dict-constructor-key"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -1933,22 +2001,6 @@
 ---for static analysis tools to infer the types of globals without explicit definitions or
 ---declarations.
 ---@field ["unresolved-global"]? _.ty.settings.defs.Level
----
----**Default level: `error`**
----
----**What it does**
----
----Checks for import statements for which the module cannot be resolved.
----
----**Why is this bad?**
----
----Importing a module that cannot be resolved will raise a `ModuleNotFoundError` at runtime.
----
----These diagnostics can often be caused due to ty's Python environment or search paths being
----configured incorrectly. See the
----[import troubleshooting FAQ](https://docs.astral.sh/ty/reference/typing-faq/#why-cant-ty-resolve-my-imports)
----for more details.
----@field ["unresolved-import"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -2288,8 +2340,8 @@
 ---Python's built-in sequence types raise a `ValueError` when sliced with a step size of zero.
 ---@field ["zero-stepsize-in-slice"]? _.ty.settings.defs.Level
 
----@class _.ty.settings.defs.AnalysisOptions
----A list of module glob patterns for which unresolved-import diagnostics should be suppressed.
+---@class (exact) _.ty.settings.defs.AnalysisOptions
+---A list of module glob patterns for which `import-not-found` diagnostics should be suppressed.
 ---
 ---Details on supported glob patterns:
 ---  * matches zero or more characters except .. For example, foo.* matches foo.bar but not foo.bar.baz; foo* matches foo and foobar but not foo.bar or barfoo; and *foo matches foo and barfoo but not foo.bar or foobar.
@@ -2428,7 +2480,7 @@
 ---Default value: `false`
 ---@field ["strict-generic-narrowing"]? boolean
 
----@class _.ty.settings.defs.EnvironmentOptions
+---@class (exact) _.ty.settings.defs.EnvironmentOptions
 ---User-provided paths that should take first priority in module resolution.
 ---
 ---This is an advanced option that should usually only be used for first-party
@@ -2527,7 +2579,7 @@
 ---An override allows you to apply different rule configurations to specific files or directories.
 ---Multiple overrides can match the same file, with later overrides take precedence.
 ---Override rules take precedence over global rules for matching files.
----@class _.ty.settings.defs.OverridesOptions
+---@class (exact) _.ty.settings.defs.OverridesOptions
 ---A list of file and directory patterns to exclude from this override.
 ---
 ---Patterns follow a syntax similar to .gitignore.
@@ -2554,7 +2606,7 @@
 ---@field rules? _.ty.settings.defs.Rules
 ---@field analysis? _.ty.settings.defs.AnalysisOptions
 
----@class _.ty.settings.defs.SrcOptions
+---@class (exact) _.ty.settings.defs.SrcOptions
 ---A list of file and directory patterns to exclude from type checking.
 ---
 ---Patterns follow a syntax similar to .gitignore:
@@ -2623,7 +2675,7 @@
 ---Default value: `true`
 ---@field ["respect-ignore-files"]? boolean
 
----@class _.ty.settings.defs.TerminalOptions
+---@class (exact) _.ty.settings.defs.TerminalOptions
 ---Use exit code 1, even if all diagnostics only had warning severity.
 ---
 ---Default value: `true`
@@ -2633,7 +2685,8 @@
 ---Default value: `"full"`
 ---@field ["output-format"]? _.ty.settings.defs.OutputFormat
 
----@class _.ty.settings.ty.configuration
+---@class (exact) _.ty.settings.ty.configuration
+---@field analysis? _.ty.settings.defs.AnalysisOptions
 ---Path to the JSON file that records existing lint diagnostics for this project.
 ---Relative paths are resolved against the project root.
 ---Use ty `check --update-baseline` to create or update the file.
@@ -2642,7 +2695,6 @@
 ---The file format may change between ty releases.
 ---
 ---Default value: `nil`
----@field analysis? _.ty.settings.defs.AnalysisOptions
 ---@field baseline? _.ty.settings.defs.RelativePathBuf
 ---@field environment? _.ty.settings.defs.EnvironmentOptions
 ---@field overrides? _.ty.settings.defs.OverridesOptions
@@ -2651,7 +2703,7 @@
 ---@field terminal? _.ty.settings.defs.TerminalOptions
 
 ---These settings control the inline hints that ty provides in an editor.
----@class _.ty.settings.ty.inlayHints
+---@class (exact) _.ty.settings.ty.inlayHints
 ---Whether to show the types of variables as inline hints.
 ---
 ---Default value: `true`
@@ -2662,7 +2714,7 @@
 ---@field callArgumentNames? boolean
 
 ---These settings control how code completions offered by ty work.
----@class _.ty.settings.ty.completions
+---@class (exact) _.ty.settings.ty.completions
 ---Whether to include auto-import suggestions in code completions.
 ---That is, code completions will include symbols not currently in scope but available in your environment.
 ---
@@ -2673,7 +2725,7 @@
 ---Default value: `false`
 ---@field completeFunctionParentheses? boolean
 
----@class _.ty.settings.ty
+---@class (exact) _.ty.settings.ty
 ---@field configuration? _.ty.settings.ty.configuration
 ---The path to a ty.toml configuration file.
 ---ty will use the specified configuration over any automatically discovered configuration.
@@ -2714,12 +2766,12 @@
 ---@field inlayHints? _.ty.settings.ty.inlayHints
 ---@field completions? _.ty.settings.ty.completions
 
----@class ty.settings
+---@class (exact) ty.settings
 ---@field ty? _.ty.settings.ty
 
 
 
----@class _.ty.init_options.experimental
+---@class (exact) _.ty.init_options.experimental
 ---Control how ty uses uv:
 ---  off: Do not use uv.
 ---  scripts: Use uv to create and update environments for standalone scripts with PEP 723 inline metadata.
@@ -2732,7 +2784,7 @@
 ---Default value: `null`
 ---@field useUv? "off" | "scripts" | "on"
 
----@class ty.init_options
+---@class (exact) ty.init_options
 ---@field experimental? _.ty.init_options.experimental
 ---Path to the file to which the language server writes its log messages.
 ---By default, ty writes log messages to stderr.
