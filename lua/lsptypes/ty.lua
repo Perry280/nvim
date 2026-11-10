@@ -76,6 +76,19 @@
 ---
 ---**What it does**
 ---
+---Checks for direct instantiation of protocol classes and classes with unimplemented abstract methods.
+---
+---**Why is this bad?**
+---
+---Abstract methods describe behavior that a subclass must implement before it can be instantiated.
+---Classes using `ABCMeta` enforce this at runtime. ty also checks classes without `ABCMeta` and
+---rejects direct instantiation of protocols.
+---@field ["abstract-class-instantiation"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
 ---Checks for `@final` classes that have unimplemented abstract methods.
 ---
 ---**Why is this bad?**
@@ -509,12 +522,103 @@
 ---
 ---**What it does**
 ---
+---Detects attribute overrides that change whether an inherited attribute is a class variable or an instance variable,
+---expose an incompatible value type, or make a writable attribute read-only.
+---
+---Narrowing a mutable attribute's type is checked separately by the `incompatible-mutable-override` rule.
+---Overrides involving properties are checked by `incompatible-property-override`.
+---
+---**Why is this bad?**
+---
+---Pure class variables and instance variables have different access and assignment behavior.
+---Overriding one with the other violates the [Liskov Substitution Principle][liskov-substitution-principle] ("LSP"),
+---because code that is valid for the superclass may no longer be valid for the subclass.
+---@field ["incompatible-attribute-override"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects method overrides that violate the [Liskov Substitution Principle][liskov-substitution-principle] ("LSP").
+---The LSP states that an instance of a subtype should be substitutable for an instance of its supertype.
+---Applied to Python, this means:
+---  1. All argument combinations a superclass method accepts must also be accepted by an overriding subclass method.
+---  2. The return type of an overriding subclass method must be a subtype of the return type of the superclass method.
+---
+---An otherwise compatible override that renames a positional-or-keyword parameter or makes it positional-only
+---can trigger `lost-keyword-for-regular-parameter`.
+---
+---**Why is this bad?**
+---
+---Violating the Liskov Substitution Principle will lead to many of ty's assumptions and inferences being incorrect,
+---which will mean that it will fail to catch many possible type errors in your code.
+---@field ["incompatible-method-override"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects overrides that narrow the type of a writable attribute.
+---
+---**Why is this bad?**
+---
+---A subclass must accept every write allowed by the superclass. Narrowing a mutable attribute's type
+---allows code using the superclass interface to invalidate the subclass's attribute type.
+---@field ["incompatible-mutable-override"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects overrides that change the readable type of an inherited property incompatibly,
+---restrict the values accepted by its setter, or remove a required write operation.
+---
+---**Why is this bad?**
+---
+---Code using the superclass interface must continue to work on subclass instances.
+---A getter can return a more specific type, but a setter must accept every value accepted by the superclass.
+---A writable attribute cannot be replaced by a read-only property.
+---@field ["incompatible-property-override"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
 ---Checks for classes with an inconsistent [method resolution order] (MRO).
 ---
 ---**Why is this bad?**
 ---
 ---Classes with an inconsistent MRO will raise a `TypeError` at runtime.
 ---@field ["inconsistent-mro"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for inconsistent use of decorators on overloaded methods.
+---If one definition uses `@staticmethod` or `@classmethod`, every overload and the implementation,
+---if present, must use the same decorator.
+---
+---**Why is this bad?**
+---
+---Python's runtime doesn't know about overloads, but it does have a different binding behavior for
+---instance methods, class methods and staticmethods. Overloads therefore need to be consistent about
+---their use of `@staticmethod` and `@classmethod` decorators.
+---@field ["inconsistent-overload-decorator"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---Checks for overload implementations that are incompatible with one or more overloads.
+---
+---After decorators are applied, the implementation must accept every call allowed by the overloads.
+---Each overload's return type must be assignable to the implementation's return type.
+---
+---**Why is this bad?**
+---
+---Callers rely on the overloads to know which arguments they can pass
+---and what type to expect in return.
+---@field ["inconsistent-overload-implementation"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -650,23 +754,6 @@
 ---Incorrect assignments break the rules of the type system and weaken a type checker's ability to
 ---accurately reason about your code.
 ---@field ["invalid-attribute-access"]? _.ty.settings.defs.Level
----
----**Default level: `error`**
----
----**What it does**
----
----Detects attribute overrides that change whether an inherited attribute is a class variable or an
----instance variable.
----
----This rule currently only covers class-variable and instance-variable category changes.
----
----**Why is this bad?**
----
----Pure class variables and instance variables have different access and assignment behavior.
----Overriding one with the other violates the
----[Liskov Substitution Principle][liskov-substitution-principle] ("LSP"), because code that is valid
----for the superclass may no longer be valid for the subclass.
----@field ["invalid-attribute-override"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -926,27 +1013,6 @@
 ---
 ---**What it does**
 ---
----Detects method overrides that violate the
----[Liskov Substitution Principle][liskov-substitution-principle] ("LSP").
----
----The LSP states that an instance of a subtype should be substitutable for an instance of its
----supertype. Applied to Python, this means:
----
----1. All argument combinations a superclass method accepts must also be accepted by an overriding
----    subclass method.
----1. The return type of an overriding subclass method must be a subtype of the return type of the
----    superclass method.
----
----**Why is this bad?**
----
----Violating the Liskov Substitution Principle will lead to many of ty's assumptions and inferences
----being incorrect, which will mean that it will fail to catch many possible type errors in your code.
----@field ["invalid-method-override"]? _.ty.settings.defs.Level
----
----**Default level: `error`**
----
----**What it does**
----
 ---Checks for imports that fail when calling a module-level `__getattr__` function.
 ---
 ---**Why is this bad?**
@@ -954,33 +1020,6 @@
 ---If a module defines `__getattr__`, Python calls it when a `from` import requests a name that is not
 ---otherwise defined. The import raises an exception if `__getattr__` cannot accept the requested name.
 ---@field ["invalid-module-getattr-call"]? _.ty.settings.defs.Level
----
----**Default level: `error`**
----
----**What it does**
----
----Detects overrides that narrow the type of a writable attribute.
----
----**Why is this bad?**
----
----A subclass must accept every write allowed by the superclass.
----Narrowing a mutable attribute's type allows code using the superclass interface
----to invalidate the subclass's attribute type.
----@field ["invalid-mutable-override"]? _.ty.settings.defs.Level
----
----**Default level: `error`**
----
----**What it does**
----
----Detects overrides that change the readable type of an inherited property incompatibly,
----restrict the values accepted by its setter, or remove a required write operation.
----
----**Why is this bad?**
----
----Code using the superclass interface must continue to work on subclass instances.
----A getter can return a more specific type, but a setter must accept every value accepted by the superclass.
----A writable attribute cannot be replaced by a read-only property.
----@field ["invalid-property-type-override"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1016,20 +1055,6 @@
 ---
 ---There are several requirements that you must follow when creating a `NewType`.
 ---@field ["invalid-newtype"]? _.ty.settings.defs.Level
----
----**Default level: `error`**
----
----**What it does**
----
----Checks for various invalid `@overload` usages.
----
----**Why is this bad?**
----
----The `@overload` decorator is used to define functions and methods that accepts different
----combinations of arguments and return different types based on the arguments passed. This is mainly
----beneficial for type checkers. But, if the `@overload` usage is invalid, the type checker may not be
----able to provide correct type information.
----@field ["invalid-overload"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1285,7 +1310,6 @@
 ---**Why is this bad?**
 ---
 ---Reading a missing key raises `KeyError`. Assigning to an undeclared key can silently add it to the dictionary.
----
 ---@field ["invalid-typed-dict-key"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
@@ -1341,6 +1365,18 @@
 ---Using a `TypedDict` class in these contexts raises `TypeError` at runtime.
 ---@field ["isinstance-against-typed-dict"]? _.ty.settings.defs.Level
 ---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects method overrides that rename a positional-or-keyword parameter or make it positional-only.
+---
+---**Why is this bad?**
+---
+---Code that uses the base class's interface can pass the argument by keyword.
+---The same call may raise `TypeError` on an instance of the subclass.
+---@field ["lost-keyword-for-regular-parameter"]? _.ty.settings.defs.Level
+---
 ---**Default level: `ignore`**
 ---
 ---**What it does**
@@ -1374,6 +1410,20 @@
 ---all take a name argument that is normally expected to match the assigned variable. A mismatch is
 ---usually a typo and makes later diagnostics harder to understand.
 ---@field ["mismatched-type-name"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for `@final` or `@override` decorators applied to the wrong definition of an overloaded
+---method. If the overload set has an implementation function, put the decorator on the implementation.
+---Otherwise, e.g. in a stub file, put the decorator on the first overload.
+---
+---**Why is this bad?**
+---
+---These decorators apply to the whole method. Placing one on an individual overload suggests that only
+---that overload is final or overrides a superclass method.
+---@field ["misplaced-overload-decorator"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1424,6 +1474,25 @@
 ---See uv's [guide to managing dependencies](https://docs.astral.sh/uv/concepts/projects/dependencies/)
 ---for how to add these declarations.
 ---@field ["missing-direct-dependency"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for overloaded functions and methods without a required implementation. An implementation can
+---be omitted in any of the following cases:
+---
+---  - The overloads are defined in a stub file (`.pyi`).
+---  - All overloads are defined inside `if TYPE_CHECKING` blocks.
+---  - The overloaded method is defined in a protocol.
+---  - The method is defined in an abstract base class and every overload is decorated with `@abstractmethod`.
+---
+---**Why is this bad?**
+---
+---The `@overload` definitions describe the calls a type checker should accept. A separate
+---implementation handles those calls at runtime. Calling an overloaded function without an
+---implementation raises `NotImplementedError`.
+---@field ["missing-overload-implementation"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -1803,6 +1872,19 @@
 ---
 ---Shadowing type variables makes the code confusing and is disallowed by the typing spec.
 ---@field ["shadowed-type-variable"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for functions and methods with only one `@overload` declaration.
+---
+---**Why is this bad?**
+---
+---An overload describes one of several ways to call a function. If one signature describes all valid
+---calls, keep the implementation and remove the overload declaration. In a stub file, keep the
+---declaration and remove the `@overload` decorator.
+---@field ["single-overload"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
