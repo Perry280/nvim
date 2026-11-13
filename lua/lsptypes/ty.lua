@@ -89,6 +89,32 @@
 ---
 ---**What it does**
 ---
+---Checks for calls to abstract `@classmethod`s or `@staticmethod`s with "trivial bodies" when accessed
+---on the class object itself.
+---
+---"Trivial bodies" are bodies that solely consist of `...`, `pass`, a docstring, and/or
+---`raise NotImplementedError`.
+---
+---**Why is this bad?**
+---
+---An abstract method with a trivial body has no concrete implementation to execute, so calling such a
+---method directly on the class will probably not have the desired effect.
+---
+---It is also unsound to call these methods directly on the class. Unlike other methods, ty permits
+---abstract methods with trivial bodies to have non-`None` return types even though they always return
+---`None` at runtime. This is because it is expected that these methods will always be overridden
+---rather than being called directly. As a result of this exception to the normal rule, ty may infer an
+---incorrect type if one of these methods is called directly, which may then mean that type errors
+---elsewhere in your code go undetected by ty.
+---
+---Calling abstract classmethods or staticmethods via `type[X]` is allowed, since the actual runtime
+---type could be a concrete subclass with an implementation.
+---@field ["abstract-method-call"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
 ---Checks for `@final` classes that have unimplemented abstract methods.
 ---
 ---**Why is this bad?**
@@ -150,61 +176,21 @@
 ---
 ---**What it does**
 ---
----Checks for calls to abstract `@classmethod`s or `@staticmethod`s with "trivial bodies" when accessed
----on the class object itself.
+---Detects calls to objects where ty knows that the object is callable, but cannot determine what the
+---signature of the callable object is.
 ---
----"Trivial bodies" are bodies that solely consist of `...`, `pass`, a docstring, and/or
----`raise NotImplementedError`.
----
----**Why is this bad?**
----
----An abstract method with a trivial body has no concrete implementation to execute, so calling such a
----method directly on the class will probably not have the desired effect.
----
----It is also unsound to call these methods directly on the class. Unlike other methods, ty permits
----abstract methods with trivial bodies to have non-`None` return types even though they always return
----`None` at runtime. This is because it is expected that these methods will always be overridden
----rather than being called directly. As a result of this exception to the normal rule, ty may infer an
----incorrect type if one of these methods is called directly, which may then mean that type errors
----elsewhere in your code go undetected by ty.
----
----Calling abstract classmethods or staticmethods via `type[X]` is allowed, since the actual runtime
----type could be a concrete subclass with an implementation.
----@field ["call-abstract-method"]? _.ty.settings.defs.Level
----
----**Default level: `error`**
----
----**What it does**
----
----Checks for calls to non-callable objects.
----
----This includes attempts to instantiate classes with unimplemented abstract methods, whether those
----methods are explicitly decorated with `abstractmethod` or implicitly abstract protocol members.
+---Specifically, this diagnostic emits errors on calls to objects inferred as having the type
+---`Top[Callable[..., T]]`. This type represents the "infinite union" of all callable types with return
+---type `T`.
 ---
 ---**Why is this bad?**
 ---
----Calling a non-callable object will raise a `TypeError` at runtime.
----
----Abstract methods describe behavior that a subclass must implement before it can be instantiated.
----Classes using `ABCMeta` enforce this at runtime; the type checker also enforces it for classes
----without `ABCMeta`.
----@field ["call-non-callable"]? _.ty.settings.defs.Level
----
----**Default level: `error`**
----
----**What it does**
----
----Checks for calls to objects typed as `Top[Callable[..., T]]` (the infinite union of all callable
----types with return type `T`).
----
----**Why is this bad?**
----
----When `analysis.strict-generic-narrowing` is enabled, `callable(x)` and `isinstance(x, Callable)`
----narrow an object to `Top[Callable[..., object]]`. We know the object is callable, but we don't know
----its precise signature. This type represents the set of all possible callable types (including, e.g.,
----functions that take no arguments and functions that require arguments), so no specific set of
----arguments can be guaranteed to be valid.
----@field ["call-top-callable"]? _.ty.settings.defs.Level
+---When ty's `analysis.strict-generic-narrowing` setting is enabled, `if callable(x)` and
+---`if isinstance(x, Callable)` will narrow `x` to `Top[Callable[..., object]]`. We know that `x` is
+---callable, but we don't know its precise signature. `Top[Callable[..., object]]` represents the set
+---of all possible callable types (including, e.g., functions that take no arguments and functions that
+---require arguments), so no specific set of arguments can be guaranteed to be valid.
+---@field ["call-to-function-with-unknown-signature"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -256,19 +242,6 @@
 ---applies to implicit type aliases, aliases annotated with `TypeAlias`, `type` statements, and aliases
 ---created with `TypeAliasType`.
 ---@field ["cyclic-type-alias-definition"]? _.ty.settings.defs.Level
----
----**Default level: `error`**
----
----**What it does**
----
----Checks for dataclass definitions where required fields are defined after fields with default values.
----
----**Why is this bad?**
----
----In dataclasses, all required fields (fields without default values) must be defined before fields
----with default values. This is a Python requirement that will raise a `TypeError` at runtime if
----violated.
----@field ["dataclass-field-order"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -399,34 +372,6 @@
 ---
 ---**What it does**
 ---
----Detects functions with empty bodies that have a non-`None` return type annotation.
----
----The errors reported by this rule have the same motivation as the [`invalid-return-type`](#invalid-return-type) rule. The
----diagnostic exists as a separate error code to allow users to disable this rule while prototyping
----code. While we strongly recommend enabling this rule if possible, users migrating from other type
----checkers may also find it useful to temporarily disable this rule on some or all of their codebase
----if they find it results in a large number of diagnostics.
----
----**Why is this bad?**
----
----A function with an empty body (containing only `...`, `pass`, or a docstring) will implicitly return
----`None` at runtime. Returning `None` when the return type is non-`None` is unsound, and will lead to
----ty inferring incorrect types elsewhere.
----
----Functions with empty bodies are permitted in certain contexts where they serve as declarations
----rather than implementations:
----
----- Functions in stub files (`.pyi`)
----- Methods in Protocol classes
----- Abstract methods decorated with `@abstractmethod`
----- Overload declarations decorated with `@overload`
----- Functions in `if TYPE_CHECKING` blocks
----@field ["empty-body"]? _.ty.settings.defs.Level
----
----**Default level: `error`**
----
----**What it does**
----
 ---Checks for forward annotations that contain escape characters.
 ---
 ---**Why is this bad?**
@@ -495,12 +440,12 @@
 ---
 ---**What it does**
 ---
----Checks for implicit concatenated strings in type annotation positions.
+---Checks for [type expressions][type expression] written as two or more adjacent string literals.
 ---
 ---**Why is this bad?**
 ---
----Static analysis tools like ty can't analyze type annotations that use implicit concatenated strings.
----@field ["implicit-concatenated-string-type-annotation"]? _.ty.settings.defs.Level
+---ty can't resolve a string annotation when a [type expression] spans multiple string literals.
+---@field ["implicit-string-concatenation-in-annotation"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -815,6 +760,19 @@
 ---
 ---**What it does**
 ---
+---Checks for dataclass definitions where required fields are defined after fields with default values.
+---
+---**Why is this bad?**
+---
+---In dataclasses, all required fields (fields without default values) must be defined before fields
+---with default values. This is a Python requirement that will raise a `TypeError` at runtime if
+---violated.
+---@field ["invalid-dataclass-field-order"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
 ---Checks for dataclass definitions that have both `frozen=True` and a custom `__setattr__` or
 ---`__delattr__` method defined.
 ---
@@ -883,6 +841,19 @@
 ---
 ---**What it does**
 ---
+---Checks for `return` statements where the value returned is inconsistent with the function's
+---return-type annotation.
+---
+---**Why is this bad?**
+---
+---A caller relying on the annotated return type can receive a value of an unexpected type and fail at
+---runtime.
+---@field ["invalid-explicit-return"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
 ---Checks for dataclasses with invalid frozen inheritance:
 ---
 ---- A frozen dataclass cannot inherit from a non-frozen dataclass.
@@ -903,6 +874,22 @@
 ---
 ---There are several requirements that you must follow when defining a generic class. Many of these
 ---result in `TypeError` being raised at runtime if they are violated.
+---@field ["invalid-generator-return-type"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks whether a generator function's return annotation allows the generator object it produces.
+---
+---**Why is this bad?**
+---
+---Calling a generator function produces a generator object. A synchronous generator function's
+---return-type annotation must be a supertype of `types.GeneratorType[Never, object, Never]`, and an
+---asynchronous generator function's return-type annotation must be a supertype of
+---`types.AsyncGeneratorType[Never, object]`. Other return-type annotations contradict what the
+---function does; a caller relying on the annotated return type could receive a generator object
+---instead of the expected type and fail at runtime.
 ---@field ["invalid-generic-class"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
@@ -928,6 +915,56 @@
 ---
 ---A syntactically incorrect ignore comment is probably a mistake and is useless.
 ---@field ["invalid-ignore-comment"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects nonempty functions that can reach the end of their body and implicitly return `None`,
+---despite the fact that their return-type annotations do not allow `None` to be returned.
+---
+---This rule only covers functions with non-empty bodies. Functions with empty "stub" bodies are
+---covered by the separate [`invalid-implicit-return-in-function-with-stub-body`](#invalid-implicit-return-in-function-with-stub-body) rule.
+---
+---**Why is this bad?**
+---
+---When execution reaches the end of a function, Python implicitly returns `None`. If the return-type
+---annotation does not permit `None` to be returned, a caller relying on the annotated return type can
+---then fail at runtime.
+---
+---For a regular non-generator function, an implicit return is only allowed if the return-type
+---annotation is `None` or a supertype of `None`. For a synchronous generator function annotated with
+---`Generator[YieldType, SendType, ReturnType]` or similar, an implicit return is only allowed if
+---`ReturnType` is `None` or a supertype of `None`.
+---@field ["invalid-implicit-return"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Detects functions with stub-like bodies whose return-type annotations exclude `None`.
+---
+---The errors reported by this rule have the same motivation as the [`invalid-implicit-return`](#invalid-implicit-return) rule. The
+---diagnostic exists as a separate error code to allow users to disable this rule while prototyping
+---code. While we strongly recommend enabling this rule if possible, users migrating from other type
+---checkers may also find it useful to temporarily disable this rule on some or all of their codebase
+---if they find it results in a large number of diagnostics.
+---
+---**Why is this bad?**
+---
+---A function with an empty body (containing only `...`, `pass`, or a docstring) will implicitly return
+---`None` at runtime. Returning `None` when the return type is non-`None` is unsound, and will lead to
+---ty inferring incorrect types elsewhere.
+---
+---Functions with empty bodies are permitted in certain contexts where they serve as declarations
+---rather than implementations:
+---
+---  - Functions in stub files (`.pyi`)
+---  - Methods in Protocol classes
+---  - Abstract methods decorated with `@abstractmethod`
+---  - Overload declarations decorated with `@overload`
+---  - Functions in `if TYPE_CHECKING` blocks
+---@field ["invalid-implicit-return-in-function-with-stub-body"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1104,21 +1141,6 @@
 ---rules apply, except that `None` is also permitted. Violating these rules results in a `TypeError` at
 ---runtime.
 ---@field ["invalid-raise"]? _.ty.settings.defs.Level
----
----**Default level: `error`**
----
----**What it does**
----
----Detects returned values that can't be assigned to the function's annotated return type.
----
----Note that the special case of a function with a non-`None` return type and an empty body is handled
----by the separate [`empty-body`](#empty-body) error code.
----
----**Why is this bad?**
----
----Returning an object of a type incompatible with the annotated return type is unsound, and will lead
----to ty inferring incorrect types elsewhere.
----@field ["invalid-return-type"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1621,6 +1643,17 @@
 ---
 ---**What it does**
 ---
+---Checks for calls to non-callable objects.
+---
+---**Why is this bad?**
+---
+---Calling a non-callable object will raise a `TypeError` at runtime.
+---@field ["not-callable"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
 ---Checks for objects that are not iterable but are used in a context that requires them to be.
 ---
 ---**Why is this bad?**
@@ -1873,7 +1906,7 @@
 ---Shadowing type variables makes the code confusing and is disallowed by the typing spec.
 ---@field ["shadowed-type-variable"]? _.ty.settings.defs.Level
 ---
----**Default level: `error`**
+---**Default level: `warn`**
 ---
 ---**What it does**
 ---
@@ -2167,7 +2200,7 @@
 ---Detects `return` statements that unsoundly return a type that is not a [subtype] of the function's
 ---annotated return type.
 ---
----This lint is a stricter version of [`invalid-return-type`](#invalid-return-type).
+---This lint is a stricter version of [`invalid-explicit-return`](#invalid-explicit-return).
 ---
 ---**Why is this bad?**
 ---
@@ -2234,7 +2267,7 @@
 ---This rule is analogous to mypy's [`no-any-return`][no-any-return] error code, which is enabled by
 ---mypy’s [`--strict`][mypy-strict] mode and can also be enabled on its own using mypy’s
 ---[`--warn-return-any`][warn-return-any] option.
----@field ["unsound-return-statement"]? _.ty.settings.defs.Level
+---@field ["unsound-return"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
