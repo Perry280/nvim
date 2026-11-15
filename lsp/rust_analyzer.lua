@@ -49,6 +49,9 @@ local function default_sysroot_src()
     return sysroot and vim.fs.joinpath(sysroot, 'lib/rustlib/src/rust/library') or nil
 end
 
+---@type table<string, string>
+local workspace_cache = {}
+
 ---@param fname string
 ---@return string | nil
 local function is_library(fname)
@@ -88,13 +91,19 @@ return {
         end
 
         local cargo_crate_dir = vim.fs.root(fname, { 'Cargo.toml' })
-        local cargo_workspace_root
+        ---@type string?
+        local cargo_workspace_root = nil
 
         if cargo_crate_dir == nil then
             on_dir(
                 vim.fs.root(fname, { 'rust-project.json' })
                 or vim.fs.dirname(vim.fs.find('.git', { path = fname, upward = true })[1])
             )
+            return
+        end
+
+        if workspace_cache[cargo_crate_dir] then
+            on_dir(workspace_cache[cargo_crate_dir])
             return
         end
 
@@ -117,6 +126,7 @@ return {
                     end
                 end
 
+                workspace_cache[cargo_crate_dir] = cargo_workspace_root or cargo_crate_dir
                 on_dir(cargo_workspace_root or cargo_crate_dir)
             else
                 vim.schedule(function()
