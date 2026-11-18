@@ -13,11 +13,11 @@
       "src": "https://github.com/nvim-lualine/lualine.nvim"
     },
     "mini": {
-      "rev": "174eb9b9d5d66254966b9d52ea51b996317e51f6",
+      "rev": "e199196f5ed6b085743da6a808e6c8510698cdce",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "nvim-treesitter": {
-      "rev": "0bf28a34f1da3259809807d4b4b63c93aa9055aa",
+      "rev": "b706d642dd20d0922e7e92365dc73617f0fdb4ea",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "nvim-treesitter-textobjects": {

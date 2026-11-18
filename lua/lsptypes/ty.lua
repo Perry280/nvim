@@ -451,16 +451,14 @@
 ---
 ---**What it does**
 ---
----Checks for import statements for which the module cannot be resolved.
+---Checks for imports where ty cannot resolve the module.
 ---
 ---**Why is this bad?**
 ---
----Importing a module that cannot be resolved will raise a `ModuleNotFoundError` at runtime.
+---Importing a missing module raises `ModuleNotFoundError` at runtime.
 ---
----These diagnostics can often be caused due to ty's Python environment or search paths being
----configured incorrectly. See the
----[import troubleshooting FAQ](https://docs.astral.sh/ty/reference/typing-faq/#why-cant-ty-resolve-my-imports)
----for more details.
+---These diagnostics can often be caused due to ty's Python environment or search paths being configured incorrectly.
+---See the [import troubleshooting FAQ](https://docs.astral.sh/ty/reference/typing-faq/#why-cant-ty-resolve-my-imports) for more details.
 ---@field ["import-not-found"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
@@ -783,6 +781,21 @@
 ---
 ---Overriding either of these methods raises a runtime error.
 ---@field ["invalid-dataclass-override"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks whether a dataclass's `__post_init__` method accepts the arguments passed by the generated
+---`__init__` method.
+---
+---**Why is this bad?**
+---
+---If a dataclass defines a `__post_init__` method, its generated `__init__` method will pass every
+---`InitVar` field as a positional argument to the `__post_init__` method. If the number or kind of
+---parameters is incompatible with that call, constructing an instance raises `TypeError`. If a
+---parameter has an incompatible type, the method can receive a value it cannot handle.
+---@field ["invalid-dataclass-post-init"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -1274,8 +1287,8 @@
 ---
 ---**What it does**
 ---
----Checks for constrained [type variables] with only one constraint, or that those constraints
----reference type variables.
+---Checks that constrained [type variables] have at least two constraints and that none of their
+---constraints reference type variables.
 ---
 ---**Why is this bad?**
 ---
@@ -1496,6 +1509,20 @@
 ---See uv's [guide to managing dependencies](https://docs.astral.sh/uv/concepts/projects/dependencies/)
 ---for how to add these declarations.
 ---@field ["missing-direct-dependency"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for names in a `from ... import ...` statement that ty cannot find in the resolved module.
+---For a package, an importable submodule also satisfies the import.
+---
+---**Why is this bad?**
+---
+---
+---Importing a missing name from an existing module raises `ImportError` at runtime. Check the spelling
+---of the imported name and whether the installed version of the module provides it.
+---@field ["missing-module-member"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
