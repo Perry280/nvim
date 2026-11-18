@@ -1,7 +1,11 @@
 ---@meta
 
+
+
 ---@class (exact) clangd.on_init.init_result.ClangdInitializeResult: lsp.InitializeResult
 ---@field offsetEncoding? string
+
+
 
 ---@class (exact) _.clangd.settings.Clangd.InactiveRegions
 ---Opacity of inactive regions (used only if clangd.inactiveRegions.useBackgroundHighlight=false)
@@ -12,6 +16,8 @@
 ---@field opacity? number
 ---Use a background highlight rather than opacity to identify inactive preprocessor regions.
 ---@field useBackgroundHighlight? boolean
+
+
 
 ---@class (exact) _.clangd.settings.Clangd
 ---Arguments for clangd server.
@@ -90,14 +96,22 @@
 ---Allows the path to be a script e.g.: clangd.sh.
 ---@field useScriptAsExecutable? boolean
 
+
+
 ---@class (exact) clangd.settings
 ---@field clangd? _.clangd.settings.Clangd
+
+
 
 ---@class (exact) _.clangd.init_options.compilationDatabaseChanges.CompileCommand
 ---@field workingDirectory? string
 ---@field compilationCommand? string[]
 
+
+
 ---@alias _.clangd.init_options.compilationDatabaseChanges { string: _.clangd.init_options.compilationDatabaseChanges.CompileCommand}
+
+
 
 ---@class (exact) clangd.init_options
 ---Specifies the directory containing the compilation database (e.g. `compile_commands.json`).

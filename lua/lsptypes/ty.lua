@@ -1,6 +1,10 @@
 ---@meta
 
+
+
 ---@alias _.ty.settings.defs.Level "ignore" | "warn" | "error"
+
+
 
 ---@alias _.ty.settings.defs.OutputFormat
 ---The default full mode will print `pretty` diagnostics.
@@ -33,13 +37,21 @@
 ---[SARIF]: https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html
 ---| "sarif"
 
+
+
 ---@alias _.ty.settings.defs.PythonPlatform string | "all" | "darwin" | "linux" | "win32"
 
+
+
 ---@alias _.ty.settings.defs.SupportedPythonVersion "3.7" | "3.8" | "3.9" | "3.10" | "3.11" | "3.12" | "3.13" | "3.14" | "3.15"
+
+
 
 ---An owned, mutable path on [`System`](`super::System`) (akin to [`String`]).
 ---The path is guaranteed to be valid UTF-8.
 ---@alias _.ty.settings.defs.SystemPathBuf string
+
+
 
 ---A possibly relative path in a configuration file.
 ---Relative paths in configuration files or from CLI options
@@ -48,7 +60,35 @@
 ---  * Configuration file: The path is relative to the project's or script's configuration root.
 ---@alias _.ty.settings.defs.RelativePathBuf _.ty.settings.defs.SystemPathBuf
 
+
+
 ---@alias _.ty.settings.defs.ReturnTypeInference "never" | "always"
+
+
+
+---@alias _.ty.settings.defs.ScriptProjectManager "none" | "uv"
+
+
+
+---@class (exact) _.ty.settings.defs.ProjectManagerOptions
+---The project manager to use for scripts with PEP 723 inline metadata.
+---  - With `"none"` (the default), ty looks for imported packages in your Python environment.
+---    Install any third-party packages the script needs in that environment.
+---  - With `"uv"`, each script gets its own Python environment. ty uses
+---    [uv](https://docs.astral.sh/uv/) to install the script's declared dependencies there
+---    and resolves imports from that environment. This requires uv 0.12.3 or newer.
+---
+---If a script has an inline `[tool.ty]` table, its `project-manager.script` setting
+---takes precedence. Otherwise, the script inherits the project's value.
+---When checking untrusted code with `ty check`, pass `--config 'project-manager.script="none"'`
+---to disable script synchronization. To disable both script synchronization and uv workspace
+---discovery, set the `TY_UV` environment variable to `off`. `TY_UV` takes precedence over
+---`--config`. If your editor marks the workspace as untrusted, ty disables both automatically.
+---
+---`uv check` sets `TY_UV=1`, so it always enables script synchronization.
+---@field script? _.ty.settings.defs.ScriptProjectManager
+
+
 
 ---Rules of the ty Python type checker, as documented at
 ---https://docs.astral.sh/ty/reference/rules/
@@ -292,6 +332,20 @@
 ---This rule therefore provides a means for codebases to partially validate their uses of `cast()`
 ---without banning the API -- or even banning all unsound uses of the API -- entirely.
 ---@field ["disjoint-cast"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for `TypeIs[T]` return annotations where `T` is disjoint from and [not assignable to] the
+---declared type of the parameter being narrowed.
+---
+---**Why is this bad?**
+---
+---When a `TypeIs[T]` function returns `True`, ty narrows the argument to the values that match both
+---its existing type and `T`. If no value can belong to both types simultaneously, the check can never
+---truthfully return `True` for an argument of the declared parameter type.
+---@field ["disjoint-type-is-narrowing"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `ignore`**
 ---
@@ -881,18 +935,6 @@
 ---
 ---**What it does**
 ---
----Checks for the creation of invalid generic classes
----
----**Why is this bad?**
----
----There are several requirements that you must follow when defining a generic class. Many of these
----result in `TypeError` being raised at runtime if they are violated.
----@field ["invalid-generator-return-type"]? _.ty.settings.defs.Level
----
----**Default level: `error`**
----
----**What it does**
----
 ---Checks whether a generator function's return annotation allows the generator object it produces.
 ---
 ---**Why is this bad?**
@@ -903,6 +945,18 @@
 ---`types.AsyncGeneratorType[Never, object]`. Other return-type annotations contradict what the
 ---function does; a caller relying on the annotated return type could receive a generator object
 ---instead of the expected type and fail at runtime.
+---@field ["invalid-generator-return-type"]? _.ty.settings.defs.Level
+---
+---**Default level: `error`**
+---
+---**What it does**
+---
+---Checks for the creation of invalid generic classes.
+---
+---**Why is this bad?**
+---
+---There are several requirements that you must follow when defining a generic class. Many of these
+---result in `TypeError` being raised at runtime if they are violated.
 ---@field ["invalid-generic-class"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
@@ -1997,6 +2051,49 @@
 ---Using `super()` in a method of a `NamedTuple` class will raise an exception at runtime.
 ---@field ["super-call-in-named-tuple-method"]? _.ty.settings.defs.Level
 ---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for `TypeIs[T]` return annotations where `T` can overlap with the declared type of the
+---parameter being narrowed but is not [assignable to] it.
+---
+---This is a sibling rule to [`disjoint-type-is-narrowing`](#disjoint-type-is-narrowing), which flags `TypeIs` functions where `T` is
+---disjoint from the declared type of the parameter being narrowed. Unlike those cases, which are
+---always useless, the cases caught by this rule can be sound and useful in some situations.
+---Nonetheless, their usefulness is rare; this rule can often help identify mistakes in your code.
+---
+---**Why is this bad?**
+---
+---
+---`TypeIs` allows you to define functions that help ty narrow the type of an object based on a runtime
+---check. For example:
+---
+---```python
+---from typing_extensions import TypeIs
+---
+---
+---def is_string(value: object) -> TypeIs[str]:
+---    return isinstance(value, str)
+---
+---
+---def process(value: int | str) -> None:
+---    if is_string(value):
+---        print(value.upper())  # value is a str
+---    else:
+---        print(value.bit_length())  # value is an int
+---```
+---
+---When a `TypeIs[T]` function returns `True`, ty combines its existing knowledge of the argument's
+---type with the knowledge that it is also of type `T`. When the function returns `False`, ty can
+---exclude `T` from the argument's possible types.
+---
+---For the inputs the function accepts, `TypeIs[T]` promises to return `True` exactly when the argument
+---is a `T`. Checking that `T` is [assignable to] the parameter type helps catch mistakes in the choice
+---of `T`. A target that is too broad can be a sign that the annotation describes a different test from
+---the one the function performs.
+---@field ["suspicious-type-is-narrowing"]? _.ty.settings.defs.Level
+---
 ---**Default level: `error`**
 ---
 ---**What it does**
@@ -2482,17 +2579,25 @@
 ---Python's built-in sequence types raise a `ValueError` when sliced with a step size of zero.
 ---@field ["zero-stepsize-in-slice"]? _.ty.settings.defs.Level
 
+
+
 ---@class (exact) _.ty.settings.defs.AnalysisOptions
----A list of module glob patterns for which `import-not-found` diagnostics should be suppressed.
+---A list of module glob patterns for which `import-not-found` and
+---`missing-module-member` diagnostics should be suppressed.
+---For `from pkg import name`, ty matches against `pkg` if the module cannot be resolved,
+---and against `pkg.name` if the module resolves but the name cannot be imported.
 ---
 ---Details on supported glob patterns:
----  * matches zero or more characters except .. For example, foo.* matches foo.bar but not foo.bar.baz; foo* matches foo and foobar but not foo.bar or barfoo; and *foo matches foo and barfoo but not foo.bar or foobar.
----  ** matches any number of module components (e.g., foo.** matches foo, foo.bar, etc.)
----  Prefix a pattern with ! to exclude matching modules
+---  - `*` matches zero or more characters except `.`. For example, `foo.*` matches `foo.bar` but
+---     not `foo.bar.baz`; `foo*` matches `foo` and `foobar` but not `foo.bar` or `barfoo`; and `*foo`
+---     matches `foo` and `barfoo` but not `foo.bar` or `foobar`.
+---  - `**` matches any number of module components (e.g., `foo.**` matches `foo`, `foo.bar`, etc.)
+---  - Prefix a pattern with `!` to exclude matching modules
 ---
 ---When multiple patterns match, later entries take precedence.
 ---
----Glob patterns can be used in combinations with each other. For example, to suppress errors for any module where the first component contains the substring test, use *test*.**.
+---Glob patterns can be used in combinations with each other. For example, to suppress errors for
+---any module where the first component contains the substring `test`, use `*test*.**`.
 ---
 ---Default value: `[]`
 ---@field ["allowed-unresolved-imports"]? string[]
@@ -2622,6 +2727,8 @@
 ---Default value: `false`
 ---@field ["strict-generic-narrowing"]? boolean
 
+
+
 ---@class (exact) _.ty.settings.defs.EnvironmentOptions
 ---User-provided paths that should take first priority in module resolution.
 ---
@@ -2635,26 +2742,30 @@
 ---@field ["extra-paths"]? _.ty.settings.defs.RelativePathBuf[]
 ---Path to your project's Python environment or interpreter.
 ---
----ty uses the site-packages directory of your project's Python environment
+---ty uses the `site-packages` directory of your project's Python environment
 ---to resolve third-party (and, in some cases, first-party) imports in your code.
 ---
 ---This can be a path to:
----  A Python interpreter, e.g. .venv/bin/python3
----  A virtual environment directory, e.g. .venv
----  A system Python [sys.prefix] directory, e.g. /usr
 ---
----If you're using a project management tool such as uv, you should not generally need to specify this option,
----as commands such as uv run will set the VIRTUAL_ENV environment variable to point to your project's virtual environment.
----ty can also infer the location of your environment from an activated Conda environment,
----and will look for a .venv directory in the project root if none of the above apply.
----Failing that, ty will look for a python3 or python binary available in PATH.
+---  - A Python interpreter, e.g. `.venv/bin/python3`
+---  - A virtual environment directory, e.g. `.venv`
+---  - A system Python [`sys.prefix`] directory, e.g. `/usr`
 ---
----Scripts with inline metadata use their own Python environment.
----They can use an explicitly configured environment, an activated environment,
----or an environment selected by the editor.
----Unlike projects, they do not automatically use a .venv directory.
+---If you're using a project management tool such as uv, you should not generally need to
+---specify this option, as commands such as `uv run` will set the `VIRTUAL_ENV` environment
+---variable to point to your project's virtual environment. Otherwise, ty looks for an
+---activated child Conda or Pixi environment, a `.venv` directory in the project root, then
+---an activated base Conda environment, in that order. ty skips Conda and Pixi environments
+---that contain no Python interpreter. If none of these environments are found, ty looks for
+---a `python3` or `python` binary in `PATH`.
 ---
----Default value: `null`
+---Scripts with inline metadata use their own Python environment. They can use an explicitly
+---configured environment, an activated environment, or an environment selected by the editor.
+---Unlike projects, they do not automatically use a `.venv` directory.
+---
+---[`sys.prefix`]: https://docs.python.org/3/library/sys.html#sys.prefix
+---
+---Default value: `nil`
 ---@field python? _.ty.settings.defs.RelativePathBuf
 ---Specifies the target platform that will be used to analyze the source code.
 ---If specified, ty will understand conditions based on comparisons with sys.platform,
@@ -2671,26 +2782,31 @@
 ---Default value: `<current-platform>`
 ---@field ["python-platform"]? _.ty.settings.defs.PythonPlatform
 ---Specifies the version of Python that will be used to analyze the source code.
----The version should be specified as a string in the format M.m where M is the major version and m is the minor (e.g. "3.7" or "3.12").
----If a version is provided, ty will generate errors if the source code makes use of language features that are not supported in that version.
+---The version should be specified as a string in the format `M.m` where `M` is the major version
+---and `m` is the minor (e.g. `"3.7"` or `"3.12"`).
+---If a version is provided, ty will generate errors if the source code makes use of language features
+---that are not supported in that version.
 ---
----ty officially supports type checking code that targets Python 3.10 and later.
----Python 3.7 through 3.9 can still be selected, but ty may produce false positives or false negatives
----for standard-library APIs because its bundled stubs do not fully describe those versions.
+---ty officially supports type checking code that targets Python 3.10 and later. Python 3.7
+---through 3.9 can still be selected, but ty may produce false positives or false negatives for
+---standard-library APIs because its bundled stubs do not fully describe those versions.
 ---
----If a version is not specified, ty will try the following techniques
----in order of preference to determine a value:
----  1. Check for the project.requires-python setting in a pyproject.toml file and use the minimum version from the specified range
----  2. Check for an activated or configured Python environment and attempt to infer the Python version of that environment
+---If a version is not specified, ty will try the following techniques in order of preference
+---to determine a value:
+---  1. Check for the `project.requires-python` setting in a `pyproject.toml` file
+---     and use the minimum version from the specified range
+---  2. Check for an activated or configured Python environment
+---     and attempt to infer the Python version of that environment
 ---  3. Fall back to the default value (see below)
 ---
----Scripts with inline metadata use their requires-python field instead of project.requires-python.
----They do not inherit the Python version of the enclosing project.
+---A script uses its inline `environment.python-version` first, then `requires-python`.
+---It falls back to the project's version if it has no inline `[tool.ty]` table.
 ---
----For some language features, ty can also understand conditionals based on comparisons with sys.version_info.
----These are commonly found in typeshed, for example, to reflect the differing contents of the standard library across Python versions.
+---For some language features, ty can also understand conditionals based on comparisons
+---with `sys.version_info`. These are commonly found in typeshed, for example,
+---to reflect the differing contents of the standard library across Python versions.
 ---
----Default value: `"3.14"`
+---Default value: `"3.15"`
 ---@field ["python-version"]? _.ty.settings.defs.SupportedPythonVersion
 ---The root paths of the project, used for finding first-party modules.
 ---
@@ -2707,14 +2823,16 @@
 ---Scripts with inline metadata have no first-party roots by default because they are single-file programs.
 ---Set root = ["."] to allow importing local modules.
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field root? _.ty.settings.defs.RelativePathBuf[]
 ---Optional path to a "typeshed" directory on disk for us to use for standard-library types.
 ---If this is not provided, we will fallback to our vendored typeshed stubs for the stdlib,
 ---bundled as a zip file in the binary
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field typeshed? _.ty.settings.defs.RelativePathBuf
+
+
 
 ---Configuration override that applies to specific files based on glob patterns.
 ---
@@ -2729,7 +2847,7 @@
 ---
 ---If not specified, defaults to [] (excludes no files).
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field exclude? string[]
 ---A list of file and directory patterns to include for this override.
 ---
@@ -2738,7 +2856,7 @@
 ---
 ---If not specified, defaults to ["**"] (matches all files).
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field include? string[]
 ---Rule overrides for files matching the include/exclude patterns.
 ---
@@ -2747,6 +2865,8 @@
 ---Default value: `{}`
 ---@field rules? _.ty.settings.defs.Rules
 ---@field analysis? _.ty.settings.defs.AnalysisOptions
+
+
 
 ---@class (exact) _.ty.settings.defs.SrcOptions
 ---A list of file and directory patterns to exclude from type checking.
@@ -2788,7 +2908,7 @@
 ---
 ---You can override any default exclude by using a negated pattern. For example, to re-include dist use exclude = ["!dist"]
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field exclude? string[]
 ---Whether to exclude files containing PEP 723 inline script metadata
 ---unless they are explicitly passed on the command line.
@@ -2809,13 +2929,15 @@
 ---
 ---exclude takes precedence over include.
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field include? string[]
 ---Whether to automatically exclude files that are ignored by .ignore, .gitignore, .git/info/exclude, and global gitignore files.
 ---Enabled by default.
 ---
 ---Default value: `true`
 ---@field ["respect-ignore-files"]? boolean
+
+
 
 ---@class (exact) _.ty.settings.defs.TerminalOptions
 ---Use exit code 1, even if all diagnostics only had warning severity.
@@ -2827,11 +2949,13 @@
 ---Default value: `"full"`
 ---@field ["output-format"]? _.ty.settings.defs.OutputFormat
 
+
+
 ---@class (exact) _.ty.settings.ty.configuration
 ---@field analysis? _.ty.settings.defs.AnalysisOptions
 ---Path to the JSON file that records existing lint diagnostics for this project.
 ---Relative paths are resolved against the project root.
----Use ty `check --update-baseline` to create or update the file.
+---Use `ty check --update-baseline` to create or update the file.
 ---
 ---Diagnostic baselines are in preview.
 ---The file format may change between ty releases.
@@ -2840,9 +2964,12 @@
 ---@field baseline? _.ty.settings.defs.RelativePathBuf
 ---@field environment? _.ty.settings.defs.EnvironmentOptions
 ---@field overrides? _.ty.settings.defs.OverridesOptions
+---@field ["project-manager"]? _.ty.settings.defs.ProjectManagerOptions
 ---@field rules? _.ty.settings.defs.Rules
 ---@field src? _.ty.settings.defs.SrcOptions
 ---@field terminal? _.ty.settings.defs.TerminalOptions
+
+
 
 ---These settings control the inline hints that ty provides in an editor.
 ---@class (exact) _.ty.settings.ty.inlayHints
@@ -2854,6 +2981,8 @@
 ---
 ---Default value: `true`
 ---@field callArgumentNames? boolean
+
+
 
 ---These settings control how code completions offered by ty work.
 ---@class (exact) _.ty.settings.ty.completions
@@ -2867,6 +2996,8 @@
 ---Default value: `false`
 ---@field completeFunctionParentheses? boolean
 
+
+
 ---@class (exact) _.ty.settings.ty
 ---@field configuration? _.ty.settings.ty.configuration
 ---The path to a ty.toml configuration file.
@@ -2876,7 +3007,7 @@
 ---
 ---While ty configuration can be included in a pyproject.toml file, it is not allowed in this context.
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field configurationFile? string
 ---Whether to disable the language services for the ty language server
 ---like code completion, hover, go to definition, etc.
@@ -2908,6 +3039,8 @@
 ---@field inlayHints? _.ty.settings.ty.inlayHints
 ---@field completions? _.ty.settings.ty.completions
 
+
+
 ---@class (exact) ty.settings
 ---@field ty? _.ty.settings.ty
 
@@ -2923,15 +3056,17 @@
 ---Enabling it requires uv 0.12.3 or later.
 ---All uv integrations are disabled when `untrustedWorkspace` is `true`.
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field useUv? "off" | "scripts" | "on"
+
+
 
 ---@class (exact) ty.init_options
 ---@field experimental? _.ty.init_options.experimental
 ---Path to the file to which the language server writes its log messages.
 ---By default, ty writes log messages to stderr.
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field logFile? string
 ---The log level to use for the language server.
 ---

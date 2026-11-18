@@ -1,5 +1,7 @@
 ---@meta
 
+
+
 ---@class (exact) _.lua_ls.settings.Lua.AddonManager
 ---Whether the addon manager is enabled or not.
 ---
@@ -20,9 +22,13 @@
 ---```
 ---@field repositoryPath? string
 
+
+
 ---@class (exact) _.lua_ls.settings.Lua.CodeLens
 ---Enable code lens.
 ---@field enable? boolean
+
+
 
 ---@class (exact) _.lua_ls.settings.Lua.Completion
 ---When the input looks like a file name, automatically `require` this file.
@@ -97,6 +103,8 @@
 ---default = true
 ---```
 ---@field workspaceWord? boolean
+
+
 
 ---Modify the diagnostic needed file status in a group.
 ---
@@ -236,6 +244,8 @@
 ---```
 ---@field unused? "Any"|"Opened"|"None"|"Fallback"
 
+
+
 ---Modify the diagnostic severity in a group.
 ---`Fallback` means that diagnostics in this group are controlled by `diagnostics.severity` separately.
 ---Other settings will override individual settings without end of `!`.
@@ -368,6 +378,8 @@
 ---default = "Fallback"
 ---```
 ---@field unused? "Error"|"Warning"|"Information"|"Hint"|"Fallback"
+
+
 
 ---* Opened:  only diagnose opened files
 ---* Any:     diagnose all files
@@ -749,6 +761,8 @@
 ---```
 ---@field ["unused-vararg"]? "Any"|"Opened"|"None"|"Any!"|"Opened!"|"None!"
 
+
+
 ---Modify the diagnostic severity.
 ---
 ---End with `!` means override the group setting `diagnostics.groupSeverity`.
@@ -1127,6 +1141,8 @@
 ---```
 ---@field ["unused-vararg"]? "Error"|"Warning"|"Information"|"Hint"|"Error!"|"Warning!"|"Information!"|"Hint!"
 
+
+
 ---@class (exact) _.lua_ls.settings.Lua.Diagnostics
 ---Disabled diagnostic (Use code in hover brackets).
 ---
@@ -1222,6 +1238,8 @@
 ---```
 ---@field workspaceRate? integer
 
+
+
 ---@class (exact) _.lua_ls.settings.Lua.Doc
 ---Treat specific field names as package, e.g. `m_*` means `XXX.m_id` and `XXX.m_type` are package, witch can only be accessed in the file where the definition is located.
 ---
@@ -1248,6 +1266,8 @@
 ---```
 ---@field regengine? "glob"|"lua"
 
+
+
 ---@class (exact) _.lua_ls.settings.Lua.Format
 ---The default format configuration. Has a lower priority than `.editorconfig` file in the workspace.
 ---Read [formatter docs](https://github.com/CppCXY/EmmyLuaCodeStyle/tree/master/docs) to learn usage.
@@ -1263,6 +1283,8 @@
 ---default = true
 ---```
 ---@field enable? boolean
+
+
 
 ---@class (exact) _.lua_ls.settings.Lua.Hint
 ---Show hints of array index when constructing a table.
@@ -1301,6 +1323,8 @@
 ---@field semicolon? "All"|"SameLine"|"Disable"
 ---Show hints of type at assignment operation.
 ---@field setType? boolean
+
+
 
 ---@class (exact) _.lua_ls.settings.Lua.Hover
 ---Enable hover.
@@ -1347,6 +1371,8 @@
 ---```
 ---@field viewStringMax? integer
 
+
+
 ---@class (exact) _.lua_ls.settings.Lua.Language
 ---(VSCode only) Automatically insert "---@ " after a line break following a annotation.
 ---
@@ -1360,6 +1386,8 @@
 ---default = true
 ---```
 ---@field fixIndent? boolean
+
+
 
 ---@class (exact) _.lua_ls.settings.Lua.Misc
 ---Specify the executable path in VSCode.
@@ -1375,6 +1403,8 @@
 ---```
 ---@field parameters? string[]
 
+
+
 ---@class (exact) _.lua_ls.settings.Lua.NameStyle
 ---Set name style config.
 ---Read [formatter docs](https://github.com/CppCXY/EmmyLuaCodeStyle/tree/master/docs) to learn usage.
@@ -1384,6 +1414,8 @@
 ---default = {}
 ---```
 ---@field config? table
+
+
 
 ---Adjust the enabled state of the built-in library. You can disable (or redefine) the non-existent library according to the actual runtime environment.
 ---
@@ -1513,6 +1545,8 @@
 ---```
 ---@field utf8? "default"|"enable"|"disable"
 
+
+
 ---@class (exact) _.lua_ls.settings.Lua.Runtime
 ---Adjust the enabled state of the built-in library. You can disable (or redefine) the non-existent library according to the actual runtime environment.
 ---
@@ -1581,6 +1615,8 @@
 ---```
 ---@field version? "Lua 5.1"|"Lua 5.2"|"Lua 5.3"|"Lua 5.4"|"Lua 5.5"|"LuaJIT"
 
+
+
 ---@class (exact) _.lua_ls.settings.Lua.Semantic
 ---Semantic coloring of type annotations.
 ---
@@ -1603,6 +1639,8 @@
 ---```
 ---@field variable? boolean
 
+
+
 ---@class (exact) _.lua_ls.settings.Lua.SignatureHelp
 ---Enable signature help.
 ---
@@ -1611,6 +1649,8 @@
 ---```
 ---@field enable? boolean
 
+
+
 ---@class (exact) _.lua_ls.settings.Lua.Spell
 ---Custom words for spell checking.
 ---
@@ -1618,6 +1658,8 @@
 ---default = {}
 ---```
 ---@field dict? string[]
+
+
 
 ---@class (exact) _.lua_ls.settings.Lua.Type
 ---Allowed to assign the `number` type to the `integer` type.
@@ -1657,6 +1699,8 @@
 ---
 ---@field weakUnionCheck? boolean
 
+
+
 ---Configures the formatting behavior while typing Lua code.
 ---@class (exact) _.lua_ls.settings.Lua.TypeFormat.Config
 ---Controls if `end` is automatically completed at suitable positions.
@@ -1678,9 +1722,13 @@
 ---```
 ---@field format_line? string
 
+
+
 ---@class (exact) _.lua_ls.settings.Lua.TypeFormat
 ---Configures the formatting behavior while typing Lua code.
 ---@field config? _.lua_ls.settings.Lua.TypeFormat.Config
+
+
 
 ---@class (exact) _.lua_ls.settings.Lua.Window
 ---Show progress bar in status bar.
@@ -1695,6 +1743,8 @@
 ---default = true
 ---```
 ---@field statusBar? boolean
+
+
 
 ---@class (exact) _.lua_ls.settings.Lua.Workspace
 ---Automatic detection and adaptation of third-party libraries, currently supported libraries are:
@@ -1756,6 +1806,8 @@
 ---```
 ---@field userThirdParty? string[]
 
+
+
 ---@class (exact) _.lua_ls.settings.Lua
 ---@field addonManager? _.lua_ls.settings.Lua.AddonManager
 ---Specifies the addon repository path (not related to the addon manager).
@@ -1788,6 +1840,8 @@
 ---@field typeFormat? _.lua_ls.settings.Lua.TypeFormat
 ---@field window? _.lua_ls.settings.Lua.Window
 ---@field workspace? _.lua_ls.settings.Lua.Workspace
+
+
 
 ---@class (exact) lua_ls.settings
 ---@field Lua? _.lua_ls.settings.Lua

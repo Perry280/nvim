@@ -1,5 +1,7 @@
 ---@meta
 
+
+
 ---@class (exact) _.bashls.settings.BashIde.Shfmt
 ---Additional Shfmt arguments. Note that common arguments can be configured via the other settings.
 ---
@@ -33,6 +35,8 @@
 ---@field simplifyCode? boolean
 ---Follow redirection operators with a space.
 ---@field spaceRedirects? boolean
+
+
 
 ---@class (exact) _.bashls.settings.BashIde
 ---Glob patterns excluded from background file discovery. Open files and sourced files can still be analyzed on demand.
@@ -88,6 +92,8 @@
 ---```
 ---@field shellcheckPath? string
 ---@field shfmt? _.bashls.settings.BashIde.Shfmt
+
+
 
 ---@class (exact) bashls.settings
 ---@field bashIde? _.bashls.settings.BashIde
