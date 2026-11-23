@@ -1129,12 +1129,12 @@
 ---
 ---**What it does**
 ---
----Checks for invalidly defined `NamedTuple` classes.
+---Checks for invalid definitions of `typing.NamedTuple` and `collections.namedtuple` classes.
 ---
 ---**Why is this bad?**
 ---
 ---An invalidly defined `NamedTuple` class may lead to the type checker drawing incorrect conclusions.
----It may also lead to `TypeError`s or `AttributeError`s at runtime.
+---It may also lead to errors at runtime, such as `ValueError`, `TypeError`, or `AttributeError`.
 ---@field ["invalid-named-tuple"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
@@ -1470,6 +1470,74 @@
 ---
 ---**What it does**
 ---
+---Checks whether the class name passed to a functional enum constructor, such as `Enum`, `IntEnum`, or
+---`Flag`, differs from the assigned variable's name.
+---
+---This rule is only applied if ty infers a string literal type for the class name argument.
+---
+---**Why is this bad?**
+---
+---A mismatched name can be a typo and can make an enum's runtime representation confusing.
+---
+---**Default level**
+---
+---This rule is disabled by default because enum names are not required to match their assigned
+---variables, and sometimes the preferred `__repr__` for an enum may include non-identifier characters.
+---
+---Enable this rule to enforce consistent enum naming.
+---@field ["mismatched-enum-name"]? _.ty.settings.defs.Level
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
+---Checks whether the `typename` passed to `typing.NamedTuple` or `collections.namedtuple` differs from
+---the assigned variable's name.
+---
+---This rule is only applied if ty infers a string literal type for the `typename` argument.
+---
+---**Why is this bad?**
+---
+---A mismatched name can be a typo and can make a namedtuple's runtime representation confusing.
+---
+---**Default level**
+---
+---This rule is disabled by default because namedtuple names are not required to match their assigned
+---variables.
+---
+---Enable this rule to enforce consistent namedtuple naming.
+---@field ["mismatched-named-tuple-name"]? _.ty.settings.defs.Level
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks whether the name passed to `NewType` differs from the assigned variable, or if ty cannot
+---determine the value of a string passed to the `name` argument.
+---
+---**Why is this bad?**
+---
+---The name argument sets the newtype's `__name__`. A typo can make the type appear under an unexpected
+---name in diagnostics.
+---@field ["mismatched-newtype-name"]? _.ty.settings.defs.Level
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks whether the name passed to `ParamSpec` differs from the assigned variable, or if ty cannot
+---determine the value of a string passed to the `name` argument.
+---
+---**Why is this bad?**
+---
+---The name argument identifies the parameter specification in a callable's signature. A mismatch can
+---make it harder to connect that signature to the definition.
+---@field ["mismatched-paramspec-name"]? _.ty.settings.defs.Level
+---
+---**Default level: `ignore`**
+---
+---**What it does**
+---
 ---Checks for `builtins.sentinel` and `typing_extensions.Sentinel` definitions
 ---whose name argument does not match the variable they are assigned to.
 ---In class scope, the name can be unqualified or include the full enclosing class path.
@@ -1483,22 +1551,55 @@
 ---This rule is disabled by default because sentinel names are not required to match their assigned variables,
 ---and sometimes the preferred __repr__ for a sentinel may include non-identifier characters.
 ---Enable this rule to enforce consistent sentinel naming.
----This rule is similar to `mismatched-type-name`, but is a distinct rule because the default severity differs.
 ---@field ["mismatched-sentinel-name"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
 ---**What it does**
 ---
----Checks for functional typing definitions whose declared name does not match the variable they are
----assigned to.
+---Checks whether the name passed to `TypeAliasType` differs from the assigned variable, or if ty
+---cannot determine the value of a string passed to the `name` argument.
 ---
 ---**Why is this bad?**
 ---
----Constructors like `TypeVar`, `ParamSpec`, `NewType`, `NamedTuple`, `TypedDict`, and `TypeAliasType`
----all take a name argument that is normally expected to match the assigned variable. A mismatch is
----usually a typo and makes later diagnostics harder to understand.
----@field ["mismatched-type-name"]? _.ty.settings.defs.Level
+---A mismatched name can be a typo and can make a type alias's runtime representation confusing.
+---@field ["mismatched-type-alias-name"]? _.ty.settings.defs.Level
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks whether the name passed to the functional form of `TypedDict` differs from the assigned
+---variable, or if ty cannot determine the value of a string passed to the `typename` argument.
+---
+---**Why is this bad?**
+---
+---A mismatched name can be a typo and can make a `TypedDict`'s runtime representation confusing.
+---@field ["mismatched-typeddict-name"]? _.ty.settings.defs.Level
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks whether the name passed to `TypeVar` differs from the assigned variable, or if ty cannot
+---determine the value of a string passed to the `name` argument.
+---
+---**Why is this bad?**
+---
+---A mismatched name can be a typo and can make a `TypeVar`'s runtime representation confusing.
+---@field ["mismatched-typevar-name"]? _.ty.settings.defs.Level
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks whether the name passed to `TypeVarTuple` differs from the assigned variable, or if ty cannot
+---determine the value of a string passed to the `name` argument.
+---
+---**Why is this bad?**
+---
+---A mismatched name can be a typo and can make a `TypeVarTuple`'s runtime representation confusing.
+---@field ["mismatched-typevartuple-name"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
@@ -2999,6 +3100,11 @@
 
 
 ---@class (exact) _.ty.settings.ty
+---In-editor configuration of ty's settings.
+---The inline settings always take precedence over the settings from configuration files,
+---including the configuration specified with `configurationFile`.
+---
+---Default value: `nil`
 ---@field configuration? _.ty.settings.ty.configuration
 ---The path to a ty.toml configuration file.
 ---ty will use the specified configuration over any automatically discovered configuration.
