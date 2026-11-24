@@ -477,19 +477,6 @@
 ---do not require a value.
 ---@field ["final-without-value"]? _.ty.settings.defs.Level
 ---
----**Default level: `warn`**
----
----**What it does**
----
----Checks for `ty: ignore[code]` or `type: ignore[ty:code]` comments where `code` isn't a known lint
----rule.
----
----**Why is this bad?**
----
----A `ty: ignore[code]` or a `type: ignore[ty:code]` directive with a `code` that doesn't match any
----known rule will not suppress any type errors, and is probably a mistake.
----@field ["ignore-comment-unknown-rule"]? _.ty.settings.defs.Level
----
 ---**Default level: `error`**
 ---
 ---**What it does**
@@ -2315,6 +2302,19 @@
 ---
 ---Providing an unknown keyword argument will raise `TypeError` at runtime.
 ---@field ["unknown-argument"]? _.ty.settings.defs.Level
+---
+---**Default level: `warn`**
+---
+---**What it does**
+---
+---Checks for `ty: ignore[code]` or `type: ignore[ty:code]` comments where `code` isn't a known lint
+---rule.
+---
+---**Why is this bad?**
+---
+---A `ty: ignore[code]` or a `type: ignore[ty:code]` directive with a `code` that doesn't match any
+---known rule will not suppress any type errors, and is probably a mistake.
+---@field ["unknown-rule-in-ignore-comment"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `error`**
 ---
