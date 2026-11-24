@@ -3,6 +3,9 @@
 
 
 ---@alias _.ruff.settings.defs.Alias string
+
+
+
 ---@alias _.ruff.settings.defs.AllImports
 ---| "all"
 
@@ -1563,49 +1566,49 @@
 ---```
 ---
 ---The PEP 257 convention includes all `D` errors apart from:
----[`D203`](rules/incorrect-blank-line-before-class.md),
----[`D212`](rules/multi-line-summary-first-line.md),
----[`D213`](rules/multi-line-summary-second-line.md),
----[`D214`](rules/overindented-section.md),
----[`D215`](rules/overindented-section-underline.md),
+---[`D203`](rules/incorrect-blank-line-before-class-docstring.md),
+---[`D212`](rules/multiline-docstring-summary-on-separate-line.md),
+---[`D213`](rules/multiline-docstring-summary-on-first-line.md),
+---[`D214`](rules/over-indented-docstring-section.md),
+---[`D215`](rules/over-indented-docstring-section-underline.md),
 ---[`D404`](rules/docstring-starts-with-this.md),
 ---[`D405`](rules/non-capitalized-section-name.md),
 ---[`D406`](rules/missing-new-line-after-section-name.md),
 ---[`D407`](rules/missing-dashed-underline-after-section.md),
----[`D408`](rules/missing-section-underline-after-name.md),
+---[`D408`](rules/blank-line-before-docstring-section-underline.md),
 ---[`D409`](rules/mismatched-section-underline-length.md),
----[`D410`](rules/no-blank-line-after-section.md),
----[`D411`](rules/no-blank-line-before-section.md),
----[`D413`](rules/missing-blank-line-after-last-section.md),
+---[`D410`](rules/missing-blank-line-after-docstring-section.md),
+---[`D411`](rules/missing-blank-line-before-docstring-section.md),
+---[`D413`](rules/missing-blank-line-after-last-docstring-section.md),
 ---[`D415`](rules/missing-terminal-punctuation.md),
 ---[`D416`](rules/missing-section-name-colon.md),
----[`D417`](rules/undocumented-param.md), and
+---[`D417`](rules/undocumented-parameter.md), and
 ---[`D420`](rules/incorrect-section-order.md).
 ---
 ---The NumPy convention includes all `D` errors apart from:
 ---[`D107`](rules/undocumented-public-init.md),
----[`D203`](rules/incorrect-blank-line-before-class.md),
----[`D212`](rules/multi-line-summary-first-line.md),
----[`D213`](rules/multi-line-summary-second-line.md),
+---[`D203`](rules/incorrect-blank-line-before-class-docstring.md),
+---[`D212`](rules/multiline-docstring-summary-on-separate-line.md),
+---[`D213`](rules/multiline-docstring-summary-on-first-line.md),
 ---[`D402`](rules/signature-in-docstring.md),
----[`D413`](rules/missing-blank-line-after-last-section.md),
+---[`D413`](rules/missing-blank-line-after-last-docstring-section.md),
 ---[`D415`](rules/missing-terminal-punctuation.md),
 ---[`D416`](rules/missing-section-name-colon.md), and
----[`D417`](rules/undocumented-param.md).
+---[`D417`](rules/undocumented-parameter.md).
 ---
 ---The Google convention includes all `D` errors apart from:
----[`D203`](rules/incorrect-blank-line-before-class.md),
----[`D204`](rules/incorrect-blank-line-after-class.md),
----[`D213`](rules/multi-line-summary-second-line.md),
----[`D215`](rules/overindented-section-underline.md),
+---[`D203`](rules/incorrect-blank-line-before-class-docstring.md),
+---[`D204`](rules/incorrect-blank-line-after-class-docstring.md),
+---[`D213`](rules/multiline-docstring-summary-on-first-line.md),
+---[`D215`](rules/over-indented-docstring-section-underline.md),
 ---[`D400`](rules/missing-trailing-period.md),
 ---[`D401`](rules/non-imperative-mood.md),
 ---[`D404`](rules/docstring-starts-with-this.md),
 ---[`D406`](rules/missing-new-line-after-section-name.md),
 ---[`D407`](rules/missing-dashed-underline-after-section.md),
----[`D408`](rules/missing-section-underline-after-name.md),
+---[`D408`](rules/blank-line-before-docstring-section-underline.md),
 ---[`D409`](rules/mismatched-section-underline-length.md), and
----[`D413`](rules/missing-blank-line-after-last-section.md).
+---[`D413`](rules/missing-blank-line-after-last-docstring-section.md).
 ---
 ---For more information see the [FAQ](faq.md#does-ruff-support-numpy-or-google-style-docstrings) entry.
 ---
@@ -3255,11 +3258,10 @@
 ---| "ambiguous-variable-name"
 ---| "any-eq-ne-annotation"
 ---| "any-type"
----| "argument-default-in-stub"
 ---| "assert"
 ---| "assert-false"
----| "assert-on-string-literal"
 ---| "assert-raises-exception"
+---| "assert-string-literal"
 ---| "assert-tuple"
 ---| "assert-with-print-message"
 ---| "assignment-default-in-stub"
@@ -3294,15 +3296,12 @@
 ---| "binary-op-exception"
 ---| "bit-count"
 ---| "blank-line-after-decorator"
----| "blank-line-after-function"
----| "blank-line-before-class"
----| "blank-line-before-function"
----| "blank-line-between-methods"
+---| "blank-line-after-function-docstring"
+---| "blank-line-before-class-docstring"
+---| "blank-line-before-docstring-section-underline"
+---| "blank-line-before-function-docstring"
 ---| "blank-line-with-whitespace"
----| "blank-lines-after-function-or-class"
----| "blank-lines-before-nested-definition"
 ---| "blank-lines-between-header-and-content"
----| "blank-lines-top-level"
 ---| "blanket-noqa"
 ---| "blanket-type-ignore"
 ---| "blind-except"
@@ -3312,10 +3311,10 @@
 ---| "blocking-open-call-in-async-function"
 ---| "blocking-path-method-in-async-function"
 ---| "blocking-sleep-in-async-function"
+---| "boolean-annotated-positional-parameter"
 ---| "boolean-chained-comparison"
----| "boolean-default-value-positional-argument"
+---| "boolean-default-value-positional-parameter"
 ---| "boolean-positional-value-in-call"
----| "boolean-type-hint-positional-argument"
 ---| "break-outside-loop"
 ---| "builtin-argument-shadowing"
 ---| "builtin-attribute-shadowing"
@@ -3323,7 +3322,6 @@
 ---| "builtin-lambda-argument-shadowing"
 ---| "builtin-open"
 ---| "builtin-variable-shadowing"
----| "byte-string-usage"
 ---| "cached-instance-method"
 ---| "call-date-fromtimestamp"
 ---| "call-date-today"
@@ -3335,12 +3333,14 @@
 ---| "call-datetime-utcnow"
 ---| "call-datetime-without-tzinfo"
 ---| "call-with-shell-equals-true"
----| "camelcase-imported-as-acronym"
----| "camelcase-imported-as-constant"
----| "camelcase-imported-as-lowercase"
+---| "camel-case-imported-as-acronym"
+---| "camel-case-imported-as-constant"
+---| "camel-case-imported-as-lowercase"
 ---| "cancel-scope-no-checkpoint"
+---| "cast-with-unquoted-type"
 ---| "check-and-remove-from-set"
 ---| "class-as-data-structure"
+---| "class-method-receiver-not-named-cls"
 ---| "class-with-mixed-type-vars"
 ---| "collapsible-else-if"
 ---| "collapsible-if"
@@ -3352,15 +3352,16 @@
 ---| "comparison-of-constant"
 ---| "comparison-with-itself"
 ---| "complex-assignment-in-stub"
+---| "complex-default-for-annotated-parameter-in-stub"
+---| "complex-default-for-unannotated-parameter-in-stub"
 ---| "complex-if-statement-in-stub"
 ---| "complex-structure"
 ---| "complexity"
+---| "consecutive-global-or-nonlocal-statements"
 ---| "constant-imported-as-non-constant"
 ---| "context-manager-iterator"
 ---| "continue-in-finally"
 ---| "continue-outside-loop"
----| "convert-named-tuple-functional-to-class"
----| "convert-typed-dict-functional-to-class"
 ---| "correctness"
 ---| "create-subprocess-in-async-function"
 ---| "custom-type-var-for-self"
@@ -3371,9 +3372,10 @@
 ---| "decimal-from-float-literal"
 ---| "default-except-not-last"
 ---| "default-factory-kwarg"
----| "del-attr-with-constant"
+---| "delattr-with-constant"
 ---| "delete-full-slice"
 ---| "deprecated-abc-decorator"
+---| "deprecated-byte-string-type"
 ---| "deprecated-c-element-tree"
 ---| "deprecated-import"
 ---| "deprecated-mock-import"
@@ -3402,7 +3404,6 @@
 ---| "docstring-missing-yields"
 ---| "docstring-starts-with-this"
 ---| "docstring-tab-indentation"
----| "dot-format-in-exception"
 ---| "double-negation"
 ---| "dunder-function-name"
 ---| "duplicate-bases"
@@ -3420,16 +3421,14 @@
 ---| "empty-docstring-section"
 ---| "empty-method-without-abstract-decorator"
 ---| "empty-type-checking-block"
----| "enumerate-for-loop"
 ---| "eq-without-hash"
----| "error-instead-of-exception"
----| "error-suffix-on-exception-name"
 ---| "escape-sequence-in-docstring"
----| "exc-info-outside-except-handler"
+---| "eval"
 ---| "except-with-empty-tuple"
 ---| "except-with-non-exception-classes"
----| "exception-without-exc-info"
----| "exec-builtin"
+---| "exception-class-without-error-suffix"
+---| "exec"
+---| "executable-file-without-shebang"
 ---| "explicit-f-string-type-conversion"
 ---| "explicit-string-concatenation"
 ---| "expr-and-false"
@@ -3441,7 +3440,7 @@
 ---| "f-string"
 ---| "f-string-docstring"
 ---| "f-string-in-exception"
----| "f-string-in-get-text-func-call"
+---| "f-string-in-gettext-call"
 ---| "f-string-missing-placeholders"
 ---| "f-string-number-format"
 ---| "f-string-percent-format"
@@ -3450,12 +3449,13 @@
 ---| "fast-api-non-annotated-dependency"
 ---| "fast-api-redundant-response-model"
 ---| "fast-api-unused-path-parameter"
+---| "file-path-as-logger-name"
 ---| "first-word-uncapitalized"
 ---| "flask-debug-true"
 ---| "float-equality-comparison"
 ---| "for-loop-set-mutations"
 ---| "for-loop-writes"
----| "format-in-get-text-func-call"
+---| "format-in-gettext-call"
 ---| "format-literals"
 ---| "formatting"
 ---| "forward-annotation-syntax-error"
@@ -3463,13 +3463,14 @@
 ---| "function-call-in-dataclass-default-argument"
 ---| "function-call-in-default-argument"
 ---| "function-uses-loop-variable"
+---| "functional-named-tuple"
+---| "functional-typed-dict"
 ---| "future-annotations-in-stub"
 ---| "future-feature-not-defined"
 ---| "future-required-type-annotation"
 ---| "future-rewritable-type-annotation"
----| "generator-return-from-iter-method"
 ---| "generic-not-last-base-class"
----| "get-attr-with-constant"
+---| "getattr-with-constant"
 ---| "glob"
 ---| "global-at-module-level"
 ---| "global-statement"
@@ -3483,18 +3484,19 @@
 ---| "hardcoded-temp-file"
 ---| "hashlib-digest-hex"
 ---| "hashlib-insecure-hash-function"
+---| "if-else-assignment-to-same-variable"
 ---| "if-else-block-instead-of-dict-get"
 ---| "if-else-block-instead-of-dict-lookup"
----| "if-else-block-instead-of-if-exp"
----| "if-exp-instead-of-or-operator"
 ---| "if-expr-min-max"
+---| "if-expr-with-body-as-condition"
 ---| "if-expr-with-false-true"
+---| "if-expr-with-identical-branches"
+---| "if-expr-with-negated-else-as-condition"
 ---| "if-expr-with-true-false"
----| "if-expr-with-twisted-arms"
 ---| "if-key-in-dict-del"
 ---| "if-stmt-min-max"
 ---| "if-tuple"
----| "if-with-same-arms"
+---| "if-with-identical-branches"
 ---| "implicit-class-var-in-dataclass"
 ---| "implicit-cwd"
 ---| "implicit-namespace-package"
@@ -3508,8 +3510,9 @@
 ---| "import-shadowed-by-loop-var"
 ---| "in-dict-keys"
 ---| "in-empty-collection"
----| "incorrect-blank-line-after-class"
----| "incorrect-blank-line-before-class"
+---| "incorrect-blank-line-after-class-docstring"
+---| "incorrect-blank-line-after-docstring-summary"
+---| "incorrect-blank-line-before-class-docstring"
 ---| "incorrect-decorator-order"
 ---| "incorrect-dict-iterator"
 ---| "incorrect-section-order"
@@ -3517,27 +3520,17 @@
 ---| "indentation-with-invalid-multiple"
 ---| "indentation-with-invalid-multiple-comment"
 ---| "indented-form-feed"
+---| "instance-method-receiver-not-named-self"
 ---| "int-on-sliced-str"
 ---| "invalid-all-format"
 ---| "invalid-all-object"
----| "invalid-argument-name"
 ---| "invalid-assert-message-literal-argument"
 ---| "invalid-bool-return-type"
 ---| "invalid-bytes-return-type"
----| "invalid-character-backspace"
----| "invalid-character-esc"
----| "invalid-character-nul"
----| "invalid-character-sub"
----| "invalid-character-zero-width-space"
----| "invalid-class-name"
 ---| "invalid-envvar-default"
 ---| "invalid-envvar-value"
 ---| "invalid-escape-sequence"
----| "invalid-first-argument-name-for-class-method"
----| "invalid-first-argument-name-for-method"
 ---| "invalid-formatter-suppression-comment"
----| "invalid-function-name"
----| "invalid-get-logger-argument"
 ---| "invalid-hash-return-type"
 ---| "invalid-index-return-type"
 ---| "invalid-index-type"
@@ -3556,6 +3549,7 @@
 ---| "is-literal"
 ---| "isinstance-type-none"
 ---| "iter-method-return-iterable"
+---| "iter-method-with-generator-return-annotation"
 ---| "iteration-over-set"
 ---| "jinja2-autoescape-false"
 ---| "jump-statement-in-finally"
@@ -3573,11 +3567,15 @@
 ---| "line-too-long"
 ---| "list-reverse-copy"
 ---| "literal-membership"
+---| "literal-union-with-supertype"
 ---| "load-before-global-declaration"
----| "log-exception-outside-except-handler"
 ---| "logging-config-insecure-listen"
 ---| "logging-eager-conversion"
----| "logging-exc-info"
+---| "logging-error-instead-of-exception"
+---| "logging-error-with-exc-info"
+---| "logging-exc-info-outside-except-handler"
+---| "logging-exception-outside-except-handler"
+---| "logging-exception-with-falsy-exc-info"
 ---| "logging-extra-attr-clash"
 ---| "logging-f-string"
 ---| "logging-percent-format"
@@ -3587,6 +3585,7 @@
 ---| "logging-too-few-args"
 ---| "logging-too-many-args"
 ---| "logging-warn"
+---| "logging-warn-constant"
 ---| "long-sleep-not-forever"
 ---| "loop-iterator-mutation"
 ---| "loop-variable-overrides-iterator"
@@ -3599,6 +3598,8 @@
 ---| "manual-from-import"
 ---| "manual-list-comprehension"
 ---| "manual-list-copy"
+---| "manual-loop-counter"
+---| "manual-str-enum"
 ---| "map-int-version-parsing"
 ---| "map-without-explicit-strict"
 ---| "math-constant"
@@ -3606,12 +3607,17 @@
 ---| "method-receiver-default"
 ---| "mismatched-section-underline-length"
 ---| "misplaced-bare-raise"
----| "missing-blank-line-after-last-section"
----| "missing-blank-line-after-summary"
+---| "missing-blank-line-after-docstring-section"
+---| "missing-blank-line-after-last-docstring-section"
+---| "missing-blank-line-before-docstring-section"
+---| "missing-blank-line-before-method"
+---| "missing-blank-line-before-nested-definition"
+---| "missing-blank-lines-after-top-level-definition"
+---| "missing-blank-lines-before-top-level-definition"
 ---| "missing-copyright-notice"
 ---| "missing-dashed-underline-after-section"
----| "missing-f-string-syntax"
 ---| "missing-maxsplit-arg"
+---| "missing-new-line-after-last-docstring-paragraph"
 ---| "missing-new-line-after-section-name"
 ---| "missing-newline-at-end-of-file"
 ---| "missing-required-import"
@@ -3621,7 +3627,6 @@
 ---| "missing-return-type-special-method"
 ---| "missing-return-type-static-method"
 ---| "missing-section-name-colon"
----| "missing-section-underline-after-name"
 ---| "missing-space-after-todo-colon"
 ---| "missing-terminal-punctuation"
 ---| "missing-todo-author"
@@ -3646,10 +3651,10 @@
 ---| "modified-iterating-set"
 ---| "module-import-not-at-top-of-file"
 ---| "multi-line-implicit-string-concatenation"
----| "multi-line-summary-first-line"
----| "multi-line-summary-second-line"
 ---| "multi-value-repeated-key-literal"
 ---| "multi-value-repeated-key-variable"
+---| "multiline-docstring-summary-on-first-line"
+---| "multiline-docstring-summary-on-separate-line"
 ---| "multiple-imports-on-one-line"
 ---| "multiple-leading-hashes-for-block-comment"
 ---| "multiple-spaces-after-comma"
@@ -3676,30 +3681,30 @@
 ---| "negate-not-equal-op"
 ---| "nested-min-max"
 ---| "never-union"
----| "new-line-after-last-paragraph"
----| "no-blank-line-after-section"
----| "no-blank-line-before-section"
----| "no-classmethod-decorator"
 ---| "no-explicit-stacklevel"
 ---| "no-indented-block"
 ---| "no-indented-block-comment"
 ---| "no-method-argument"
----| "no-return-argument-annotation-in-stub"
----| "no-self-use"
 ---| "no-slots-in-namedtuple-subclass"
 ---| "no-slots-in-str-subclass"
 ---| "no-slots-in-tuple-subclass"
 ---| "no-space-after-block-comment"
 ---| "no-space-after-inline-comment"
----| "no-staticmethod-decorator"
 ---| "non-ascii-import-name"
 ---| "non-ascii-name"
 ---| "non-augmented-assignment"
+---| "non-camel-case-class-name"
 ---| "non-capitalized-section-name"
+---| "non-decorator-classmethod"
+---| "non-decorator-staticmethod"
 ---| "non-empty-init-module"
 ---| "non-empty-stub-body"
+---| "non-executable-file-with-shebang"
 ---| "non-imperative-mood"
+---| "non-lowercase-function-name"
+---| "non-lowercase-parameter-name"
 ---| "non-lowercase-variable-in-function"
+---| "non-module-level-star-import"
 ---| "non-octal-permissions"
 ---| "non-pep585-annotation"
 ---| "non-pep604-annotation-optional"
@@ -3758,12 +3763,11 @@
 ---| "os-symlink"
 ---| "os-unlink"
 ---| "outdated-version-block"
----| "over-indentation"
 ---| "over-indented"
----| "overindented-section"
----| "overindented-section-underline"
+---| "over-indented-docstring-line"
+---| "over-indented-docstring-section"
+---| "over-indented-docstring-section-underline"
 ---| "overload-with-docstring"
----| "p-print"
 ---| "pandas-nunique-constant-series-check"
 ---| "pandas-use-of-dot-at"
 ---| "pandas-use-of-dot-iat"
@@ -3776,8 +3780,8 @@
 ---| "pandas-use-of-dot-values"
 ---| "pandas-use-of-inplace-argument"
 ---| "pandas-use-of-pd-merge"
+---| "parameter-annotated-with-no-return"
 ---| "paramiko-call"
----| "parenthesize-chained-operators"
 ---| "pass-in-class-body"
 ---| "pass-statement-stub-body"
 ---| "patch-version-comparison"
@@ -3794,15 +3798,17 @@
 ---| "percent-format-star-requires-sequence"
 ---| "percent-format-unsupported-format-character"
 ---| "performance"
+---| "possibly-missing-f-string-prefix"
+---| "possibly-undefined-name-with-star-import"
 ---| "post-init-default"
 ---| "potential-index-error"
+---| "pprint"
 ---| "print"
 ---| "print-empty-string"
----| "printf-in-get-text-func-call"
+---| "printf-in-gettext-call"
 ---| "printf-string-formatting"
 ---| "private-member-access"
 ---| "private-type-parameter"
----| "prohibited-trailing-comma"
 ---| "property-docstring-starts-with-verb"
 ---| "property-with-parameters"
 ---| "property-without-return"
@@ -3843,26 +3849,25 @@
 ---| "quoted-annotation"
 ---| "quoted-annotation-in-stub"
 ---| "quoted-type-alias"
+---| "raise-exception-or-base-exception"
+---| "raise-exception-with-message"
 ---| "raise-literal"
 ---| "raise-not-implemented"
----| "raise-vanilla-args"
----| "raise-vanilla-class"
+---| "raise-stop-iteration-in-generator"
 ---| "raise-within-try"
 ---| "raise-without-from-inside-except"
----| "raw-string-in-exception"
 ---| "re-sub-positional-args"
 ---| "read-whole-file"
 ---| "readlines-in-for"
 ---| "redeclared-assigned-name"
 ---| "redefined-argument-from-local"
----| "redefined-loop-name"
+---| "redefined-for-or-with-target"
 ---| "redefined-slots-in-subclass"
 ---| "redefined-while-unused"
----| "redirected-noqa"
 ---| "redundant-backslash"
 ---| "redundant-bool-literal"
+---| "redundant-exception-in-logging-message"
 ---| "redundant-final-literal"
----| "redundant-literal-union"
 ---| "redundant-log-base"
 ---| "redundant-none-literal"
 ---| "redundant-numeric-union"
@@ -3875,12 +3880,11 @@
 ---| "reimplemented-starmap"
 ---| "relative-imports"
 ---| "renamed-rule"
+---| "renamed-rule-in-suppression-comment"
 ---| "repeated-append"
 ---| "repeated-equality-comparison"
----| "repeated-global"
 ---| "repeated-keyword-argument"
 ---| "replace-stdout-stderr"
----| "replace-str-enum"
 ---| "replace-universal-newlines"
 ---| "request-with-no-cert-validation"
 ---| "request-without-timeout"
@@ -3894,19 +3898,16 @@
 ---| "rule-codes-in-selectors"
 ---| "rule-codes-in-suppression-comments"
 ---| "run-process-in-async-function"
----| "runtime-cast-value"
 ---| "runtime-import-in-type-checking-block"
 ---| "runtime-string-union"
 ---| "security"
 ---| "self-assigning-variable"
 ---| "self-or-cls-assignment"
----| "set-attr-with-constant"
+---| "setattr-with-constant"
 ---| "shallow-copy-environ"
 ---| "shared-clock-mock"
 ---| "shebang-leading-whitespace"
----| "shebang-missing-executable-file"
 ---| "shebang-missing-python"
----| "shebang-not-executable"
 ---| "shebang-not-first-line"
 ---| "signature-in-docstring"
 ---| "single-item-membership-test"
@@ -3926,7 +3927,8 @@
 ---| "ssl-insecure-version"
 ---| "ssl-with-bad-defaults"
 ---| "ssl-with-no-version"
----| "star-arg-unpacking-after-keyword-arg"
+---| "star-arg-after-keyword"
+---| "star-import"
 ---| "starmap-zip"
 ---| "start-process-with-a-shell"
 ---| "start-process-with-no-shell"
@@ -3934,13 +3936,14 @@
 ---| "static-join-to-f-string"
 ---| "static-key-dict-comprehension"
 ---| "stdlib-module-shadowing"
----| "stop-iteration-return"
+---| "str-format-in-exception"
 ---| "str-or-repr-defined-in-stub"
 ---| "string-dot-format-extra-named-arguments"
 ---| "string-dot-format-extra-positional-arguments"
 ---| "string-dot-format-invalid-format"
 ---| "string-dot-format-missing-arguments"
 ---| "string-dot-format-mixing-automatic"
+---| "string-literal-in-exception"
 ---| "string-or-bytes-too-long"
 ---| "strip-with-multi-characters"
 ---| "stub-body-multiple-statements"
@@ -3952,16 +3955,10 @@
 ---| "subprocess-without-shell-equals-true"
 ---| "super-call-with-parameters"
 ---| "super-without-brackets"
----| "superfluous-else-break"
----| "superfluous-else-continue"
----| "superfluous-else-raise"
----| "superfluous-else-return"
 ---| "suppressible-exception"
----| "surrounding-whitespace"
 ---| "suspicious"
----| "suspicious-eval-usage"
----| "suspicious-ftp-lib-usage"
 ---| "suspicious-ftplib-import"
+---| "suspicious-ftplib-usage"
 ---| "suspicious-httpoxy-import"
 ---| "suspicious-insecure-cipher-mode-usage"
 ---| "suspicious-insecure-cipher-usage"
@@ -3975,8 +3972,8 @@
 ---| "suspicious-pycrypto-import"
 ---| "suspicious-pyghmi-import"
 ---| "suspicious-subprocess-import"
----| "suspicious-telnet-usage"
 ---| "suspicious-telnetlib-import"
+---| "suspicious-telnetlib-usage"
 ---| "suspicious-unverified-context-usage"
 ---| "suspicious-url-open-usage"
 ---| "suspicious-xml-element-tree-usage"
@@ -4029,13 +4026,11 @@
 ---| "trailing-comma-on-bare-tuple"
 ---| "trailing-whitespace"
 ---| "trio-sync-call"
----| "triple-single-quotes"
 ---| "true-false-comparison"
 ---| "try-consider-else"
 ---| "try-except-continue"
 ---| "try-except-in-loop"
 ---| "try-except-pass"
----| "type-alias-without-annotation"
 ---| "type-bivariance"
 ---| "type-check-without-type-error"
 ---| "type-comparison"
@@ -4043,26 +4038,25 @@
 ---| "type-none-comparison"
 ---| "type-of-primitive"
 ---| "type-param-name-mismatch"
----| "typed-argument-default-in-stub"
 ---| "typing-only-first-party-import"
 ---| "typing-only-standard-library-import"
 ---| "typing-only-third-party-import"
 ---| "typing-text-str-alias"
 ---| "unaliased-collections-abc-set-import"
 ---| "unannotated-assignment-in-stub"
+---| "unannotated-type-alias-in-stub"
 ---| "unary-prefix-increment-decrement"
 ---| "unassigned-special-variable-in-stub"
 ---| "uncapitalized-environment-variables"
+---| "unclear-boolean-precedence"
+---| "unconventional-docstring-quotes"
 ---| "unconventional-import-alias"
 ---| "undefined-export"
 ---| "undefined-local"
----| "undefined-local-with-import-star"
----| "undefined-local-with-import-star-usage"
----| "undefined-local-with-nested-import-star-usage"
 ---| "undefined-name"
----| "under-indentation"
+---| "under-indented-docstring-line"
 ---| "undocumented-magic-method"
----| "undocumented-param"
+---| "undocumented-parameter"
 ---| "undocumented-public-class"
 ---| "undocumented-public-function"
 ---| "undocumented-public-init"
@@ -4070,7 +4064,11 @@
 ---| "undocumented-public-module"
 ---| "undocumented-public-nested-class"
 ---| "undocumented-public-package"
----| "undocumented-warn"
+---| "unescaped-backspace-character"
+---| "unescaped-escape-character"
+---| "unescaped-null-character"
+---| "unescaped-substitute-character"
+---| "unescaped-zero-width-space-character"
 ---| "unexpected-indentation"
 ---| "unexpected-indentation-comment"
 ---| "unexpected-spaces-around-keyword-parameter-equals"
@@ -4095,6 +4093,10 @@
 ---| "unnecessary-direct-lambda-call"
 ---| "unnecessary-double-cast-or-process"
 ---| "unnecessary-dunder-call"
+---| "unnecessary-else-after-break"
+---| "unnecessary-else-after-continue"
+---| "unnecessary-else-after-raise"
+---| "unnecessary-else-after-return"
 ---| "unnecessary-empty-iterable-within-deque-call"
 ---| "unnecessary-encode-utf8"
 ---| "unnecessary-enumerate"
@@ -4131,6 +4133,7 @@
 ---| "unnecessary-round"
 ---| "unnecessary-spread"
 ---| "unnecessary-subscript-reversal"
+---| "unnecessary-trailing-comma"
 ---| "unnecessary-type-union"
 ---| "unprefixed-type-param"
 ---| "unquoted-type-alias"
@@ -4154,12 +4157,13 @@
 ---| "unused-lambda-argument"
 ---| "unused-loop-control-variable"
 ---| "unused-method-argument"
----| "unused-noqa"
 ---| "unused-private-protocol"
 ---| "unused-private-type-alias"
 ---| "unused-private-type-var"
 ---| "unused-private-typed-dict"
+---| "unused-self"
 ---| "unused-static-method-argument"
+---| "unused-suppression-comment"
 ---| "unused-unpacked-variable"
 ---| "unused-variable"
 ---| "used-dummy-variable"
@@ -4170,7 +4174,6 @@
 ---| "useless-exception-statement"
 ---| "useless-expression"
 ---| "useless-finally"
----| "useless-if-else"
 ---| "useless-import-alias"
 ---| "useless-metaclass-type"
 ---| "useless-object-inheritance"
@@ -4180,13 +4183,13 @@
 ---| "useless-with-lock"
 ---| "utf8-encoding-declaration"
 ---| "verbose-decimal-constructor"
----| "verbose-log-message"
 ---| "verbose-raise"
 ---| "wait-for-process-in-async-function"
 ---| "weak-cryptographic-key"
 ---| "while-one"
 ---| "whitespace-after-decorator"
 ---| "whitespace-after-open-bracket"
+---| "whitespace-around-docstring-text"
 ---| "whitespace-before-close-bracket"
 ---| "whitespace-before-parameters"
 ---| "whitespace-before-punctuation"
@@ -4676,7 +4679,7 @@
 
 
 ---@class (exact) _.ruff.init_options.settings.codeAction.disableRuleComment
----Whether to display Quick Fix actions to disable rules via noqa suppression comments.
+---Whether to display Quick Fix actions to disable rules via `noqa` suppression comments.
 ---
 ---Default value: `true`
 ---@field enable? boolean
@@ -4700,26 +4703,28 @@
 
 ---Settings specific to the Ruff linter.
 ---@class (exact) _.ruff.init_options.settings.lint
----Whether to enable linting. Set to false to use Ruff exclusively as a formatter.
+---Whether to enable linting. Set to `false` to use Ruff exclusively as a formatter.
 ---
 ---Default value: `true`
 ---@field enable? boolean
 ---Whether to enable Ruff's preview mode when linting.
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field preview? boolean
----Rules to enable by default. See the documentation (https://docs.astral.sh/ruff/settings/#lint_select).
+---Rules to enable by default.
+---See the documentation (https://docs.astral.sh/ruff/settings/#lint_select).
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field select? string[]
----Rules to enable in addition to those in lint.select.
+---Rules to enable in addition to those in `lint.select`.
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field extendSelect? _.ruff.settings.defs.RuleSelector[]
----Rules to disable by default. See the documentation (https://docs.astral.sh/ruff/settings/#lint_ignore).
+---Rules to disable by default.
+---See the documentation (https://docs.astral.sh/ruff/settings/#lint_ignore).
 ---
----Default value: `null`
----@field ignore? string[]
+---Default value: `nil`
+---@field ignore? _.ruff.settings.defs.RuleSelector[]
 
 
 
@@ -4727,15 +4732,16 @@
 ---@class (exact) _.ruff.init_options.settings.format
 ---Whether to enable Ruff's preview mode when formatting.
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field preview? boolean
----The backend to use for formatting files. Following options are available:
----  "internal": Use the built-in Ruff formatter
----  "uv": Use uv for formatting (requires uv >= 0.8.13)
+---The backend to use for formatting files. The following options are available:
+---  - `"internal"`: Use the built-in Ruff formatter
+---  - `"uv"`: Use uv for formatting (requires uv >= 0.8.13)
 ---
----For internal, the formatter version will match the selected Ruff version while for uv, the formatter version may differ.
+---For `internal`, the formatter version will match the selected Ruff version
+---while for `uv`, the formatter version may differ.
 ---
----Starting the server with ruff server --untrusted-workspace disables the uv backend.
+---Starting the server with `ruff server --untrusted-workspace` disables the uv backend.
 ---With this flag, the server always uses the internal formatter, regardless of this setting.
 ---This prevents workspace configuration from causing uv to execute untrusted code.
 ---
@@ -4744,55 +4750,55 @@
 
 
 
-
 ---@class (exact) _.ruff.init_options.settings
----The configuration setting allows you to configure editor-specific Ruff behavior.
+---The `configuration` setting allows you to configure editor-specific Ruff behavior.
 ---This can be done in one of the following ways:
 ---  1. Configuration file path:
----     Specify the path to a ruff.toml or pyproject.toml file that contains the configuration.
+---     Specify the path to a `ruff.toml` or `pyproject.toml` file that contains the configuration.
 ---     User home directory and environment variables will be expanded.
 ---  2. Inline JSON configuration: Directly provide the configuration as a JSON object.
 ---
----The default behavior, if configuration is unset, is to load the settings
----from the project's configuration (a ruff.toml or pyproject.toml in the project's directory),
+---The default behavior, if `configuration` is unset, is to load the settings from
+---the project's configuration (a `ruff.toml` or `pyproject.toml` in the project's directory),
 ---consistent with when running Ruff on the command-line.
 ---
----The configurationPreference setting controls the precedence
----if both an editor-provided configuration (configuration)
----and a project level configuration file are present.
+---The `configurationPreference` setting controls the precedence if both an editor-provided
+---configuration (`configuration`) and a project level configuration file are present.
 ---
 ---Resolution order
----In an editor, Ruff supports three sources of configuration, prioritized as follows (from highest to lowest):
----  1. Specific settings: Individual settings like lineLength or lint.select defined in the editor
----  2. ruff.configuration: Settings provided via the configuration field (either a path to a configuration file or an inline configuration object)
----  3. Configuration file: Settings defined in a ruff.toml or pyproject.toml file in the project's directory (if present)
+---With the default `"editorFirst"` configuration preference,
+---Ruff prioritizes the three sources of configuration as follows (from highest to lowest):
+---  1. Specific settings: Individual settings like `lineLength` or `lint.select` defined in the editor
+---  2. `ruff.configuration`: Settings provided via the `configuration` field
+---     (either a path to a configuration file or an inline configuration object)
+---  3. Configuration file: Settings defined in a `ruff.toml` or `pyproject.toml` file in the project's directory (if present)
 ---
----For example, if the line length is specified in all three sources, Ruff will use the value from the lineLength setting.
+---For example, if the line length is specified in all three sources, Ruff will use the value from the `lineLength` setting.
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field configuration? string | ruff.settings
 ---The strategy to use when resolving settings across VS Code and the filesystem.
----By default, editor configuration is prioritized over ruff.toml and pyproject.toml files.
----  "editorFirst": Editor settings take priority over configuration files present in the workspace.
----  "filesystemFirst": Configuration files present in the workspace takes priority over editor settings.
----  "editorOnly": Ignore configuration files entirely i.e., only use editor settings.
+---By default, editor configuration is prioritized over `ruff.toml` and `pyproject.toml` files.
+---  - `"editorFirst"`: Editor settings take priority over configuration files present in the workspace.
+---  - `"filesystemFirst"`: Configuration files present in the workspace take priority over editor settings.
+---  - `"editorOnly"`: Ignore configuration files entirely i.e., only use editor settings.
 ---
 ---Default value: `"editorFirst"`
 ---@field configurationPreference? "editorFirst" | "filesystemFirst" | "editorOnly"
 ---A list of file patterns to exclude from linting and formatting.
 ---See the documentation (https://docs.astral.sh/ruff/settings/#exclude) for more details.
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field exclude? string[]
 ---The line length to use for the linter and formatter.
 ---
----Default value: `null`
+---Default value: `nil`
 ---@field lineLength? integer
----Whether to register the server as capable of handling source.fixAll code actions.
+---Whether to register the server as capable of handling `source.fixAll` code actions.
 ---
 ---Default value: `true`
 ---@field fixAll? boolean
----Whether to register the server as capable of handling source.organizeImports code actions.
+---Whether to register the server as capable of handling `source.organizeImports` code actions.
 ---
 ---Default value: `true`
 ---@field organizeImports? boolean
