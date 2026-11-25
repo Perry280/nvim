@@ -66,12 +66,34 @@
 
 
 
+---@alias _.ty.settings.defs.ProjectManager "none" | "uv"
+
+
+
 ---@alias _.ty.settings.defs.ScriptProjectManager "none" | "uv"
 
 
 
 ---@class (exact) _.ty.settings.defs.ProjectManagerOptions
+---The project manager to use for discovering the project's workspace and Python environment.
+---
+---This setting is in preview and may change between ty releases.
+---
+---  - With `"none"` (the default), ty discovers the project and Python environment itself.
+---  - With `"uv"`, ty uses [uv](https://docs.astral.sh/uv/) to discover the workspace root,
+---    Python environment, and dependency metadata. The environment must already be synchronized;
+---    ty does not install project dependencies. uv may update the lockfile. This requires
+---    uv 0.12.3 or newer.
+---
+---An explicit `TY_UV` takes precedence over this setting. If your editor marks the workspace
+---as untrusted, ty discovers the project without running uv.
+---
+---**Default value**: `"none"`
+---@field project? _.ty.settings.defs.ProjectManager
 ---The project manager to use for scripts with PEP 723 inline metadata.
+---
+---This setting is in preview and may change between ty releases.
+---
 ---  - With `"none"` (the default), ty looks for imported packages in your Python environment.
 ---    Install any third-party packages the script needs in that environment.
 ---  - With `"uv"`, each script gets its own Python environment. ty uses
@@ -86,6 +108,8 @@
 ---`--config`. If your editor marks the workspace as untrusted, ty disables both automatically.
 ---
 ---`uv check` sets `TY_UV=1`, so it always enables script synchronization.
+---
+---**Default value**: `"none"`
 ---@field script? _.ty.settings.defs.ScriptProjectManager
 
 
