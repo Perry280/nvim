@@ -1517,7 +1517,7 @@
 ---variables.
 ---
 ---Enable this rule to enforce consistent namedtuple naming.
----@field ["mismatched-named-tuple-name"]? _.ty.settings.defs.Level
+---@field ["mismatched-namedtuple-name"]? _.ty.settings.defs.Level
 ---
 ---**Default level: `warn`**
 ---
@@ -2959,12 +2959,7 @@
 
 
 
----Configuration override that applies to specific files based on glob patterns.
----
----An override allows you to apply different rule configurations to specific files or directories.
----Multiple overrides can match the same file, with later overrides take precedence.
----Override rules take precedence over global rules for matching files.
----@class (exact) _.ty.settings.defs.OverridesOptions
+---@class (exact) _.ty.settings.defs.OverrideOptions
 ---A list of file and directory patterns to exclude from this override.
 ---
 ---Patterns follow a syntax similar to .gitignore.
@@ -2990,6 +2985,15 @@
 ---Default value: `{}`
 ---@field rules? _.ty.settings.defs.Rules
 ---@field analysis? _.ty.settings.defs.AnalysisOptions
+
+
+
+---Configuration override that applies to specific files based on glob patterns.
+---
+---An override allows you to apply different rule configurations to specific files or directories.
+---Multiple overrides can match the same file, with later overrides take precedence.
+---Override rules take precedence over global rules for matching files.
+---@alias _.ty.settings.defs.OverridesOptions _.ty.settings.defs.OverrideOptions[]
 
 
 
@@ -3171,6 +3175,7 @@
 
 
 
+---Editor settings
 ---@class (exact) ty.settings
 ---@field ty? _.ty.settings.ty
 
@@ -3191,6 +3196,8 @@
 
 
 
+---Editor settings
+---Initialization options
 ---@class (exact) ty.init_options
 ---@field experimental? _.ty.init_options.experimental
 ---Path to the file to which the language server writes its log messages.

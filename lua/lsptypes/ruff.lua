@@ -4821,5 +4821,7 @@
 
 
 
+---Editor settings
+---Initialization options
 ---@class (exact) ruff.init_options
 ---@field settings? _.ruff.init_options.settings
