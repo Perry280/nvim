@@ -81,7 +81,6 @@ end
 return {
     cmd = { 'rust-analyzer' },
     filetypes = { 'rust' },
-    -- root_markers = { 'Cargo.toml', 'rust-project.json', '.git', },
     root_dir = function(bufnr, on_dir)
         if not executable_exists('cargo') then
             return

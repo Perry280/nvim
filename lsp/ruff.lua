@@ -12,6 +12,7 @@ return {
     on_attach = function(client) client.server_capabilities.hoverProvider = false end,
     -- ---@type ruff.settings
     -- settings = {},
+
     ---@type ruff.init_options
     init_options = {
         settings = {

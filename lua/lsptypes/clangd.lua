@@ -1,9 +1,13 @@
 ---@meta
 
 
-
 ---@class (exact) clangd.on_init.init_result.ClangdInitializeResult: lsp.InitializeResult
 ---@field offsetEncoding? string
+
+
+
+---@alias clangd.on_init elem_or_list<fun(client: vim.lsp.Client, init_result: clangd.on_init.init_result.ClangdInitializeResult)>
+
 
 
 

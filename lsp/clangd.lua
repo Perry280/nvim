@@ -80,7 +80,8 @@ return {
     end,
     -- ---@type clangd.settings
     -- settings = {},
-    ---@param init_result clangd.on_init.init_result.ClangdInitializeResult
+
+    ---@type clangd.on_init
     on_init = function(client, init_result)
         if init_result.offsetEncoding then
             client.offset_encoding = init_result.offsetEncoding
